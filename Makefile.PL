@@ -68,6 +68,14 @@ WriteMakefile(
       (ABSTRACT_FROM => 'lib/JSON.pm', # retrieve abstract from module
        AUTHOR     => 'Makamaka Hannyaharamitu, E<lt>makamaka[at]cpan.orgE<gt>') : ()),
     ( $ExtUtils::MakeMaker::VERSION >= 6.3002 ? ('LICENSE' => 'perl', ) : () ),
+
+    ( $ExtUtils::MakeMaker::VERSION >= 6.46 ? (
+        'META_MERGE' => {
+            resources => {
+                repository  =>      'http://github.com/makamaka/JSON',
+            },
+        } ) : ()
+    ),
 );
 
 

@@ -1,0 +1,13 @@
+\.[oc]$
+\.bs$
+\.tgz$
+\.tar\.gz$
+\.git
+\.bak$
+blib/
+Makefile
+MANIFEST\.SKIP
+pm_to_blib
+tmp/
+ex/
+

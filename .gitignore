@@ -7,7 +7,7 @@ pm_to_blib
 *.tar.gz
 *.tgz
 *.old
-JSON*
+JSON-*
 pod2htm*
 nytprof*
 tmp/*

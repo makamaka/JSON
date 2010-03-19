@@ -332,17 +332,6 @@ sub allow_bigint {
                         }
                     }
 
-=pod
-
-                    if ( blessed( $result ) and $obj eq $result ) {
-                        encode_error( sprintf(
-                            "%s::TO_JSON method returned same object as was passed instead of a new one",
-                            ref $obj
-                        ) );
-                    }
-
-=cut
-
                     return $self->object_to_json( $result );
                 }
 

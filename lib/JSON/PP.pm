@@ -323,12 +323,26 @@ sub allow_bigint {
 
                 if ( $convert_blessed and $obj->can('TO_JSON') ) {
                     my $result = $obj->TO_JSON();
-                    if ( defined $result and $obj eq $result ) {
+                    if ( defined $result and overload::Overloaded( $obj ) ) {
+                        if ( overload::StrVal( $obj ) eq $result ) {
+                            encode_error( sprintf(
+                                "%s::TO_JSON method returned same object as was passed instead of a new one",
+                                ref $obj
+                            ) );
+                        }
+                    }
+
+=pod
+
+                    if ( blessed( $result ) and $obj eq $result ) {
                         encode_error( sprintf(
                             "%s::TO_JSON method returned same object as was passed instead of a new one",
                             ref $obj
                         ) );
                     }
+
+=cut
+
                     return $self->object_to_json( $result );
                 }
 

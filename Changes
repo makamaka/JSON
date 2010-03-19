@@ -19,6 +19,7 @@ In this version, JSON was totally rewritten.
 2.XX
 	[JSON::PP]
 	- fixed encode an overloaded 'eq' object bug (reported by Alexey A. Kiritchun)
+	- enhanced an error message compatible to JSON::XS
 
 2.17  Thu Jan  7 12:23:13 2010
 	[JSON]

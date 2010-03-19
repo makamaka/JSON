@@ -822,6 +822,7 @@ BEGIN {
                     }
                     else{
                         unless ($loose) {
+                            $at -= 2;
                             decode_error('illegal backslash escape sequence in string');
                         }
                         $s .= $ch;
@@ -1219,6 +1220,7 @@ BEGIN {
                     : $c == 0x0d ? '\r'
                     : $c == 0x0c ? '\f'
                     : $c <  0x20 ? sprintf('\x{%x}', $c)
+                    : $c == 0x5c ? '\\\\'
                     : $c <  0x80 ? chr($c)
                     : sprintf('\x{%x}', $c)
                     ;

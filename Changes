@@ -17,6 +17,8 @@ In this version, JSON was totally rewritten.
  !! Recommend to update old versions.
 
 2.18  Tue Mar 23 15:18:10 2010
+	[JSON]
+	- updated document (compatible with JSON::XS 2.29)
 	[JSON::PP]
 	- fixed encode an overloaded 'eq' object bug (reported by Alexey A. Kiritchun)
 	- enhanced an error message compatible to JSON::XS

@@ -669,11 +669,12 @@ and L<JSON::XS/ENCODING/CODESET_FLAG_NOTES>.
 
 =item * round-trip integrity
 
-When you serialise a perl data structure using only data types supported by JSON,
-the deserialised data structure is identical on the Perl level.
-(e.g. the string "2.0" doesn't suddenly become "2" just because it looks
-like a number). There minor I<are> exceptions to this, read the MAPPING
-section below to learn about those.
+When you serialise a perl data structure using only data types supported
+by JSON and Perl, the deserialised data structure is identical on the Perl
+level. (e.g. the string "2.0" doesn't suddenly become "2" just because
+it looks like a number). There I<are> minor exceptions to this, read the
+L</MAPPING> section below to learn about those.
+
 
 =item * strict checking of JSON correctness
 
@@ -1595,6 +1596,11 @@ represented as numeric (floating point) values, possibly at a loss of
 precision (in which case you might lose perfect roundtripping ability, but
 the JSON number will still be re-encoded as a JSON number).
 
+Note that precision is not accuracy - binary floating point values cannot
+represent most decimal fractions exactly, and when converting from and to
+floating point, C<JSON> only guarantees precision up to but not including
+the leats significant bit.
+
 If the backend is JSON::PP and C<allow_bignum> is enable, the big integers 
 and the numeric can be optionally converted into L<Math::BigInt> and
 L<Math::BigFloat> objects.
@@ -1724,6 +1730,13 @@ You can force the type to be a number by numifying it:
 
 You can not currently force the type in other, less obscure, ways.
 
+Note that numerical precision has the same meaning as under Perl (so
+binary to decimal conversion follows the same rules as in Perl, which
+can differ to other languages). Also, your perl interpreter might expose
+extensions to the floating point numbers of your platform, such as
+infinities or NaN's - these cannot be represented in JSON, and it is an
+error to pass those in.
+
 =item Big Number
 
 If the backend is JSON::PP and C<allow_bignum> is enable, 
@@ -1817,8 +1830,7 @@ This feature is achieved by using JSON::PP in C<de/encode>.
 At this time, the returned object is a C<JSON::Backend::XS::Supportable>
 object (re-blessed XS object), and  by checking JSON::XS unsupported flags
 in de/encoding, can support some unsupported methods - C<loose>, C<allow_bignum>,
-C<allow_barekey>, C<allow_singlequote>, C<escape_slash>, C<as_nonblessed>
-and C<indent_length>.
+C<allow_barekey>, C<allow_singlequote>, C<escape_slash> and C<indent_length>.
 
 When any unsupported methods are not enable, C<XS de/encode> will be
 used as is. The switch is achieved by changing the symbolic tables.

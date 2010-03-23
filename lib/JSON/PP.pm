@@ -1571,9 +1571,12 @@ See to L<JSON::XS/A FEW NOTES ON UNICODE AND PERL> and L<UNICODE HANDLING ON PER
 
 =item * round-trip integrity
 
-When you serialise a perl data structure using only datatypes supported by JSON,
-the deserialised data structure is identical on the Perl level.
-(e.g. the string "2.0" doesn't suddenly become "2" just because it looks like a number).
+When you serialise a perl data structure using only data types supported
+by JSON and Perl, the deserialised data structure is identical on the Perl
+level. (e.g. the string "2.0" doesn't suddenly become "2" just because
+it looks like a number). There I<are> minor exceptions to this, read the
+MAPPING section below to learn about those.
+
 
 =item * strict checking of JSON correctness
 

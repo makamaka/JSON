@@ -7,12 +7,13 @@ pm_to_blib
 *.tar.gz
 *.tgz
 *.old
+*.bak
+*.swp
 JSON-*
 pod2htm*
 nytprof*
 tmp/*
-*.bak
-*.swp
 ex/*
 diff_*
 .shipit
+MANIFEST

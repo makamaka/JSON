@@ -4,10 +4,13 @@
 \.tar\.gz$
 \.git
 \.bak$
+\.old$
+\.shipit$
 blib/
-Makefile
+Makefile$
 MANIFEST\.SKIP
 pm_to_blib
 tmp/
 ex/
-
+JSON-
+pod\.txt

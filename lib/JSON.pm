@@ -578,33 +578,33 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
 
  use JSON; # imports encode_json, decode_json, to_json and from_json.
  
- $json_text   = to_json($perl_scalar);
- $perl_scalar = from_json($json_text);
+ # simple and fast interfaces (expect/generate UTF-8)
  
- # option-acceptable
- $json_text   = to_json($perl_scalar, {ascii => 1});
- $perl_scalar = from_json($json_text, {utf8 => 1});
- 
- # OOP
- $json = new JSON;
- 
- $json_text   = $json->encode($perl_scalar);
- $perl_scalar = $json->decode($json_text);
- 
- # pretty-printing
- $json_text = $json->pretty->encode($perl_scalar);
- 
- # simple interface
  $utf8_encoded_json_text = encode_json $perl_hash_or_arrayref;
  $perl_hash_or_arrayref  = decode_json $utf8_encoded_json_text;
  
+ # OO-interface
+ 
+ $json = JSON->new->allow_nonref;
+ 
+ $json_text   = $json->encode( $perl_scalar );
+ $perl_scalar = $json->decode( $json_text );
+ 
+ $pretty_printed = $json->pretty->encode( $perl_scalar ); # pretty-printing
  
  # If you want to use PP only support features, call with '-support_by_pp'
- # When XS unsupported feature is enable, using PP de/encode.
+ # When XS unsupported feature is enable, using PP (de|en)code instead of XS ones.
  
  use JSON -support_by_pp;
-
-
+ 
+ # option-acceptable interfaces (expect/generate UNICODE by default)
+ 
+ $json_text   = to_json( $perl_scalar, { ascii => 1, pretty => 1 } );
+ $perl_scalar = from_json( $json_text, { utf8  => 1 } );
+ 
+ # Between (en|de)code_json and (to|from)_json, if you want to write
+ # a code communicates to outter world, recommend to use (en|de)code_json.
+ 
 =head1 VERSION
 
     2.18
@@ -713,6 +713,29 @@ in whatever way you like.
 Some documents are copied and modified from L<JSON::XS/FUNCTIONAL INTERFACE>.
 C<to_json> and C<from_json> are additional functions.
 
+=head2 encode_json
+
+    $json_text = encode_json $perl_scalar
+
+Converts the given Perl data structure to a UTF-8 encoded, binary string.
+
+This function call is functionally identical to:
+
+    $json_text = JSON->new->utf8->encode($perl_scalar)
+
+=head2 decode_json
+
+    $perl_scalar = decode_json $json_text
+
+The opposite of C<encode_json>: expects an UTF-8 (binary) string and tries
+to parse that as an UTF-8 encoded JSON text, returning the resulting
+reference.
+
+This function call is functionally identical to:
+
+    $perl_scalar = JSON->new->utf8->decode($json_text)
+
+
 =head2 to_json
 
    $json_text = to_json($perl_scalar)
@@ -735,6 +758,8 @@ equivalent to:
 
    $json_text = JSON->new->utf8(1)->pretty(1)->encode($perl_scalar)
 
+If you want to write a modern perl code which communicates to outter world,
+you should use C<encode_json>.
 
 =head2 from_json
 
@@ -759,27 +784,8 @@ equivalent to:
 
     $perl_scalar = JSON->new->utf8(1)->decode($json_text)
 
-=head2 encode_json
-
-    $json_text = encode_json $perl_scalar
-
-Converts the given Perl data structure to a UTF-8 encoded, binary string.
-
-This function call is functionally identical to:
-
-    $json_text = JSON->new->utf8->encode($perl_scalar)
-
-=head2 decode_json
-
-    $perl_scalar = decode_json $json_text
-
-The opposite of C<encode_json>: expects an UTF-8 (binary) string and tries
-to parse that as an UTF-8 encoded JSON text, returning the resulting
-reference.
-
-This function call is functionally identical to:
-
-    $perl_scalar = JSON->new->utf8->decode($json_text)
+If you want to write a modern perl code which communicates to outter world,
+you should use C<decode_json>.
 
 =head2 JSON::is_bool
 

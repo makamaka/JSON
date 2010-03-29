@@ -16,6 +16,12 @@ In this version, JSON was totally rewritten.
  !! Since 2.16, PP's relaxed option caused an infinite loop in some condition.
  !! Recommend to update old versions.
 
+2.19
+	[JSON]
+	- fixed typo (rt#53535 by Angel Abad)
+	- added a recommendation
+              refering to (en|de)code_json to pod (suggested by tokuhirom)
+
 2.18  Tue Mar 23 15:18:10 2010
 	[JSON]
 	- updated document (compatible with JSON::XS 2.29)

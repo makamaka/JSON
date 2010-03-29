@@ -686,11 +686,11 @@ See to L<JSON::XS/FEATURES> and L<JSON::PP/FEATURES>.
 
 =item * fast
 
-This module returns a JSON::XS object itself if avaliable.
+This module returns a JSON::XS object itself if available.
 Compared to other JSON modules and other serialisers such as Storable,
 JSON::XS usually compares favourably in terms of speed, too.
 
-If not avaliable, C<JSON> returns a JSON::PP object instead of JSON::XS and
+If not available, C<JSON> returns a JSON::PP object instead of JSON::XS and
 it is very slow as pure-Perl.
 
 =item * simple to use
@@ -1343,7 +1343,7 @@ C<shrink>, C<max_depth> and C<max_size>.
    $boolean = $json->property('utf8');
     => 1
 
-Sets the propery with a given boolean value.
+Sets the property with a given boolean value.
 
     $json = $json->property($property_name => $boolean);
 
@@ -1860,7 +1860,7 @@ with C<from_json> and C<to_json>.
 =item Global variables are no longer available.
 
 C<JSON> class variables - C<$JSON::AUTOCONVERT>, C<$JSON::BareKey>, etc...
-- are not avaliable any longer.
+- are not available any longer.
 Instead, various features can be used through object methods.
 
 

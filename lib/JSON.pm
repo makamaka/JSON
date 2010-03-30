@@ -866,9 +866,15 @@ And if C<$perl_scalar> does not contain UNICODE, then your characters are latin1
 So you can B<not> use C<encode_json> nor C<JSON> module object with C<utf8> enable.
 Instead of them, you use C<JSON> module object with C<utf8> disable or C<to_json>.
 
-  $outer_json_text = $json->utf8(0)->encode( $perl_scalar );
+  $json_text = $json->utf8(0)->encode( $perl_scalar );
   # or 
-  $outer_json_text = to_json( $perl_scalar );
+  $json_text = to_json( $perl_scalar );
+
+  # and then print or convert to UNICODE
+  print $json_text;
+  
+  $unicode_json_text = encode( $encoding, $json_text );
+
 
 See to L<Encode>, L<perluniintro>.
 

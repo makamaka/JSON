@@ -608,7 +608,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
 =head1 VERSION
 
-    2.18
+    2.19
 
 This version is compatible with JSON::XS B<2.27> and later.
 

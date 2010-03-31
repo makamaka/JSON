@@ -11,7 +11,7 @@ use Carp ();
 use B ();
 #use Devel::Peek;
 
-$JSON::PP::VERSION = '2.27002';
+$JSON::PP::VERSION = '2.27002_01';
 
 @JSON::PP::EXPORT = qw(encode_json decode_json from_json to_json);
 
@@ -671,7 +671,7 @@ BEGIN {
         ($at, $ch, $depth) = (0, '', 0);
 
         if (!defined $text or ref $text) {
-            decode_error("malformed text data.");
+            decode_error("malformed JSON string, neither array, object, number, string or atom");
         }
 
         my $idx = $self->{PROPS};
@@ -724,16 +724,18 @@ BEGIN {
                        . ' use allow_nonref to allow this)', 1);
         }
 
-        if ($len >= $at) {
-            my $consumed = $at - 1;
-            white();
-            if ($ch) {
-                decode_error("garbage after JSON object") unless ($opt & 0x00000001);
-                return ($result, $consumed);
-            }
+        Carp::croak('something wrong.') if $len < $at; # we don't archive here.
+
+        my $consumed = defined $ch ? $at - 1 : $at; # consumed JSON text length
+
+        white();
+
+        if ( $ch ) {
+            decode_error("garbage after JSON object") unless ($opt & 0x00000001);
+            return ( $result, $consumed );
         }
 
-        $result;
+        ( $opt & 0x00000001 ) ? ( $result, $consumed ) : $result;
     }
 
 

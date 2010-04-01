@@ -11,7 +11,7 @@ use Carp ();
 use B ();
 #use Devel::Peek;
 
-$JSON::PP::VERSION = '2.27002_01';
+$JSON::PP::VERSION = '2.27003';
 
 @JSON::PP::EXPORT = qw(encode_json decode_json from_json to_json);
 
@@ -662,6 +662,7 @@ BEGIN {
 
     # $opt flag
     # 0x00000001 .... decode_prefix
+    # 0x10000000 .... incr_parse
 
     sub PP_decode_json {
         my ($self, $opt); # $opt is an effective flag during this decode_json.
@@ -670,7 +671,7 @@ BEGIN {
 
         ($at, $ch, $depth) = (0, '', 0);
 
-        if (!defined $text or ref $text) {
+        if ( !defined $text or ref $text ) {
             decode_error("malformed JSON string, neither array, object, number, string or atom");
         }
 
@@ -710,29 +711,31 @@ BEGIN {
                     : (!$octets[2]                ) ? 'UTF-32LE'
                     : 'unknown';
 
-#        my $result = value();
+        white(); # remove head white space
 
-        my $eof = !( my ( $result ) = value() ); # $eof for incr_parse
+        my $valid_start = defined $ch; # Is there a first character for JSON structure?
 
-        if ( $eof && ( $opt & 0x00000001 ) ) {
-            return undef;
-        }
+        my $result = value();
 
-        if (!$idx->[ P_ALLOW_NONREF ] and !ref $result) {
+        return undef if ( !$result && ( $opt & 0x10000000 ) ); # for incr_parse
+
+        decode_error("malformed JSON string, neither array, object, number, string or atom") unless $valid_start;
+
+        if ( !$idx->[ P_ALLOW_NONREF ] and !ref $result ) {
                 decode_error(
                 'JSON text must be an object or array (but found number, string, true, false or null,'
                        . ' use allow_nonref to allow this)', 1);
         }
 
-        Carp::croak('something wrong.') if $len < $at; # we don't archive here.
+        Carp::croak('something wrong.') if $len < $at; # we won't arrive here.
 
         my $consumed = defined $ch ? $at - 1 : $at; # consumed JSON text length
 
-        white();
+        white(); # remove tail white space
 
         if ( $ch ) {
-            decode_error("garbage after JSON object") unless ($opt & 0x00000001);
-            return ( $result, $consumed );
+            return ( $result, $consumed ) if ($opt & 0x00000001); # all right if decode_prefix
+            decode_error("garbage after JSON object");
         }
 
         ( $opt & 0x00000001 ) ? ( $result, $consumed ) : $result;
@@ -1483,7 +1486,7 @@ sub _incr_parse {
     $self->{incr_p} = $restore;
     $self->{incr_c} = $p;
 
-    my ( $obj, $tail ) = $coder->decode_prefix( substr( $self->{incr_text}, 0, $p ) );
+    my ( $obj, $tail ) = $coder->PP_decode_json( substr( $self->{incr_text}, 0, $p ), 0x10000001 );
 
     $self->{incr_text} = substr( $self->{incr_text}, $p );
     $self->{incr_p} = 0;

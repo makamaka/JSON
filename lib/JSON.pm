@@ -7,7 +7,7 @@ use base qw(Exporter);
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '2.19';
+    $JSON::VERSION = '2.19_01';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
 }
 
@@ -608,7 +608,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
 =head1 VERSION
 
-    2.19
+    2.20
 
 This version is compatible with JSON::XS B<2.27> and later.
 
@@ -1428,9 +1428,13 @@ With no argumnt, it returns all the above properties as a hash reference.
 In JSON::XS 2.2, incremental parsing feature of JSON texts was implemented.
 Please check to L<JSON::XS/INCREMENTAL PARSING>.
 
-=over 4
+=head2 incr_parse
 
-=item [void, scalar or list context] = $json->incr_parse ([$string])
+    $json->incr_parse( [$string] ) # void context
+    
+    $obj_or_undef = $json->incr_parse( [$string] ) # scalar context
+    
+    @obj_or_empty = $json->incr_parse( [$string] ) # list context
 
 This is the central parsing function. It can both append new text and
 extract objects from the stream accumulated so far (both of these
@@ -1458,7 +1462,13 @@ an error occurs, an exception will be raised as in the scalar context
 case. Note that in this case, any previously-parsed JSON texts will be
 lost.
 
-=item $lvalue_string = $json->incr_text
+Example: Parse some JSON arrays/objects in a given string and return them.
+
+    my @objs = JSON->new->incr_parse ("[5][7][1,2]");
+
+=head2 incr_text
+
+    $lvalue_string = $json->incr_text
 
 This method returns the currently stored JSON fragment as an lvalue, that
 is, you can manipulate it. This I<only> works when a preceding call to
@@ -1472,6 +1482,8 @@ This function is useful in two cases: a) finding the trailing text after a
 JSON object or b) parsing multiple JSON objects separated by non-JSON text
 (such as commas).
 
+    $json->incr_text =~ s/\s*,\s*//;
+
 In Perl 5.005, C<lvalue> attribute is not available.
 You must write codes like the below:
 
@@ -1479,14 +1491,18 @@ You must write codes like the below:
     $string =~ s/\s*,\s*//;
     $json->incr_text( $string );
 
-=item $json->incr_skip
+=head2 incr_skip
+
+    $json->incr_skip
 
 This will reset the state of the incremental parser and will remove the
 parsed text from the input buffer. This is useful after C<incr_parse>
 died, in which case the input buffer and incremental parser state is left
 unchanged, to skip the text parsed so far and to reset the parse state.
 
-=item $json->incr_reset
+=head2 incr_reset
+
+    $json->incr_reset
 
 This completely resets the incremental parser, that is, after this call,
 it will be as if the parser had never parsed anything.
@@ -1494,8 +1510,6 @@ it will be as if the parser had never parsed anything.
 This is useful if you want ot repeatedly parse JSON objects and want to
 ignore any trailing data, which means you have to reset the parser after
 each successful decode.
-
-=back
 
 =head1 JSON::PP SUPPORT METHODS
 

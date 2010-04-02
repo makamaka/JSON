@@ -41,22 +41,7 @@ $result = timethese( -$wanttime,
 cmpthese( $result );
 
 print "-----------------------------------\n";
-print "->pretty->canonical->dcode()\n";
-print "-----------------------------------\n";
 
-$pp->pretty->canonical;
-$xs->pretty->canonical;
-
-$result = timethese( -$wanttime,
-    {
-        'JSON::PP' => sub { $pp->decode( $json ) },
-        'JSON::XS' => sub { $xs->decode( $json ) },
-    },
-    'none'
-);
-cmpthese( $result );
-
-print "-----------------------------------\n";
 
 __END__
 

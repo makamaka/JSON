@@ -7,7 +7,7 @@ use base qw(Exporter);
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '2.19_01';
+    $JSON::VERSION = '2.20';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
 }
 
@@ -845,7 +845,7 @@ If your data is not encoded in UTF-8, firstly you should C<decode> it.
   # $json_text = <$fh>;
 
 In this case, C<$json_text> is UNICODE string.
-So you can B<not> use C<decode_json> nor C<JSON> module object with C<utf8> enable.
+So you B<cannot> use C<decode_json> nor C<JSON> module object with C<utf8> enable.
 Instead of them, you use C<JSON> module object with C<utf8> disable or C<from_json>.
 
   $perl_scalar = $json->utf8(0)->decode( $json_text );
@@ -863,7 +863,7 @@ in UTF-8, you should use C<encode_json> or C<JSON> module object with C<utf8> en
   print $json->utf8->encode( $perl_scalar );
 
 And if C<$perl_scalar> does not contain UNICODE, then your characters are latin1 for perl.
-So you can B<not> use C<encode_json> nor C<JSON> module object with C<utf8> enable.
+So you B<cannot> use C<encode_json> nor C<JSON> module object with C<utf8> enable.
 Instead of them, you use C<JSON> module object with C<utf8> disable or C<to_json>.
 
   $json_text = $json->utf8(0)->encode( $perl_scalar );
@@ -1425,8 +1425,25 @@ With no argumnt, it returns all the above properties as a hash reference.
 
 =head1 INCREMENTAL PARSING
 
-In JSON::XS 2.2, incremental parsing feature of JSON texts was implemented.
-Please check to L<JSON::XS/INCREMENTAL PARSING>.
+Most of this section are copied and modified from L<JSON::XS/INCREMENTAL PARSING>.
+
+In some cases, there is the need for incremental parsing of JSON texts.
+This module does allow you to parse a JSON stream incrementally.
+It does so by accumulating text until it has a full JSON object, which
+it then can decode. This process is similar to using C<decode_prefix>
+to see if a full JSON object is available, but is much more efficient
+(and can be implemented with a minimum of method calls).
+
+The backend module will only attempt to parse the JSON text once it is sure it
+has enough text to get a decisive result, using a very simple but
+truly incremental parser. This means that it sometimes won't stop as
+early as the full parser, for example, it doesn't detect parenthese
+mismatches. The only thing it guarantees is that it starts decoding as
+soon as a syntactically valid JSON text has been seen. This means you need
+to set resource limits (e.g. C<max_size>) to ensure the parser will stop
+parsing in the presence if syntax errors.
+
+The following methods implement this incremental parser.
 
 =head2 incr_parse
 
@@ -1510,6 +1527,9 @@ it will be as if the parser had never parsed anything.
 This is useful if you want ot repeatedly parse JSON objects and want to
 ignore any trailing data, which means you have to reset the parser after
 each successful decode.
+
+See to L<JSON::XS/INCREMENTAL PARSING> for examples.
+
 
 =head1 JSON::PP SUPPORT METHODS
 

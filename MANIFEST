@@ -1,4 +1,5 @@
 Changes
+eg/bench_pp_xs.pl
 lib/JSON.pm
 lib/JSON/PP.pm
 lib/JSON/PP/Boolean.pm
@@ -47,6 +48,7 @@ t/e10_bignum.t
 t/e11_conv_blessed_univ.t
 t/e12_upgrade.t
 t/e13_overloaded_eq.t
+t/e14_decode_prefix.t
 t/x00_load.t
 t/x02_error.t
 t/x12_blessed.t

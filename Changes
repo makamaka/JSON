@@ -16,6 +16,15 @@ In this version, JSON was totally rewritten.
  !! Since 2.16, PP's relaxed option caused an infinite loop in some condition.
  !! Recommend to update old versions.
 
+2.20  Fri Apr  2 12:50:08 2010
+	[JSON]
+	- added eg/bench_pp_xs.pl for benchmark sample
+	- updated 'INCREMENTAL PARSING' section
+	[JSON::PP]
+	- decode_prefix() didn't count a consumed text length properly.
+	- enhanced XS compatibilty
+	    in the case of decoding a white space garbaged text.
+
 2.19  Tue Mar 30 13:40:24 2010
 	[JSON]
 	- fixed typo (rt#53535 by Angel Abad)

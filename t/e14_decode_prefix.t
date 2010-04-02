@@ -4,7 +4,7 @@ use strict;
 use Test::More tests => 8;
 
 BEGIN {
-    $ENV{ PERL_JSON_BACKEND } = $ARGV[0] || 0;
+    $ENV{ PERL_JSON_BACKEND } = 0;
 }
 
 use JSON;

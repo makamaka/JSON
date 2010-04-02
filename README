@@ -1,4 +1,4 @@
-JSON version 2.19
+JSON version 2.20
 =================
 
 INSTALLATION
@@ -45,7 +45,7 @@ SYNOPSIS
      # recommend to use (en|de)code_json.
  
 VERSION
-        2.19
+        2.20
 
     This version is compatible with JSON::XS 2.27 and later.
 
@@ -266,7 +266,7 @@ HOW DO I DECODE A DATA FROM OUTER AND ENCODE TO OUTER
       # open( my $fh, '<:encoding(cp932)', 'json.data' );
       # $json_text = <$fh>;
 
-    In this case, $json_text is UNICODE string. So you can not use
+    In this case, $json_text is UNICODE string. So you cannot use
     "decode_json" nor "JSON" module object with "utf8" enable. Instead of
     them, you use "JSON" module object with "utf8" disable or "from_json".
 
@@ -286,13 +286,18 @@ HOW DO I DECODE A DATA FROM OUTER AND ENCODE TO OUTER
       print $json->utf8->encode( $perl_scalar );
 
     And if $perl_scalar does not contain UNICODE, then your characters are
-    latin1 for perl. So you can not use "encode_json" nor "JSON" module
+    latin1 for perl. So you cannot use "encode_json" nor "JSON" module
     object with "utf8" enable. Instead of them, you use "JSON" module object
     with "utf8" disable or "to_json".
 
-      $outer_json_text = $json->utf8(0)->encode( $perl_scalar );
+      $json_text = $json->utf8(0)->encode( $perl_scalar );
       # or 
-      $outer_json_text = to_json( $perl_scalar );
+      $json_text = to_json( $perl_scalar );
+
+      # and then print or convert to UNICODE
+      print $json_text;
+  
+      $unicode_json_text = encode( $encoding, $json_text );
 
     See to Encode, perluniintro.
 
@@ -808,71 +813,109 @@ COMMON OBJECT-ORIENTED INTERFACE
         $flag_hashref = $json->property();
 
 INCREMENTAL PARSING
-    In JSON::XS 2.2, incremental parsing feature of JSON texts was
-    implemented. Please check to "INCREMENTAL PARSING" in JSON::XS.
+    Most of this section are copied and modified from "INCREMENTAL PARSING"
+    in JSON::XS.
 
-    [void, scalar or list context] = $json->incr_parse ([$string])
-        This is the central parsing function. It can both append new text
-        and extract objects from the stream accumulated so far (both of
-        these functions are optional).
+    In some cases, there is the need for incremental parsing of JSON texts.
+    This module does allow you to parse a JSON stream incrementally. It does
+    so by accumulating text until it has a full JSON object, which it then
+    can decode. This process is similar to using "decode_prefix" to see if a
+    full JSON object is available, but is much more efficient (and can be
+    implemented with a minimum of method calls).
 
-        If $string is given, then this string is appended to the already
-        existing JSON fragment stored in the $json object.
+    The backend module will only attempt to parse the JSON text once it is
+    sure it has enough text to get a decisive result, using a very simple
+    but truly incremental parser. This means that it sometimes won't stop as
+    early as the full parser, for example, it doesn't detect parenthese
+    mismatches. The only thing it guarantees is that it starts decoding as
+    soon as a syntactically valid JSON text has been seen. This means you
+    need to set resource limits (e.g. "max_size") to ensure the parser will
+    stop parsing in the presence if syntax errors.
 
-        After that, if the function is called in void context, it will
-        simply return without doing anything further. This can be used to
-        add more text in as many chunks as you want.
+    The following methods implement this incremental parser.
 
-        If the method is called in scalar context, then it will try to
-        extract exactly *one* JSON object. If that is successful, it will
-        return this object, otherwise it will return "undef". If there is a
-        parse error, this method will croak just as "decode" would do (one
-        can then use "incr_skip" to skip the errornous part). This is the
-        most common way of using the method.
+  incr_parse
+        $json->incr_parse( [$string] ) # void context
+    
+        $obj_or_undef = $json->incr_parse( [$string] ) # scalar context
+    
+        @obj_or_empty = $json->incr_parse( [$string] ) # list context
 
-        And finally, in list context, it will try to extract as many objects
-        from the stream as it can find and return them, or the empty list
-        otherwise. For this to work, there must be no separators between the
-        JSON objects or arrays, instead they must be concatenated
-        back-to-back. If an error occurs, an exception will be raised as in
-        the scalar context case. Note that in this case, any
-        previously-parsed JSON texts will be lost.
+    This is the central parsing function. It can both append new text and
+    extract objects from the stream accumulated so far (both of these
+    functions are optional).
 
-    $lvalue_string = $json->incr_text
-        This method returns the currently stored JSON fragment as an lvalue,
-        that is, you can manipulate it. This *only* works when a preceding
-        call to "incr_parse" in *scalar context* successfully returned an
-        object. Under all other circumstances you must not call this
-        function (I mean it. although in simple tests it might actually
-        work, it *will* fail under real world conditions). As a special
-        exception, you can also call this method before having parsed
-        anything.
+    If $string is given, then this string is appended to the already
+    existing JSON fragment stored in the $json object.
 
-        This function is useful in two cases: a) finding the trailing text
-        after a JSON object or b) parsing multiple JSON objects separated by
-        non-JSON text (such as commas).
+    After that, if the function is called in void context, it will simply
+    return without doing anything further. This can be used to add more text
+    in as many chunks as you want.
 
-        In Perl 5.005, "lvalue" attribute is not available. You must write
-        codes like the below:
+    If the method is called in scalar context, then it will try to extract
+    exactly *one* JSON object. If that is successful, it will return this
+    object, otherwise it will return "undef". If there is a parse error,
+    this method will croak just as "decode" would do (one can then use
+    "incr_skip" to skip the errornous part). This is the most common way of
+    using the method.
 
-            $string = $json->incr_text;
-            $string =~ s/\s*,\s*//;
-            $json->incr_text( $string );
+    And finally, in list context, it will try to extract as many objects
+    from the stream as it can find and return them, or the empty list
+    otherwise. For this to work, there must be no separators between the
+    JSON objects or arrays, instead they must be concatenated back-to-back.
+    If an error occurs, an exception will be raised as in the scalar context
+    case. Note that in this case, any previously-parsed JSON texts will be
+    lost.
 
-    $json->incr_skip
-        This will reset the state of the incremental parser and will remove
-        the parsed text from the input buffer. This is useful after
-        "incr_parse" died, in which case the input buffer and incremental
-        parser state is left unchanged, to skip the text parsed so far and
-        to reset the parse state.
+    Example: Parse some JSON arrays/objects in a given string and return
+    them.
 
-    $json->incr_reset
-        This completely resets the incremental parser, that is, after this
-        call, it will be as if the parser had never parsed anything.
+        my @objs = JSON->new->incr_parse ("[5][7][1,2]");
 
-        This is useful if you want ot repeatedly parse JSON objects and want
-        to ignore any trailing data, which means you have to reset the
-        parser after each successful decode.
+  incr_text
+        $lvalue_string = $json->incr_text
+
+    This method returns the currently stored JSON fragment as an lvalue,
+    that is, you can manipulate it. This *only* works when a preceding call
+    to "incr_parse" in *scalar context* successfully returned an object.
+    Under all other circumstances you must not call this function (I mean
+    it. although in simple tests it might actually work, it *will* fail
+    under real world conditions). As a special exception, you can also call
+    this method before having parsed anything.
+
+    This function is useful in two cases: a) finding the trailing text after
+    a JSON object or b) parsing multiple JSON objects separated by non-JSON
+    text (such as commas).
+
+        $json->incr_text =~ s/\s*,\s*//;
+
+    In Perl 5.005, "lvalue" attribute is not available. You must write codes
+    like the below:
+
+        $string = $json->incr_text;
+        $string =~ s/\s*,\s*//;
+        $json->incr_text( $string );
+
+  incr_skip
+        $json->incr_skip
+
+    This will reset the state of the incremental parser and will remove the
+    parsed text from the input buffer. This is useful after "incr_parse"
+    died, in which case the input buffer and incremental parser state is
+    left unchanged, to skip the text parsed so far and to reset the parse
+    state.
+
+  incr_reset
+        $json->incr_reset
+
+    This completely resets the incremental parser, that is, after this call,
+    it will be as if the parser had never parsed anything.
+
+    This is useful if you want ot repeatedly parse JSON objects and want to
+    ignore any trailing data, which means you have to reset the parser after
+    each successful decode.
+
+    See to "INCREMENTAL PARSING" in JSON::XS for examples.
 
 JSON::PP SUPPORT METHODS
     The below methods are JSON::PP own methods, so when "JSON" works with

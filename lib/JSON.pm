@@ -7,7 +7,7 @@ use base qw(Exporter);
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '2.20';
+    $JSON::VERSION = '2.21';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
 }
 
@@ -608,7 +608,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
 =head1 VERSION
 
-    2.20
+    2.21
 
 This version is compatible with JSON::XS B<2.27> and later.
 
@@ -832,7 +832,7 @@ with C<utf8> enable. And the decoded result will contain UNICODE characters.
   $json_text   = <$fh>;
   $perl_scalar = decode_json( $json_text );
 
-If your data is not encoded in UTF-8, firstly you should C<decode> it.
+If an outer data is not encoded in UTF-8, firstly you should C<decode> it.
 
   use Encode;
   local $/;
@@ -868,8 +868,8 @@ in UTF-8, you should use C<encode_json> or C<JSON> module object with C<utf8> en
   # or
   print $json->utf8->encode( $perl_scalar );
 
-If C<$perl_scalar> does not contain UNICODE but C<$encoding> strings for some reason,
-then its characters are regarded as B<latin1> for perl
+If C<$perl_scalar> does not contain UNICODE but C<$encoding>-encoded strings
+for some reason, then its characters are regarded as B<latin1> for perl
 (because it does not concern with your $encoding).
 You B<cannot> use C<encode_json> nor C<JSON> module object with C<utf8> enable.
 Instead of them, you use C<JSON> module object with C<utf8> disable or C<to_json>.
@@ -888,7 +888,7 @@ Or C<decode $encoding> all string values and C<encode_json>:
   # ... do it to each string values, then encode_json
   $json_text = encode_json( $perl_scalar );
 
-The method is a proper way but probably not efficient.
+This method is a proper way but probably not efficient.
 
 See to L<Encode>, L<perluniintro>.
 

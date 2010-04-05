@@ -1,4 +1,4 @@
-JSON version 2.20
+JSON version 2.21
 =================
 
 INSTALLATION
@@ -45,7 +45,7 @@ SYNOPSIS
      # recommend to use (en|de)code_json.
  
 VERSION
-        2.20
+        2.21
 
     This version is compatible with JSON::XS 2.27 and later.
 
@@ -240,8 +240,8 @@ HOW DO I DECODE A DATA FROM OUTER AND ENCODE TO OUTER
 
     If you know a JSON text from an outer world - a network, a file content,
     and so on, is encoded in UTF-8, you should use "decode_json" or "JSON"
-    module object with "utf8" enable. And the decoded data contains UNICODE
-    characters.
+    module object with "utf8" enable. And the decoded result will contain
+    UNICODE characters.
 
       # from network
       my $json        = JSON->new->utf8;
@@ -254,50 +254,67 @@ HOW DO I DECODE A DATA FROM OUTER AND ENCODE TO OUTER
       $json_text   = <$fh>;
       $perl_scalar = decode_json( $json_text );
 
-    If your data is not encoded in UTF-8, firstly you should "decode" it.
+    If an outer data is not encoded in UTF-8, firstly you should "decode"
+    it.
 
       use Encode;
       local $/;
-      open( my $fh, '<', 'json.data' ); # ex. this data is encoded in cp932.
-      $json_text = decode( 'cp932', <$fh> ); # UNICODE
+      open( my $fh, '<', 'json.data' );
+      my $encoding = 'cp932';
+      my $unicode_json_text = decode( $encoding, <$fh> ); # UNICODE
   
       # or you can write the below code.
       #
-      # open( my $fh, '<:encoding(cp932)', 'json.data' );
-      # $json_text = <$fh>;
+      # open( my $fh, "<:encoding($encoding)", 'json.data' );
+      # $unicode_json_text = <$fh>;
 
-    In this case, $json_text is UNICODE string. So you cannot use
-    "decode_json" nor "JSON" module object with "utf8" enable. Instead of
-    them, you use "JSON" module object with "utf8" disable or "from_json".
+    In this case, $unicode_json_text is of course UNICODE string. So you
+    cannot use "decode_json" nor "JSON" module object with "utf8" enable.
+    Instead of them, you use "JSON" module object with "utf8" disable or
+    "from_json".
 
-      $perl_scalar = $json->utf8(0)->decode( $json_text );
+      $perl_scalar = $json->utf8(0)->decode( $unicode_json_text );
       # or
-      $perl_scalar = from_json( $json_text );
+      $perl_scalar = from_json( $unicode_json_text );
+
+    Or "encode 'utf8'" and "decode_json":
+
+      $perl_scalar = decode_json( encode( 'utf8', $unicode_json_text ) );
+      # this way is not efficient.
 
     And now, you want to convert your $perl_scalar into JSON data and send
     it to an outer world - a network or a file content, and so on.
 
-    If your data contains UNICODE strings and you want the converted data to
-    be encoded in UTF-8, you should use "encode_json" or "JSON" module
-    object with "utf8" enable.
+    Your data usually contains UNICODE strings and you want the converted
+    data to be encoded in UTF-8, you should use "encode_json" or "JSON"
+    module object with "utf8" enable.
 
       print encode_json( $perl_scalar ); # to a network? file? or display?
       # or
       print $json->utf8->encode( $perl_scalar );
 
-    And if $perl_scalar does not contain UNICODE, then your characters are
-    latin1 for perl. So you cannot use "encode_json" nor "JSON" module
-    object with "utf8" enable. Instead of them, you use "JSON" module object
-    with "utf8" disable or "to_json".
+    If $perl_scalar does not contain UNICODE but $encoding-encoded strings
+    for some reason, then its characters are regarded as latin1 for perl
+    (because it does not concern with your $encoding). You cannot use
+    "encode_json" nor "JSON" module object with "utf8" enable. Instead of
+    them, you use "JSON" module object with "utf8" disable or "to_json".
+    Note that the resulted text is a UNICODE string but no problem to print
+    it.
 
-      $json_text = $json->utf8(0)->encode( $perl_scalar );
+      # $perl_scalar contains $encoding encoded string values
+      $unicode_json_text = $json->utf8(0)->encode( $perl_scalar );
       # or 
-      $json_text = to_json( $perl_scalar );
+      $unicode_json_text = to_json( $perl_scalar );
+      # $unicode_json_text consists of characters less than 0x100
+      print $unicode_json_text;
 
-      # and then print or convert to UNICODE
-      print $json_text;
-  
-      $unicode_json_text = encode( $encoding, $json_text );
+    Or "decode $encoding" all string values and "encode_json":
+
+      $perl_scalar->{ foo } = decode( $encoding, $perl_scalar->{ foo } );
+      # ... do it to each string values, then encode_json
+      $json_text = encode_json( $perl_scalar );
+
+    This method is a proper way but probably not efficient.
 
     See to Encode, perluniintro.
 

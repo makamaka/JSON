@@ -1,5 +1,6 @@
 Changes
-eg/bench_pp_xs.pl
+eg/bench_decode.pl
+eg/bench_encode.pl
 lib/JSON.pm
 lib/JSON/PP.pm
 lib/JSON/PP/Boolean.pm

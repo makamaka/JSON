@@ -28,13 +28,29 @@ printf( "JSON::XS %s\n", JSON::XS->VERSION );
 
 
 print "-----------------------------------\n";
-print "->decode()\n";
+print "->encode()\n";
 print "-----------------------------------\n";
 
 $result = timethese( -$wanttime,
     {
-        'JSON::PP' => sub { $pp->decode( $json ) },
-        'JSON::XS' => sub { $xs->decode( $json ) },
+        'JSON::PP' => sub { $pp->encode( $perl ) },
+        'JSON::XS' => sub { $xs->encode( $perl ) },
+    },
+    'none'
+);
+cmpthese( $result );
+
+print "-----------------------------------\n";
+print "->pretty->canonical->encode()\n";
+print "-----------------------------------\n";
+
+$pp->pretty->canonical;
+$xs->pretty->canonical;
+
+$result = timethese( -$wanttime,
+    {
+        'JSON::PP' => sub { $pp->encode( $perl ) },
+        'JSON::XS' => sub { $xs->encode( $perl ) },
     },
     'none'
 );
@@ -49,13 +65,13 @@ __END__
 
 =head1 SYNOPSYS
 
-  bench_decode.pl json-file
+  bench_encode.pl json-file
   # or
-  bench_decode.pl json-file minimum-time
+  bench_encode.pl json-file minimum-time
 
 =head1 DESCRIPTION
 
-L<JSON::PP> and L<JSON::XS> decoding benchmark.
+L<JSON::PP> and L<JSON::XS> encoding benchmark.
 
 =head1 AUTHOR
 

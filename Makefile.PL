@@ -4,6 +4,8 @@ use ExtUtils::MakeMaker;
 
 use lib qw( ./lib );
 
+$| = 1;
+
 eval q| require JSON |;
 
 # B module can't install? I'm not careful for such a problem.
@@ -21,6 +23,7 @@ if ($@) {
 my $version     = JSON->VERSION;
 my $req_xs_ver  = JSON->require_xs_version;
 my $has_xs      = 0;
+my $xs_ver_is_ok;
 my $message;
 
 eval q| require JSON::XS |;
@@ -32,6 +35,7 @@ if ($has_xs) {
     my $xs_version = JSON::XS->VERSION;
     if ($xs_version >= $req_xs_ver) {
         $message = "You have JSON::XS (v.$xs_version), so JSON can work very fast!!";
+        $xs_ver_is_ok++;
     }
     else {
         $message = "Your JSON::XS version is $xs_version, but if you install v.$req_xs_ver,\n"
@@ -56,7 +60,33 @@ $message
 
 
 EOF
-sleep 3;
+
+sleep 2;
+
+if ( can_cc() and not $xs_ver_is_ok ) {
+
+    my $prompt = prompt("Do you want to install JSON::XS?(Y/n)", 'Y');
+
+    if ( $prompt =~ /^[yY]/ ) {
+
+        if ( $ENV{ PERL5_CPANM_IS_RUNNING } ) { # use cpanm
+            eval { system( 'cpanm', '--skip-installed', 'JSON::XS' ); }
+        }
+        else { # use CPAN
+            eval {
+                require CPAN;
+                CPAN::Shell->install("JSON::XS");
+            };
+        }
+
+        if ( $@ ) {
+            warn $@;
+        }
+
+    }
+
+}
+
 
 WriteMakefile(
     'NAME'          => 'JSON',
@@ -91,3 +121,26 @@ if ($] < 5.006) { # I saw to http://d.hatena.ne.jp/asakusabashi/20051231/p1
     rename("Makefile.tmp" => "Makefile");
 }
 
+
+
+
+# copied from http://cpansearch.perl.org/src/GBARR/Scalar-List-Utils-1.23/Makefile.PL
+
+use Config;
+
+
+sub can_cc {
+
+    foreach my $cmd (split(/ /, $Config::Config{cc})) {
+        my $_cmd = $cmd;
+
+        return $_cmd if (-x $_cmd or $_cmd = MM->maybe_command($_cmd));
+
+        for my $dir ((split /$Config::Config{path_sep}/, $ENV{PATH}), '.') {
+            my $abs = File::Spec->catfile($dir, $_[1]);
+            return $abs if (-x $abs or $abs = MM->maybe_command($abs));
+        }
+    }
+
+    return;
+}

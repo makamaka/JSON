@@ -63,26 +63,14 @@ EOF
 
 sleep 2;
 
+my @prereq_pm;
+
 if ( can_cc() and not $xs_ver_is_ok ) {
 
     my $prompt = prompt("Do you want to install JSON::XS?(Y/n)", 'Y');
 
     if ( $prompt =~ /^[yY]/ ) {
-
-        if ( $ENV{ PERL5_CPANM_IS_RUNNING } ) { # use cpanm
-            eval { system( 'cpanm', '--skip-installed', 'JSON::XS' ); }
-        }
-        else { # use CPAN
-            eval {
-                require CPAN;
-                CPAN::Shell->install("JSON::XS");
-            };
-        }
-
-        if ( $@ ) {
-            warn $@;
-        }
-
+        @prereq_pm = ( 'JSON::XS' => $version );
     }
 
 }
@@ -93,6 +81,7 @@ WriteMakefile(
     'VERSION_FROM'  => 'lib/JSON.pm', # finds $VERSION
     'PREREQ_PM'     => {
               'Test::More'  => 0,
+              @prereq_pm,
     },
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM => 'lib/JSON.pm', # retrieve abstract from module

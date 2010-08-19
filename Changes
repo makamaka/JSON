@@ -16,6 +16,13 @@ In this version, JSON was totally rewritten.
  !! Since 2.16, PP's relaxed option caused an infinite loop in some condition.
  !! Recommend to update old versions.
 
+2.21_001  Thu Aug 19 16:52:43 2010
+	[JSON]
+	- added JSON::XS installing feature in Makefile.PL
+	[JSON::PP]
+	- modified for -Duse64bitall -Duselongdouble compiled perl.
+	    11_pc_expo.t too. (these are patched by H.Merijn Brand)
+
 2.21  Mon Apr  5 14:56:52 2010
 	[JSON]
 	- enhanced 'HOW DO I DECODE A DATA FROM OUTER AND ENCODE TO OUTER'

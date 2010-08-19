@@ -119,6 +119,9 @@ use Config;
 
 
 sub can_cc {
+    return if $] < 5.008002; # JSON::XS requires
+
+    require File::Spec;
 
     foreach my $cmd (split(/ /, $Config::Config{cc})) {
         my $_cmd = $cmd;

@@ -11,7 +11,7 @@ use Carp ();
 use B ();
 #use Devel::Peek;
 
-$JSON::PP::VERSION = '2.27003';
+$JSON::PP::VERSION = '2.27003_001';
 
 @JSON::PP::EXPORT = qw(encode_json decode_json from_json to_json);
 
@@ -613,7 +613,7 @@ my $max_intsize;
 
 BEGIN {
     my $checkint = 1111;
-    for my $d (5..30) {
+    for my $d (5..64) {
         $checkint .= 1;
         my $int   = eval qq| $checkint |;
         if ($int =~ /[eE]/) {

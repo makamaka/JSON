@@ -128,6 +128,9 @@ sub objToJson {
 # INTERFACES
 
 sub to_json ($@) {
+    if (ref $_[0] and ref($_[0]) eq 'JSON') {
+        Carp::croak "to_json should not be called as a method.";
+    }
     my $json = new JSON;
 
     if (@_ == 2 and ref $_[1] eq 'HASH') {
@@ -142,6 +145,9 @@ sub to_json ($@) {
 
 
 sub from_json ($@) {
+    if (ref $_[0] and ref($_[0]) eq 'JSON') {
+        Carp::croak "from_json should not be called as a method.";
+    }
     my $json = new JSON;
 
     if (@_ == 2 and ref $_[1] eq 'HASH') {

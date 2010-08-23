@@ -65,12 +65,12 @@ sleep 2;
 
 my @prereq_pm;
 
-if ( can_cc() and not $xs_ver_is_ok ) {
+if ( can_auto_xs_install() and not $xs_ver_is_ok ) {
 
     my $prompt = prompt("Do you want to install JSON::XS?(Y/n)", 'Y');
 
     if ( $prompt =~ /^[yY]/ ) {
-        @prereq_pm = ( 'JSON::XS' => $version );
+        @prereq_pm = ( 'JSON::XS' => $req_xs_ver );
     }
 
 }
@@ -113,13 +113,19 @@ if ($] < 5.006) { # I saw to http://d.hatena.ne.jp/asakusabashi/20051231/p1
 
 
 
+sub can_auto_xs_install {
+    return 0 if $] < 5.008002; # JSON::XS requires
+    return 0 unless ( $ENV{PERL5_CPAN_IS_RUNNING} or $ENV{PERL5_CPANM_IS_RUNNING} ); # not cpan/cpanm running
+    return 1 if ( can_cc() );
+}
+
+
 # copied from http://cpansearch.perl.org/src/GBARR/Scalar-List-Utils-1.23/Makefile.PL
 
 use Config;
 
 
 sub can_cc {
-    return if $] < 5.008002; # JSON::XS requires
 
     require File::Spec;
 

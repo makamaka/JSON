@@ -7,7 +7,7 @@ use base qw(Exporter);
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '2.21_001';
+    $JSON::VERSION = '2.22';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
 }
 
@@ -128,7 +128,7 @@ sub objToJson {
 # INTERFACES
 
 sub to_json ($@) {
-    if (ref $_[0] and ref($_[0]) eq 'JSON') {
+    if ( ref($_[0]) eq 'JSON' or $_[0] eq 'JSON' ) {
         Carp::croak "to_json should not be called as a method.";
     }
     my $json = new JSON;
@@ -145,7 +145,7 @@ sub to_json ($@) {
 
 
 sub from_json ($@) {
-    if (ref $_[0] and ref($_[0]) eq 'JSON') {
+    if ( ref($_[0]) eq 'JSON' or $_[0] eq 'JSON' ) {
         Carp::croak "from_json should not be called as a method.";
     }
     my $json = new JSON;
@@ -614,7 +614,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
 =head1 VERSION
 
-    2.21
+    2.22
 
 This version is compatible with JSON::XS B<2.27> and later.
 

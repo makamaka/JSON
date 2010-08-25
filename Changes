@@ -16,13 +16,11 @@ In this version, JSON was totally rewritten.
  !! Since 2.16, PP's relaxed option caused an infinite loop in some condition.
  !! Recommend to update old versions.
 
-	[JSON]
-	- check that to_json and from_json are not called as methods (CHORNY)
-
-
-2.21_001  Thu Aug 19 16:52:43 2010
+2.22  Wed Aug 25 12:46:13 2010
 	[JSON]
 	- added JSON::XS installing feature in Makefile.PL
+	    with cpan or cpanm (some points suggested by gfx)
+	- check that to_json and from_json are not called as methods (CHORNY)
 	[JSON::PP]
 	- modified for -Duse64bitall -Duselongdouble compiled perl.
 	    11_pc_expo.t too. (these are patched by H.Merijn Brand)

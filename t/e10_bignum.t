@@ -12,8 +12,11 @@ eval q| require Math::BigInt |;
 SKIP: {
     skip "Can't load Math::BigInt.", 6 if ($@);
 
-my $fix =  !Math::BigInt->VERSION       ? '+'
-          : Math::BigInt->VERSION < 1.6 ? '+'
+    my $v = Math::BigInt->VERSION;
+    $v =~ s/_.+$// if $v;
+
+my $fix =  !$v       ? '+'
+          : $v < 1.6 ? '+'
           : '';
 
 

@@ -40,6 +40,8 @@ use constant P_AS_NONBLESSED        => 17;
 
 use constant P_ALLOW_UNKNOWN        => 18;
 
+use constant OLD_PERL => $] < 5.008 ? 1 : 0;
+
 BEGIN {
     my @xs_compati_bit_properties = qw(
             latin1 ascii utf8 indent canonical space_before space_after allow_nonref shrink
@@ -366,7 +368,7 @@ sub allow_bigint {
         my $del = ($space_before ? ' ' : '') . ':' . ($space_after ? ' ' : '');
 
         for my $k ( _sort( $self, $obj ) ) {
-            utf8::decode($k) if ($] < 5.008); # key for Perl 5.6
+            if ( OLD_PERL ) { utf8::decode($k) } # key for Perl 5.6 / be optimized
             push @res, string_to_json( $self, $k )
                           .  $del
                           . ( $self->object_to_json( $obj->{$k} ) || $self->value_to_json( $obj->{$k} ) );

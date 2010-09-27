@@ -16,6 +16,11 @@ In this version, JSON was totally rewritten.
  !! Since 2.16, PP's relaxed option caused an infinite loop in some condition.
  !! Recommend to update old versions.
 
+2.24  Mon Sep 27 10:56:24 2010
+	[JSON::PP]
+	- tweaked code.
+	- optimized code in hash object encoding.
+
 2.23  Sun Sep 26 22:08:12 2010
 	[JSON::PP]
 	- modified tied object handling in encode. it made encoding speed faster.

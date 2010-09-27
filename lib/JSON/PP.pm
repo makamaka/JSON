@@ -357,7 +357,7 @@ sub allow_bigint {
     sub hash_to_json {
         my ($self, $obj) = @_;
         my ($k,$v);
-        my %res;
+        my @res;
 
         encode_error("json text or perl structure exceeds maximum nesting level (max_depth set too low?)")
                                          if (++$depth > $max_depth);
@@ -365,10 +365,9 @@ sub allow_bigint {
         my ($pre, $post) = $indent ? $self->_up_indent() : ('', '');
         my $del = ($space_before ? ' ' : '') . ':' . ($space_after ? ' ' : '');
 
-        my @result;
         for my $k ( _sort( $self, $obj ) ) {
             utf8::decode($k) if ($] < 5.008); # key for Perl 5.6
-            push @result, string_to_json( $self, $k )
+            push @res, string_to_json( $self, $k )
                           .  $del
                           . ( $self->object_to_json( $obj->{$k} ) || $self->value_to_json( $obj->{$k} ) );
         }
@@ -376,11 +375,7 @@ sub allow_bigint {
         --$depth;
         $self->_down_indent() if ($indent);
 
-        return   '{' . ( @result ? $pre : '' )
-                     . join(",$pre",  @result )
-                     . ( @result ? $post : '' )
-               . '}'
-        ;
+        return   '{' . ( @res ? $pre : '' ) . ( @res ? join( ",$pre", @res ) . $post : '' )  . '}';
     }
 
 

@@ -64,3 +64,5 @@ t/xe08_decode.t
 t/xe10_bignum.t
 t/xe11_conv_blessed_univ.t
 t/xe12_boolean.t
+t/xe19_xs_and_suportbypp.t
+t/xe20_croak_message.t

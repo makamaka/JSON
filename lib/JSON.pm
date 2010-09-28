@@ -411,6 +411,18 @@ sub support_by_pp {
     local $^W;
     no strict qw(refs);
 
+    my $JSON_XS_encode_orignal     = \&JSON::XS::encode;
+    my $JSON_XS_decode_orignal     = \&JSON::XS::decode;
+    my $JSON_XS_incr_parse_orignal = \&JSON::XS::incr_parse;
+
+    *JSON::XS::decode     = \&JSON::Backend::XS::Supportable::_decode;
+    *JSON::XS::encode     = \&JSON::Backend::XS::Supportable::_encode;
+    *JSON::XS::incr_parse = \&JSON::Backend::XS::Supportable::_incr_parse;
+
+    *{JSON::XS::_original_decode}     = $JSON_XS_decode_orignal;
+    *{JSON::XS::_original_encode}     = $JSON_XS_encode_orignal;
+    *{JSON::XS::_original_incr_parse} = $JSON_XS_incr_parse_orignal;
+
     push @JSON::Backend::XS::Supportable::ISA, 'JSON';
 
     my $pkg = 'JSON::Backend::XS::Supportable';
@@ -447,21 +459,6 @@ sub support_by_pp {
 #
 
 package JSON::Backend::XS::Supportable;
-
-{
-    my $JSON_XS_encode_orignal = \&JSON::XS::encode;
-    my $JSON_XS_decode_orignal = \&JSON::XS::decode;
-    my $JSON_XS_incr_parse_orignal = \&JSON::XS::incr_parse;
-
-    local $^W;
-    *JSON::XS::decode = \&JSON::Backend::XS::Supportable::_decode;
-    *JSON::XS::encode = \&JSON::Backend::XS::Supportable::_encode;
-    *JSON::XS::incr_parse = \&JSON::Backend::XS::Supportable::_incr_parse;
-
-    *{JSON::XS::_original_decode} = $JSON_XS_decode_orignal;
-    *{JSON::XS::_original_encode} = $JSON_XS_encode_orignal;
-    *{JSON::XS::_original_incr_parse} = $JSON_XS_incr_parse_orignal;
-}
 
 $Carp::Internal{'JSON::Backend::XS::Supportable'} = 1;
 

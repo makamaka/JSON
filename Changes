@@ -16,6 +16,10 @@ In this version, JSON was totally rewritten.
  !! Since 2.16, PP's relaxed option caused an infinite loop in some condition.
  !! Recommend to update old versions.
 
+2.26  Tue Sep 28 17:41:37 2010
+	[JSON::PP]
+	- cleaned up code and enhanced sort option efficiency in encode.
+
 2.25  Tue Sep 28 16:47:08 2010
 	[JSON]
 	- JSON::Backend::XS::Supportable always executed a needless process

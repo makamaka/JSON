@@ -1,4 +1,4 @@
-JSON version 2.25
+JSON version 2.26
 =================
 
 INSTALLATION
@@ -45,7 +45,7 @@ SYNOPSIS
      # recommend to use (en|de)code_json.
  
 VERSION
-        2.25
+        2.26
 
     This version is compatible with JSON::XS 2.27 and later.
 

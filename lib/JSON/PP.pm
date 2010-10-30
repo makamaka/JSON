@@ -5,7 +5,7 @@ package JSON::PP;
 use 5.005;
 use strict;
 use base qw(Exporter);
-use overload;
+use overload ();
 
 use Carp ();
 use B ();
@@ -409,10 +409,9 @@ sub allow_bigint {
         my $flags = $b_obj->FLAGS;
 
         return $value # as is 
-            if ( (    $flags & B::SVf_IOK or $flags & B::SVp_IOK
-                   or $flags & B::SVf_NOK or $flags & B::SVp_NOK
-                 ) and !($flags & B::SVf_POK )
-            ); # SvTYPE is IV or NV?
+            if $flags & ( B::SVp_IOK | B::SVp_NOK )
+                 and !($flags & B::SVp_POK )
+            ; # SvTYPE is IV or NV?
 
         my $type = ref($value);
 
@@ -492,11 +491,11 @@ sub allow_bigint {
 
 
     sub blessed_to_json {
-        my $b_obj = B::svref_2object($_[1]);
-        if ($b_obj->isa('B::HV')) {
+        my $reftype = reftype($_[1]) || '';
+        if ($reftype eq 'HASH') {
             return $_[0]->hash_to_json($_[1]);
         }
-        elsif ($b_obj->isa('B::AV')) {
+        elsif ($reftype eq 'ARRAY') {
             return $_[0]->array_to_json($_[1]);
         }
         else {
@@ -744,11 +743,11 @@ BEGIN {
         $s = ''; # basically UTF8 flag on
 
         if($ch eq '"' or ($singlequote and $ch eq "'")){
-            my $boundChar = $ch if ($singlequote);
+            my $boundChar = $ch;
 
             OUTER: while( defined(next_chr()) ){
 
-                if((!$singlequote and $ch eq '"') or ($singlequote and $ch eq $boundChar)){
+                if($ch eq $boundChar){
                     next_chr();
 
                     if ($utf16) {
@@ -1284,6 +1283,7 @@ BEGIN {
     eval 'require Scalar::Util';
     unless($@){
         *JSON::PP::blessed = \&Scalar::Util::blessed;
+        *JSON::PP::reftype = \&Scalar::Util::reftype;
     }
     else{ # This code is from Sclar::Util.
         # warn $@;
@@ -1291,6 +1291,28 @@ BEGIN {
         *JSON::PP::blessed = sub {
             local($@, $SIG{__DIE__}, $SIG{__WARN__});
             ref($_[0]) ? eval { $_[0]->a_sub_not_likely_to_be_here } : undef;
+        };
+        my %tmap = qw(
+            B::NULL   SCALAR
+
+            B::HV     HASH
+            B::AV     ARRAY
+            B::CV     CODE
+            B::IO     IO
+            B::GV     GLOB
+            B::REGEXP REGEXP
+        );
+        *JSON::PP::reftype = sub {
+            my $r = shift;
+
+            return undef unless length(ref($r));
+
+            my $t = ref(B::svref_2object($r));
+
+            return
+                exists $tmap{$t} ? $tmap{$t}
+              : length(ref($$r)) ? 'REF'
+              :                    'SCALAR';
         };
     }
 }

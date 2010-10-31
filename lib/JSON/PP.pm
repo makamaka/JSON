@@ -409,9 +409,7 @@ sub allow_bigint {
         my $flags = $b_obj->FLAGS;
 
         return $value # as is 
-            if $flags & ( B::SVp_IOK | B::SVp_NOK )
-                 and !($flags & B::SVp_POK )
-            ; # SvTYPE is IV or NV?
+            if $flags & ( B::SVp_IOK | B::SVp_NOK ) and !( $flags & B::SVp_POK ); # SvTYPE is IV or NV?
 
         my $type = ref($value);
 
@@ -1294,7 +1292,6 @@ BEGIN {
         };
         my %tmap = qw(
             B::NULL   SCALAR
-
             B::HV     HASH
             B::AV     ARRAY
             B::CV     CODE

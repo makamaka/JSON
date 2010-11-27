@@ -1,4 +1,15 @@
-JSON version 2.27
+JSON version 2.50
+=================
+
+JSON::PP was inculded in JSON distribution (CPAN module).
+It comes to be a perl core module in Perl 5.14.
+And JSON::PP well be split away it.
+
+This developer-versoin is for the preparation.
+
+    * JSON distribution will inculde yet another JSON::PP modules.
+      They are JSNO::backportPP. So JSON.pm should work as it did at all!
+
 =================
 
 INSTALLATION
@@ -45,7 +56,7 @@ SYNOPSIS
      # recommend to use (en|de)code_json.
  
 VERSION
-        2.26
+        2.50
 
     This version is compatible with JSON::XS 2.27 and later.
 

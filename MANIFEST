@@ -4,9 +4,8 @@ eg/bench_encode.pl
 lib/JSON.pm
 lib/JSON/backportPP.pm
 lib/JSON/backportPP/Boolean.pm
-lib/JSON/backportPP5005.pm
-lib/JSON/backportPP56.pm
-lib/JSON/backportPP58.pm
+lib/JSON/backportPP/Compat5005.pm
+lib/JSON/backportPP/Compat5006.pm
 Makefile.PL
 MANIFEST
 META.yml			Module meta-data (added by MakeMaker)

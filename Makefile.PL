@@ -61,8 +61,6 @@ $message
 
 EOF
 
-sleep 2;
-
 my @prereq_pm;
 
 if ( can_auto_xs_install() and not $xs_ver_is_ok ) {

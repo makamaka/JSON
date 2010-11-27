@@ -2,11 +2,11 @@ Changes
 eg/bench_decode.pl
 eg/bench_encode.pl
 lib/JSON.pm
-lib/JSON/PP.pm
-lib/JSON/PP/Boolean.pm
-lib/JSON/PP5005.pm
-lib/JSON/PP56.pm
-lib/JSON/PP58.pm
+lib/JSON/backportPP.pm
+lib/JSON/backportPP/Boolean.pm
+lib/JSON/backportPP5005.pm
+lib/JSON/backportPP56.pm
+lib/JSON/backportPP58.pm
 Makefile.PL
 MANIFEST
 META.yml			Module meta-data (added by MakeMaker)

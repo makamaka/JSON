@@ -55,14 +55,12 @@ BEGIN {
 
     # Perl version check, Unicode handling is enable?
     # Helper module sets @JSON::PP::_properties.
-
-    my $helper = $] >= 5.008 ? 'JSON::backportPP58'
-               : $] >= 5.006 ? 'JSON::backportPP56'
-               :               'JSON::backportPP5005'
-               ;
-
-    eval qq| require $helper |;
-    if ($@) { Carp::croak $@; }
+     if ($] < 5.008 ) {
+        my $helper;
+        $helper = $] >= 5.006 ? 'JSON::backportPP::Compat5006' : 'JSON::backportPP::Compat5005';
+        eval qq| require $helper |;
+        if ($@) { Carp::croak $@; }
+    }
 
     for my $name (@xs_compati_bit_properties, @pp_bit_properties) {
         my $flag_name = 'P_' . uc($name);
@@ -1271,8 +1269,64 @@ sub _decode_unicode {
 }
 
 
+#
+# Setup for various Perl versions (the code from JSON::PP58)
+#
 
+BEGIN {
 
+    unless ( defined &utf8::is_utf8 ) {
+       require Encode;
+       *utf8::is_utf8 = *Encode::is_utf8;
+    }
+
+    if ( $] >= 5.008 ) {
+        *JSON::PP::JSON_PP_encode_ascii      = \&_encode_ascii;
+        *JSON::PP::JSON_PP_encode_latin1     = \&_encode_latin1;
+        *JSON::PP::JSON_PP_decode_surrogates = \&_decode_surrogates;
+        *JSON::PP::JSON_PP_decode_unicode    = \&_decode_unicode;
+    }
+
+    if ($] >= 5.008 and $] < 5.008003) { # join() in 5.8.0 - 5.8.2 is broken.
+        package JSON::PP;
+        require subs;
+        subs->import('join');
+        eval q|
+            sub join {
+                return '' if (@_ < 2);
+                my $j   = shift;
+                my $str = shift;
+                for (@_) { $str .= $j . $_; }
+                return $str;
+            }
+        |;
+    }
+
+    sub JSON::PP::incr_parse {
+        local $Carp::CarpLevel = 1;
+        ( $_[0]->{_incr_parser} ||= JSON::PP::IncrParser->new )->incr_parse( @_ );
+    }
+
+    sub JSON::PP::incr_skip {
+        ( $_[0]->{_incr_parser} ||= JSON::PP::IncrParser->new )->incr_skip;
+    }
+
+    sub JSON::PP::incr_reset {
+        ( $_[0]->{_incr_parser} ||= JSON::PP::IncrParser->new )->incr_reset;
+    }
+
+    eval q{
+        sub JSON::PP::incr_text : lvalue {
+            $_[0]->{_incr_parser} ||= JSON::PP::IncrParser->new;
+
+            if ( $_[0]->{_incr_parser}->{incr_parsing} ) {
+                Carp::croak("incr_text can not be called when the incremental parser already started parsing");
+            }
+            $_[0]->{_incr_parser}->{incr_text};
+        }
+    } if ( $] >= 5.006 );
+
+} # Setup for various Perl versions (the code from JSON::PP58)
 
 ###############################
 # Utilities

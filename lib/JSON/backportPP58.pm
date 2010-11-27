@@ -1,4 +1,5 @@
-package JSON::PP58;
+package # This is JSON::backportPP
+    JSON::PP58;
 
 use 5.008;
 use strict;

@@ -1,4 +1,5 @@
-package JSON::PP;
+package # This is JSON::backportPP
+    JSON::PP;
 
 # JSON-2.0
 
@@ -55,9 +56,9 @@ BEGIN {
     # Perl version check, Unicode handling is enable?
     # Helper module sets @JSON::PP::_properties.
 
-    my $helper = $] >= 5.008 ? 'JSON::PP58'
-               : $] >= 5.006 ? 'JSON::PP56'
-               :               'JSON::PP5005'
+    my $helper = $] >= 5.008 ? 'JSON::backportPP58'
+               : $] >= 5.006 ? 'JSON::backportPP56'
+               :               'JSON::backportPP5005'
                ;
 
     eval qq| require $helper |;
@@ -1317,8 +1318,8 @@ BEGIN {
 
 # shamely copied and modified from JSON::XS code.
 
-$JSON::PP::true  = do { bless \(my $dummy = 1), "JSON::PP::Boolean" };
-$JSON::PP::false = do { bless \(my $dummy = 0), "JSON::PP::Boolean" };
+$JSON::PP::true  = do { bless \(my $dummy = 1), "JSON::backportPP::Boolean" };
+$JSON::PP::false = do { bless \(my $dummy = 0), "JSON::backportPP::Boolean" };
 
 sub is_bool { defined $_[0] and UNIVERSAL::isa($_[0], "JSON::PP::Boolean"); }
 
@@ -1328,9 +1329,9 @@ sub null  { undef; }
 
 ###############################
 
-package JSON::PP::Boolean;
+package JSON::backportPP::Boolean;
 
-
+@JSON::backportPP::Boolean::ISA = ('JSON::PP::Boolean');
 use overload (
    "0+"     => sub { ${$_[0]} },
    "++"     => sub { $_[0] = ${$_[0]} + 1 },

@@ -10,7 +10,7 @@ use strict;
 local $^W = undef;
 use Test::More;
 BEGIN { plan tests => 39 };
-BEGIN { $ENV{PERL_JSON_BACKEND} = 0; }
+BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::backportPP"; }
 
 use JSON;
 

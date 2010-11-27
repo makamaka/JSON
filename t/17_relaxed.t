@@ -5,7 +5,7 @@ use strict;
 
 BEGIN { plan tests => 8 };
 
-BEGIN { $ENV{PERL_JSON_BACKEND} = 0; }
+BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::backportPP"; }
 
 BEGIN {
     use lib qw(t);

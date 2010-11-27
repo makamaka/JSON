@@ -3,7 +3,7 @@ use strict;
 use Test::More;
 BEGIN { plan tests => 6 };
 
-BEGIN { $ENV{PERL_JSON_BACKEND} = 0; }
+BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::backportPP"; }
 
 use JSON -support_by_pp;
 

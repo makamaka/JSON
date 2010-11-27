@@ -1,7 +1,7 @@
 # copied over from JSON::XS and modified to use JSON
 
 BEGIN { $| = 1; print "1..4\n"; }
-BEGIN { $ENV{PERL_JSON_BACKEND} = 0; }
+BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::backportPP"; }
 
 use JSON;
 

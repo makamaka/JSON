@@ -278,7 +278,6 @@ sub _load_pp {
 
     # if called after install module, overload is disable.... why?
     JSON::Boolean::_overrride_overload($Module_XS);
-#    JSON::Boolean::_overrride_overload($Module_PP);
     JSON::Boolean::_overrride_overload($backend);
 
     if ( $_USSING_bpPP ) {
@@ -638,10 +637,21 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
 =head1 VERSION
 
-    2.27
+    2.50
 
 This version is compatible with JSON::XS B<2.27> and later.
 
+
+=head1 PLAN
+
+JSON::PP was inculded in JSON distribution (CPAN module).
+It comes to be a perl core module in Perl 5.14.
+And JSON::PP well be split away it.
+
+This developer-versoin is for the preparation.
+
+    * JSON distribution will inculde yet another JSON::PP modules.
+      They are JSNO::backportPP. So JSON.pm should work as it did at all!
 
 =head1 DESCRIPTION
 

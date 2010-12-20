@@ -18,13 +18,15 @@ JSON::PP was inculded in JSON distribution (CPAN module).
 It comes to be a perl core module in Perl 5.14.
 And JSON::PP well be split away it.
 
-This developer-versoin is for the preparation.
-
-    * JSON distribution will inculde yet another JSON::PP modules.
-      They are JSNO::backportPP. So JSON.pm should work as it did at all!
+JSON distribution will inculde yet another JSON::PP modules.
+They are JSNO::backportPP. So JSON.pm should work as it did at all!
 --------------------------------------------------------------------------
 
-2.50  Sat Nov 27 22:03:17 2010
+2.50  Mon Dec 20 14:56:42 2010
+	[JSON]
+	- stable release
+
+2.49_01  Sat Nov 27 22:03:17 2010
 	[JSON]
 	- JSON::PP is split away JSON distributino for perl 5.14
 	- JSON::backportPP is included in instead.

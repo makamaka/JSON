@@ -1601,6 +1601,10 @@ JSON::PP - JSON::XS compatible pure-Perl module.
  
  use JSON;
 
+=head1 VERSION
+
+ JSON::PP version 2.27008
+
 =head1 DESCRIPTION
 
 This module is L<JSON::XS> compatible pure Perl module.

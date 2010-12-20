@@ -7,7 +7,7 @@ use base qw(Exporter);
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '2.49_01';
+    $JSON::VERSION = '2.50';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
     $JSON::DEBUG   = $ENV{ PERL_JSON_DEBUG } if exists $ENV{ PERL_JSON_DEBUG };
 }
@@ -15,7 +15,7 @@ BEGIN {
 my $Module_XS  = 'JSON::XS';
 my $Module_PP  = 'JSON::PP';
 my $Module_bp  = 'JSON::backportPP'; # included in JSON distribution
-my $PP_Version = '2.27008';
+my $PP_Version = '2.27101';
 my $XS_Version = '2.27';
 
 
@@ -642,16 +642,14 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
 This version is compatible with JSON::XS B<2.27> and later.
 
 
-=head1 PLAN
+=head1 NOTE
 
-JSON::PP was inculded in JSON distribution (CPAN module).
+JSON::PP was inculded in C<JSON> distribution.
 It comes to be a perl core module in Perl 5.14.
-And JSON::PP well be split away it.
+And L<JSON::PP> will be split away it.
 
-This developer-versoin is for the preparation.
-
-    * JSON distribution will inculde yet another JSON::PP modules.
-      They are JSNO::backportPP. So JSON.pm should work as it did at all!
+C<JSON> distribution will inculde yet another JSON::PP modules.
+They are JSNO::backportPP and so on. JSON.pm should work as it did at all.
 
 =head1 DESCRIPTION
 
@@ -1960,6 +1958,12 @@ otherwise use JSON::PP.
 =item PERL_JSON_BACKEND == 2 or PERL_JSON_BACKEND = 'JSON::XS'
 
 Always use compiled JSON::XS, die if it isn't properly compiled & installed.
+
+=item PERL_JSON_BACKEND = 'JSON::backportPP'
+
+Always use JSON::backportPP.
+JSON::backportPP is JSON::PP back port module.
+C<JSON> includs JSON::backportPP instead of JSON::PP.
 
 =back
 

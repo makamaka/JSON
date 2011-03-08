@@ -1,4 +1,4 @@
-JSON version 2.50
+JSON version 2.51
 =================
 
 JSON::PP was inculded in JSON distribution (CPAN module).
@@ -54,11 +54,18 @@ SYNOPSIS
      # Between (en|de)code_json and (to|from)_json, if you want to write
      # a code which communicates to an outer world (encoded in UTF-8),
      # recommend to use (en|de)code_json.
- 
+
 VERSION
-        2.50
+        2.51
 
     This version is compatible with JSON::XS 2.27 and later.
+
+NOTE
+    JSON::PP was inculded in "JSON" distribution. It comes to be a perl core
+    module in Perl 5.14. And JSON::PP will be split away it.
+
+    "JSON" distribution will inculde yet another JSON::PP modules. They are
+    JSNO::backportPP and so on. JSON.pm should work as it did at all.
 
 DESCRIPTION
      ************************** CAUTION ********************************
@@ -94,7 +101,8 @@ DESCRIPTION
     Format type : JSON
 
   FEATURES
-    * correct unicode handling
+    *   correct unicode handling
+
         This module (i.e. backend modules) knows how to handle Unicode,
         documents how and when it does so, and even documents what "correct"
         means.
@@ -114,7 +122,8 @@ DESCRIPTION
         See also to "A FEW NOTES ON UNICODE AND PERL" in JSON::XS and
         "ENCODING/CODESET_FLAG_NOTES" in JSON::XS.
 
-    * round-trip integrity
+    *   round-trip integrity
+
         When you serialise a perl data structure using only data types
         supported by JSON and Perl, the deserialised data structure is
         identical on the Perl level. (e.g. the string "2.0" doesn't suddenly
@@ -122,14 +131,16 @@ DESCRIPTION
         exceptions to this, read the "MAPPING" section below to learn about
         those.
 
-    * strict checking of JSON correctness
+    *   strict checking of JSON correctness
+
         There is no guessing, no generating of illegal JSON texts by
         default, and only JSON is accepted as input by default (the latter
         is a security feature).
 
         See to "FEATURES" in JSON::XS and "FEATURES" in JSON::PP.
 
-    * fast
+    *   fast
+
         This module returns a JSON::XS object itself if available. Compared
         to other JSON modules and other serialisers such as Storable,
         JSON::XS usually compares favourably in terms of speed, too.
@@ -137,11 +148,13 @@ DESCRIPTION
         If not available, "JSON" returns a JSON::PP object instead of
         JSON::XS and it is very slow as pure-Perl.
 
-    * simple to use
+    *   simple to use
+
         This module has both a simple functional interface as well as an
         object oriented interface interface.
 
-    * reasonably versatile output formats
+    *   reasonably versatile output formats
+
         You can choose between the most compact guaranteed-single-line
         format possible (nice for simple line-based protocols), a pure-ASCII
         format (for when your transport is not 8-bit clean, still supports
@@ -189,7 +202,7 @@ FUNCTIONAL INTERFACE
 
     So,
 
-       $json_text = encode_json($perl_scalar, {utf8 => 1, pretty => 1})
+       $json_text = to_json($perl_scalar, {utf8 => 1, pretty => 1})
 
     equivalent to:
 
@@ -496,7 +509,8 @@ COMMON OBJECT-ORIENTED INTERFACE
 
     Currently accepted extensions are:
 
-    * list items can have an end-comma
+    *   list items can have an end-comma
+
         JSON *separates* array elements and key-value pairs with commas.
         This can be annoying if you write JSON texts manually and want to be
         able to quickly append elements, so this extension accepts comma at
@@ -511,7 +525,8 @@ COMMON OBJECT-ORIENTED INTERFACE
               "k2": "v2", <- this comma not normally allowed
            }
 
-    * shell-style '#'-comments
+    *   shell-style '#'-comments
+
         Whenever JSON allows whitespace, shell-style comments are
         additionally allowed. They are terminated by the first
         carriage-return or line-feed character, after which more white-space
@@ -1283,6 +1298,10 @@ BACKEND MODULE DECISION
         Always use compiled JSON::XS, die if it isn't properly compiled &
         installed.
 
+    PERL_JSON_BACKEND = 'JSON::backportPP'
+        Always use JSON::backportPP. JSON::backportPP is JSON::PP back port
+        module. "JSON" includs JSON::backportPP instead of JSON::PP.
+
     These ideas come from DBI::PurePerl mechanism.
 
     example:
@@ -1408,7 +1427,7 @@ INCOMPATIBLE CHANGES TO OLD VERSION
            $json = JSON->new->pretty;
 
     $JSON::Pretty, $JSON::Indent, $JSON::Delimiter
-        If "indent" is enable, that menas $JSON::Pretty flag set. And
+        If "indent" is enable, that means $JSON::Pretty flag set. And
         $JSON::Delimiter was substituted by "space_before" and
         "space_after". In conclusion:
 
@@ -1530,3 +1549,4 @@ COPYRIGHT AND LICENSE
 
     This library is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.
+

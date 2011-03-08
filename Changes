@@ -22,6 +22,10 @@ JSON distribution will inculde yet another JSON::PP modules.
 They are JSNO::backportPP. So JSON.pm should work as it did at all!
 --------------------------------------------------------------------------
 
+2.51  Tue Mar  8 16:03:34 2011
+	- import JSON::PP 2.27105 as BackportPP
+	- fixed documentations (pointed by Britton Kerin and rt#64738)
+
 2.50  Mon Dec 20 14:56:42 2010
 	[JSON]
 	- stable release

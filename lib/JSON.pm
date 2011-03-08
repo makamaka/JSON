@@ -7,7 +7,7 @@ use base qw(Exporter);
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '2.50';
+    $JSON::VERSION = '2.51';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
     $JSON::DEBUG   = $ENV{ PERL_JSON_DEBUG } if exists $ENV{ PERL_JSON_DEBUG };
 }
@@ -15,7 +15,7 @@ BEGIN {
 my $Module_XS  = 'JSON::XS';
 my $Module_PP  = 'JSON::PP';
 my $Module_bp  = 'JSON::backportPP'; # included in JSON distribution
-my $PP_Version = '2.27101';
+my $PP_Version = '2.27105';
 my $XS_Version = '2.27';
 
 
@@ -637,7 +637,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
 =head1 VERSION
 
-    2.50
+    2.51
 
 This version is compatible with JSON::XS B<2.27> and later.
 
@@ -791,7 +791,7 @@ Takes a hash reference as the second.
 
 So,
 
-   $json_text = encode_json($perl_scalar, {utf8 => 1, pretty => 1})
+   $json_text = to_json($perl_scalar, {utf8 => 1, pretty => 1})
 
 equivalent to:
 
@@ -2114,7 +2114,7 @@ You can set parameters instead;
 
 =item $JSON::Pretty, $JSON::Indent, $JSON::Delimiter
 
-If C<indent> is enable, that menas C<$JSON::Pretty> flag set. And
+If C<indent> is enable, that means C<$JSON::Pretty> flag set. And
 C<$JSON::Delimiter> was substituted by C<space_before> and C<space_after>.
 In conclusion:
 

@@ -1396,7 +1396,8 @@ use overload (
 
 ###############################
 
-package JSON::PP::IncrParser;
+package
+    JSON::PP::IncrParser;
 
 use strict;
 

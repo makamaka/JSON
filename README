@@ -56,7 +56,7 @@ SYNOPSIS
      # recommend to use (en|de)code_json.
 
 VERSION
-        2.51
+        2.52
 
     This version is compatible with JSON::XS 2.27 and later.
 
@@ -344,7 +344,7 @@ HOW DO I DECODE A DATA FROM OUTER AND ENCODE TO OUTER
 
 COMMON OBJECT-ORIENTED INTERFACE
   new
-        $json = new JSON
+        $json = JSON->new
 
     Returns a new "JSON" object inherited from either JSON::XS or JSON::PP
     that can be used to de/encode JSON strings.
@@ -1545,7 +1545,7 @@ AUTHOR
     The relese of this new version owes to the courtesy of Marc Lehmann.
 
 COPYRIGHT AND LICENSE
-    Copyright 2005-2010 by Makamaka Hannyaharamitu
+    Copyright 2005-2011 by Makamaka Hannyaharamitu
 
     This library is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.

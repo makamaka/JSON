@@ -50,6 +50,8 @@ t/e12_upgrade.t
 t/e13_overloaded_eq.t
 t/e14_decode_prefix.t
 t/e15_tie_ixhash.t
+t/e16_incr_parse_fixed.t
+t/e90_misc.t
 t/x00_load.t
 t/x02_error.t
 t/x12_blessed.t

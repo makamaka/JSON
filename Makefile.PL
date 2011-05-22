@@ -25,6 +25,7 @@ my $req_xs_ver  = JSON->require_xs_version;
 my $has_xs      = 0;
 my $xs_ver_is_ok;
 my $message;
+my $pp_only = $ENV{ PERL_ONLY } || $ENV{ NO_XS };
 
 eval q| require JSON::XS |;
 
@@ -63,7 +64,7 @@ EOF
 
 my @prereq_pm;
 
-if ( can_auto_xs_install() and not $xs_ver_is_ok ) {
+if ( not $pp_only and can_auto_xs_install() and not $xs_ver_is_ok ) {
 
     my $prompt = prompt("Do you want to install JSON::XS?(Y/n)", 'Y');
 

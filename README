@@ -1,4 +1,4 @@
-JSON version 2.52
+JSON version 2.53
 =================
 
 JSON::PP was inculded in JSON distribution (CPAN module).
@@ -56,7 +56,7 @@ SYNOPSIS
      # recommend to use (en|de)code_json.
 
 VERSION
-        2.52
+        2.53
 
     This version is compatible with JSON::XS 2.27 and later.
 

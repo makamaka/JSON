@@ -22,6 +22,10 @@ JSON distribution will inculde yet another JSON::PP modules.
 They are JSNO::backportPP. So JSON.pm should work as it did at all!
 --------------------------------------------------------------------------
 
+2.53  Sun May 22 16:11:05 2011
+	- made Makefile.PL skipping a installing XS question
+            when set $ENV{PERL_ONLY} or $ENV{NO_XS} (rt#66820)
+
 2.52  Sun May 22 15:05:49 2011
 	- fixed to_json (pointed and patched by mmcleric in rt#68359)
 	- backport JSON::PP 2.27200

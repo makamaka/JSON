@@ -142,7 +142,7 @@ sub to_json ($@) {
     ) {
         Carp::croak "to_json should not be called as a method.";
     }
-    my $json = new JSON;
+    my $json = JSON->new;
 
     if (@_ == 2 and ref $_[1] eq 'HASH') {
         my $opt  = $_[1];
@@ -159,7 +159,7 @@ sub from_json ($@) {
     if ( ref($_[0]) eq 'JSON' or $_[0] eq 'JSON' ) {
         Carp::croak "from_json should not be called as a method.";
     }
-    my $json = new JSON;
+    my $json = JSON->new;
 
     if (@_ == 2 and ref $_[1] eq 'HASH') {
         my $opt  = $_[1];
@@ -456,7 +456,7 @@ sub support_by_pp {
     my $pkg = 'JSON::Backend::XS::Supportable';
 
     *{JSON::new} = sub {
-        my $proto = new JSON::XS; $$proto = 0;
+        my $proto = JSON::XS->new; $$proto = 0;
         bless  $proto, $pkg;
     };
 
@@ -518,7 +518,7 @@ sub _set_for_pp {
     JSON::_load_pp( $_INSTALL_ONLY );
 
     my $type  = shift;
-    my $pp    = new JSON::PP;
+    my $pp    = JSON::PP->new;
     my $prop = $_[0]->property;
 
     for my $name (keys %$prop) {
@@ -938,7 +938,7 @@ See to L<Encode>, L<perluniintro>.
 
 =head2 new
 
-    $json = new JSON
+    $json = JSON->new
 
 Returns a new C<JSON> object inherited from either JSON::XS or JSON::PP
 that can be used to de/encode JSON strings.
@@ -1599,7 +1599,7 @@ are available even with JSON::XS. See to L<USE PP FEATURES EVEN THOUGH XS BACKEN
    
    use JSON -support_by_pp;
    
-   my $json = new JSON;
+   my $json = JSON->new;
    $json->allow_nonref->escape_slash->encode("/");
 
    # functional interfaces too.
@@ -1991,7 +1991,7 @@ This feature is achieved by using JSON::PP in C<de/encode>.
 
    BEGIN { $ENV{PERL_JSON_BACKEND} = 2 } # with JSON::XS
    use JSON -support_by_pp;
-   my $json = new JSON;
+   my $json = JSON->new;
    $json->allow_nonref->escape_slash->encode("/");
 
 At this time, the returned object is a C<JSON::Backend::XS::Supportable>

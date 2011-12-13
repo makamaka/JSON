@@ -647,12 +647,12 @@ This version is compatible with JSON::XS B<2.27> and later.
 
 =head1 NOTE
 
-JSON::PP was inculded in C<JSON> distribution.
+JSON::PP was included in C<JSON> distribution.
 It comes to be a perl core module in Perl 5.14.
 And L<JSON::PP> will be split away it.
 
-C<JSON> distribution will inculde yet another JSON::PP modules.
-They are JSNO::backportPP and so on. JSON.pm should work as it did at all.
+C<JSON> distribution will include yet another JSON::PP modules.
+They are JSON::backportPP and so on. JSON.pm should work as it did at all.
 
 =head1 DESCRIPTION
 
@@ -699,7 +699,7 @@ how and when it does so, and even documents what "correct" means.
 Even though there are limitations, this feature is available since Perl version 5.6.
 
 JSON::XS requires Perl 5.8.2 (but works correctly in 5.8.8 or later), so in older versions
-C<JSON> sholud call JSON::PP as the backend which can be used since Perl 5.005.
+C<JSON> should call JSON::PP as the backend which can be used since Perl 5.005.
 
 With Perl 5.8.x JSON::PP works, but from 5.8.0 to 5.8.2, because of a Perl side problem,
 JSON::PP works slower in the versions. And in 5.005, the Unicode handling is not available.
@@ -856,7 +856,7 @@ Perl.
 
 =head1 HOW DO I DECODE A DATA FROM OUTER AND ENCODE TO OUTER
 
-This section supposes that your perl vresion is 5.8 or later.
+This section supposes that your perl version is 5.8 or later.
 
 If you know a JSON text from an outer world - a network, a file content, and so on,
 is encoded in UTF-8, you should use C<decode_json> or C<JSON> module object
@@ -1041,10 +1041,10 @@ space length.
 
 If C<$enable> is true (or missing), then the C<encode> method will use a multiline
 format as output, putting every array member or object/hash key-value pair
-into its own line, identing them properly.
+into its own line, identifying them properly.
 
 If C<$enable> is false, no newlines or indenting will be produced, and the
-resulting JSON text is guarenteed not to contain any C<newlines>.
+resulting JSON text is guaranteed not to contain any C<newlines>.
 
 This setting has no effect when decoding JSON texts.
 
@@ -1395,7 +1395,7 @@ crashing. (JSON::XS)
 
 With JSON::PP as the backend, when a large value (100 or more) was set and
 it de/encodes a deep nested object/text, it may raise a warning
-'Deep recursion on subroutin' at the perl runtime phase.
+'Deep recursion on subroutine' at the perl runtime phase.
 
 See L<JSON::XS/SECURITY CONSIDERATIONS> for more info on why this is useful.
 
@@ -1474,7 +1474,7 @@ Sets the property with a given boolean value.
 
     $json = $json->property($property_name => $boolean);
 
-With no argumnt, it returns all the above properties as a hash reference.
+With no argument, it returns all the above properties as a hash reference.
 
     $flag_hashref = $json->property();
 
@@ -1492,7 +1492,7 @@ to see if a full JSON object is available, but is much more efficient
 The backend module will only attempt to parse the JSON text once it is sure it
 has enough text to get a decisive result, using a very simple but
 truly incremental parser. This means that it sometimes won't stop as
-early as the full parser, for example, it doesn't detect parenthese
+early as the full parser, for example, it doesn't detect parenthesis
 mismatches. The only thing it guarantees is that it starts decoding as
 soon as a syntactically valid JSON text has been seen. This means you need
 to set resource limits (e.g. C<max_size>) to ensure the parser will stop
@@ -1523,7 +1523,7 @@ If the method is called in scalar context, then it will try to extract
 exactly I<one> JSON object. If that is successful, it will return this
 object, otherwise it will return C<undef>. If there is a parse error,
 this method will croak just as C<decode> would do (one can then use
-C<incr_skip> to skip the errornous part). This is the most common way of
+C<incr_skip> to skip the erroneous part). This is the most common way of
 using the method.
 
 And finally, in list context, it will try to extract as many objects
@@ -1579,7 +1579,7 @@ unchanged, to skip the text parsed so far and to reset the parse state.
 This completely resets the incremental parser, that is, after this call,
 it will be as if the parser had never parsed anything.
 
-This is useful if you want ot repeatedly parse JSON objects and want to
+This is useful if you want to repeatedly parse JSON objects and want to
 ignore any trailing data, which means you have to reset the parser after
 each successful decode.
 
@@ -1592,7 +1592,7 @@ The below methods are JSON::PP own methods, so when C<JSON> works
 with JSON::PP (i.e. the created object is a JSON::PP object), available.
 See to L<JSON::PP/JSON::PP OWN METHODS> in detail.
 
-If you use C<JSON> with additonal C<-support_by_pp>, some methods
+If you use C<JSON> with additional C<-support_by_pp>, some methods
 are available even with JSON::XS. See to L<USE PP FEATURES EVEN THOUGH XS BACKEND>.
 
    BEING { $ENV{PERL_JSON_BACKEND} = 'JSON::XS' }
@@ -1647,7 +1647,7 @@ If C<$enable> is true (or missing), then C<decode> will convert
 the big integer Perl cannot handle as integer into a L<Math::BigInt>
 object and convert a floating number (any) into a L<Math::BigFloat>.
 
-On the contary, C<encode> converts C<Math::BigInt> objects and C<Math::BigFloat>
+On the contrary, C<encode> converts C<Math::BigInt> objects and C<Math::BigFloat>
 objects into JSON numbers with C<allow_blessed> enable.
 
    $json->allow_nonref->allow_blessed->allow_bignum;
@@ -1655,7 +1655,7 @@ objects into JSON numbers with C<allow_blessed> enable.
    print $json->encode($bigfloat);
    # => 2.000000000000000000000000001
 
-See to L<MAPPING> aboout the conversion of JSON number.
+See to L<MAPPING> about the conversion of JSON number.
 
 =head2 loose
 
@@ -1750,7 +1750,7 @@ it as an integer value. If that fails, it will try to represent it as
 a numeric (floating point) value if that is possible without loss of
 precision. Otherwise it will preserve the number as a string value (in
 which case you lose roundtripping ability, as the JSON number will be
-re-encoded toa JSON string).
+re-encoded to a JSON string).
 
 Numbers containing a fractional or exponential part will always be
 represented as numeric (floating point) values, possibly at a loss of
@@ -1760,7 +1760,7 @@ the JSON number will still be re-encoded as a JSON number).
 Note that precision is not accuracy - binary floating point values cannot
 represent most decimal fractions exactly, and when converting from and to
 floating point, C<JSON> only guarantees precision up to but not including
-the leats significant bit.
+the least significant bit.
 
 If the backend is JSON::PP and C<allow_bignum> is enable, the big integers 
 and the numeric can be optionally converted into L<Math::BigInt> and
@@ -1770,7 +1770,7 @@ L<Math::BigFloat> objects.
 
 These JSON atoms become C<JSON::true> and C<JSON::false>,
 respectively. They are overloaded to act almost exactly like the numbers
-C<1> and C<0>. You can check wether a scalar is a JSON boolean by using
+C<1> and C<0>. You can check whether a scalar is a JSON boolean by using
 the C<JSON::is_bool> function.
 
 If C<JSON::true> and C<JSON::false> are used as strings or compared as strings,
@@ -1812,7 +1812,7 @@ in hash keys (or JSON objects), they will usually be encoded in a
 pseudo-random order that can change between runs of the same program but
 stays generally the same within a single run of a program. C<JSON>
 optionally sort the hash keys (determined by the I<canonical> flag), so
-the same datastructure will serialise to the same JSON text (given same
+the same data structure will serialise to the same JSON text (given same
 settings and version of JSON::XS), but this incurs a runtime overhead
 and is only rarely useful, e.g. when you want to compare some JSON text
 against another for equality.
@@ -1923,7 +1923,7 @@ When you use C<JSON>, C<JSON> tries to C<use> JSON::XS. If this call failed, it 
 C<uses> JSON::PP. The required JSON::XS version is I<2.2> or later.
 
 The C<JSON> constructor method returns an object inherited from the backend module,
-and JSON::XS object is a blessed scaler reference while JSON::PP is a blessed hash
+and JSON::XS object is a blessed scalar reference while JSON::PP is a blessed hash
 reference.
 
 So, your program should not depend on the backend module, especially
@@ -1945,7 +1945,7 @@ To check the backend module, there are some methods - C<backend>, C<is_pp> and C
   $json->is_pp; # 0 or 1
 
 
-If you set an enviornment variable C<PERL_JSON_BACKEND>, The calling action will be changed.
+If you set an environment variable C<PERL_JSON_BACKEND>, the calling action will be changed.
 
 =over
 
@@ -1966,7 +1966,7 @@ Always use compiled JSON::XS, die if it isn't properly compiled & installed.
 
 Always use JSON::backportPP.
 JSON::backportPP is JSON::PP back port module.
-C<JSON> includs JSON::backportPP instead of JSON::PP.
+C<JSON> includes JSON::backportPP instead of JSON::PP.
 
 =back
 
@@ -1982,11 +1982,11 @@ In future, it may be able to specify another module.
 =head1 USE PP FEATURES EVEN THOUGH XS BACKEND
 
 Many methods are available with either JSON::XS or JSON::PP and
-when the backend module is JSON::XS, if any JSON::PP specific (i.e. JSON::XS unspported)
+when the backend module is JSON::XS, if any JSON::PP specific (i.e. JSON::XS unsupported)
 method is called, it will C<warn> and be noop.
 
 But If you C<use> C<JSON> passing the optional string C<-support_by_pp>,
-it makes a part of those unupported methods available.
+it makes a part of those unsupported methods available.
 This feature is achieved by using JSON::PP in C<de/encode>.
 
    BEGIN { $ENV{PERL_JSON_BACKEND} = 2 } # with JSON::XS
@@ -2211,7 +2211,7 @@ Disable. See to L<MAPPING>.
 =item $JSON::SelfConvert
 
 This option was deleted.
-Instead of it, if a givien blessed object has the C<TO_JSON> method,
+Instead of it, if a given blessed object has the C<TO_JSON> method,
 C<TO_JSON> will be executed with C<convert_blessed>.
 
   $json->convert_blessed->encode($bleesed_hashref_or_arrayref)
@@ -2253,7 +2253,7 @@ Makamaka Hannyaharamitu, E<lt>makamaka[at]cpan.orgE<gt>
 
 JSON::XS was written by  Marc Lehmann <schmorp[at]schmorp.de>
 
-The relese of this new version owes to the courtesy of Marc Lehmann.
+The release of this new version owes to the courtesy of Marc Lehmann.
 
 
 =head1 COPYRIGHT AND LICENSE

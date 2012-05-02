@@ -647,12 +647,20 @@ This version is compatible with JSON::XS B<2.27> and later.
 
 =head1 NOTE
 
-JSON::PP was inculded in C<JSON> distribution.
-It comes to be a perl core module in Perl 5.14.
-And L<JSON::PP> will be split away it.
+JSON::PP was earlier included in the C<JSON> distribution, but
+has since Perl 5.14 been a core module. For this reason,
+L<JSON::PP> was removed from the JSON distribution and can now
+be found in the Perl5 repository at
 
-C<JSON> distribution will inculde yet another JSON::PP modules.
-They are JSNO::backportPP and so on. JSON.pm should work as it did at all.
+=over
+
+=item * L<http://perl5.git.perl.org/perl.git>
+
+=back
+
+Instead, the C<JSON> distribution will include JSON::backportPP
+for backwards compatability. JSON.pm should thus work as it did
+before.
 
 =head1 DESCRIPTION
 

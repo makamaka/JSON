@@ -368,6 +368,21 @@ sub _overrride_overload {
 
     if ($@) { Carp::croak $@; }
 
+    if ( exists $INC{'JSON/XS.pm'} and $boolean eq 'JSON::XS::Boolean' ) {
+        local $^W;
+        my $true  = do { bless \(my $dummy = 1), $boolean };
+        my $false = do { bless \(my $dummy = 0), $boolean };
+        *JSON::XS::true  = sub () { $true };
+        *JSON::XS::false = sub () { $false };
+    }
+    elsif ( exists $INC{'JSON/PP.pm'} and $boolean eq 'JSON::PP::Boolean' ) {
+        local $^W;
+        my $true  = do { bless \(my $dummy = 1), $boolean };
+        my $false = do { bless \(my $dummy = 0), $boolean };
+        *JSON::PP::true  = sub { $true };
+        *JSON::PP::false = sub { $false };
+    }
+
     return 1;
 }
 

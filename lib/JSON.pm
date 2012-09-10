@@ -2283,7 +2283,7 @@ The release of this new version owes to the courtesy of Marc Lehmann.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2005-2011 by Makamaka Hannyaharamitu
+Copyright 2005-2012 by Makamaka Hannyaharamitu
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 

@@ -296,7 +296,7 @@ sub _load_pp {
             $_USSING_bpPP++;
             $backend = $Module_bp;
             JSON::Boolean::_overrride_overload($backend);
-            local $^W; # if PP installed but invalid version, backportPP redifines methods.
+            local $^W; # if PP installed but invalid version, backportPP redefines methods.
             eval qq| require $Module_bp |;
         }
         Carp::croak $@ if $@;
@@ -556,7 +556,7 @@ sub _set_for_pp {
     return $pp;
 }
 
-sub _encode { # using with PP encod
+sub _encode { # using with PP encode
     if (${$_[0]}) {
         _set_for_pp('encode' => @_)->encode($_[1]);
     }
@@ -676,7 +676,7 @@ be found also in the Perl5 repository at
 (The newest JSON::PP version still exists in CPAN.)
 
 Instead, the C<JSON> distribution will include JSON::backportPP
-for backwards compatability. JSON.pm should thus work as it did
+for backwards computability. JSON.pm should thus work as it did
 before.
 
 =head1 DESCRIPTION
@@ -684,7 +684,7 @@ before.
  ************************** CAUTION ********************************
  * This is 'JSON module version 2' and there are many differences  *
  * to version 1.xx                                                 *
- * Please check your applications useing old version.              *
+ * Please check your applications using old version.              *
  *   See to 'INCOMPATIBLE CHANGES TO OLD VERSION'                  *
  *******************************************************************
 
@@ -755,7 +755,7 @@ See to L<JSON::XS/FEATURES> and L<JSON::PP/FEATURES>.
 
 This module returns a JSON::XS object itself if available.
 Compared to other JSON modules and other serialisers such as Storable,
-JSON::XS usually compares favourably in terms of speed, too.
+JSON::XS usually compares favorably in terms of speed, too.
 
 If not available, C<JSON> returns a JSON::PP object instead of JSON::XS and
 it is very slow as pure-Perl.
@@ -1817,7 +1817,7 @@ C<JSON> will install these missing overloading features to the backend modules.
 
 A JSON null atom becomes C<undef> in Perl.
 
-C<JSON::null> returns C<unddef>.
+C<JSON::null> returns C<undef>.
 
 =back
 
@@ -1912,7 +1912,7 @@ You can force the type to be a number by numifying it:
 
    my $x = "3"; # some variable containing a string
    $x += 0;     # numify it, ensuring it will be dumped as a number
-   $x *= 1;     # same thing, the choise is yours.
+   $x *= 1;     # same thing, the choice is yours.
 
 You can not currently force the type in other, less obscure, ways.
 
@@ -2239,7 +2239,7 @@ This option was deleted.
 Instead of it, if a given blessed object has the C<TO_JSON> method,
 C<TO_JSON> will be executed with C<convert_blessed>.
 
-  $json->convert_blessed->encode($bleesed_hashref_or_arrayref)
+  $json->convert_blessed->encode($blessed_hashref_or_arrayref)
   # if need, call allow_blessed
 
 Note that it was C<toJson> in old version, but now not C<toJson> but C<TO_JSON>.

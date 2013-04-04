@@ -12,7 +12,7 @@ use Carp ();
 use B ();
 #use Devel::Peek;
 
-$JSON::PP::VERSION = '2.27200';
+$JSON::PP::VERSION = '2.27201';
 
 @JSON::PP::EXPORT = qw(encode_json decode_json from_json to_json);
 
@@ -107,7 +107,7 @@ sub encode_json ($) { # encode
 }
 
 
-sub decode_json { # decode
+sub decode_json ($) { # decode
     ($JSON ||= __PACKAGE__->new->utf8)->decode(@_);
 }
 

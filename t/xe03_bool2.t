@@ -8,12 +8,12 @@ use JSON;
 SKIP: {
     skip "can't use JSON::XS.", 26, unless( JSON->backend->is_xs );
 
-is(to_json([JSON::true]),  q|[true]|);
-is(to_json([JSON::false]), q|[false]|);
-is(to_json([JSON::null]),  q|[null]|);
+is(encode_json([JSON::true]),  q|[true]|);
+is(encode_json([JSON::false]), q|[false]|);
+is(encode_json([JSON::null]),  q|[null]|);
 
 my $jsontext = q|[true,false,null]|;
-my $obj      = from_json($jsontext);
+my $obj      = decode_json($jsontext);
 
 isa_ok($obj->[0], 'JSON::Boolean');
 isa_ok($obj->[1], 'JSON::Boolean');
@@ -40,8 +40,8 @@ ok(JSON::false ne 'true');
 ok(JSON::false ne 'null');
 ok(!defined JSON::null);
 
-is(from_json('[true]' )->[0], JSON::true);
-is(from_json('[false]')->[0], JSON::false);
-is(from_json('[null]' )->[0],  JSON::null);
+is(decode_json('[true]' )->[0], JSON::true);
+is(decode_json('[false]')->[0], JSON::false);
+is(decode_json('[null]' )->[0],  JSON::null);
 
 }

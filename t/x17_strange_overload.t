@@ -1,12 +1,19 @@
 use strict;
 use Test::More;
-BEGIN { plan tests => 2 };
+my $XS;
 
-BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::XS"; }
+BEGIN {
+  $ENV{PERL_JSON_BACKEND} = 2;
+  eval "use JSON ();";
+  $XS = JSON->backend;
+  plan (JSON->backend->is_xs ? (tests => 2) : (skip_all => "no XS"));
+}
 
-use JSON::XS ();
 use JSON ();
 
-is("" . JSON::XS::true, 'true');
-is("" . JSON::true,     'true');
+{
+  no strict 'refs';
+  is("" . ${"$XS\::true"}, 'true');
+  is("" . JSON::true,   'true');
+}
 

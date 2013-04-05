@@ -14,16 +14,19 @@ In this version, JSON was totally rewritten.
 ##########################################################################
 
 --------------------------------------------------------------------------
-JSON::PP was inculded in JSON distribution (CPAN module).
-It comes to be a perl core module in Perl 5.14.
-And JSON::PP well be split away it.
+JSON::PP had been inculded in JSON distribution (CPAN module).
+It was a perl core module in Perl 5.14.
+And JSON::PP was split away it.
 
-JSON distribution will inculde yet another JSON::PP modules.
+JSON distribution inculdes yet another JSON::PP modules.
 They are JSNO::backportPP. So JSON.pm should work as it did at all!
 --------------------------------------------------------------------------
 
-2.54
-        - fixed t/19_incr.t on perl >= 5.17.10 (wyant, rt#84154)
+2.54  Fri Apr  5 16:15:08 2013
+	- fixed t/19_incr.t on perl >= 5.17.10 (wyant, rt#84154)
+	    pathced by mbeijen and modified with demerphq's patch
+	- Fixed some spelling (by briandfoy)
+	- fixed sppeling (by Perlover)
 	- enhanced documents (Thanks to Justin Hunter and Olof Johansson)
 	- changed backend module loading for overloaded object behavior
 	                                        (reported by tokuhirom)

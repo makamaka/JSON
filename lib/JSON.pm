@@ -7,7 +7,7 @@ use base qw(Exporter);
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '2.53';
+    $JSON::VERSION = '2.54';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
     $JSON::DEBUG   = $ENV{ PERL_JSON_DEBUG } if exists $ENV{ PERL_JSON_DEBUG };
 }
@@ -655,7 +655,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
 =head1 VERSION
 
-    2.53
+    2.54
 
 This version is compatible with JSON::XS B<2.27> and later.
 
@@ -2283,7 +2283,7 @@ The release of this new version owes to the courtesy of Marc Lehmann.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2005-2012 by Makamaka Hannyaharamitu
+Copyright 2005-2013 by Makamaka Hannyaharamitu
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 

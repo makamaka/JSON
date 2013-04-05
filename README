@@ -1,4 +1,4 @@
-JSON version 2.53
+JSON version 2.54
 =================
 
 JSON::PP was included in JSON distribution (CPAN module).
@@ -61,11 +61,17 @@ VERSION
     This version is compatible with JSON::XS 2.27 and later.
 
 NOTE
-    JSON::PP was included in "JSON" distribution. It comes to be a perl core
-    module in Perl 5.14. And JSON::PP will be split away it.
+    JSON::PP was earlier included in the "JSON" distribution, but has since
+    Perl 5.14 been a core module. For this reason, JSON::PP was removed from
+    the JSON distribution and can now be found also in the Perl5 repository
+    at
 
-    "JSON" distribution will include yet another JSON::PP modules. They are
-    JSNO::backportPP and so on. JSON.pm should work as it did at all.
+    *   <http://perl5.git.perl.org/perl.git>
+
+    (The newest JSON::PP version still exists in CPAN.)
+
+    Instead, the "JSON" distribution will include JSON::backportPP for
+    backwards computability. JSON.pm should thus work as it did before.
 
 DESCRIPTION
      ************************** CAUTION ********************************
@@ -101,7 +107,7 @@ DESCRIPTION
     Format type : JSON
 
   FEATURES
-    *   correct Unicode handling
+    *   correct unicode handling
 
         This module (i.e. backend modules) knows how to handle Unicode,
         documents how and when it does so, and even documents what "correct"
@@ -124,7 +130,7 @@ DESCRIPTION
 
     *   round-trip integrity
 
-        When you serialise a Perl data structure using only data types
+        When you serialise a perl data structure using only data types
         supported by JSON and Perl, the deserialised data structure is
         identical on the Perl level. (e.g. the string "2.0" doesn't suddenly
         become "2" just because it looks like a number). There *are* minor
@@ -445,7 +451,7 @@ COMMON OBJECT-ORIENTED INTERFACE
 
     If $enable is true (or missing), then the "encode" method will use a
     multiline format as output, putting every array member or object/hash
-    key-value pair into its own line, indenting them properly.
+    key-value pair into its own line, identifying them properly.
 
     If $enable is false, no newlines or indenting will be produced, and the
     resulting JSON text is guaranteed not to contain any "newlines".
@@ -869,7 +875,7 @@ INCREMENTAL PARSING
     The backend module will only attempt to parse the JSON text once it is
     sure it has enough text to get a decisive result, using a very simple
     but truly incremental parser. This means that it sometimes won't stop as
-    early as the full parser, for example, it doesn't detect parenthese
+    early as the full parser, for example, it doesn't detect parenthesis
     mismatches. The only thing it guarantees is that it starts decoding as
     soon as a syntactically valid JSON text has been seen. This means you
     need to set resource limits (e.g. "max_size") to ensure the parser will
@@ -973,7 +979,7 @@ JSON::PP SUPPORT METHODS
    
        use JSON -support_by_pp;
    
-       my $json = new JSON;
+       my $json = JSON->new;
        $json->allow_nonref->escape_slash->encode("/");
 
        # functional interfaces too.
@@ -1109,7 +1115,7 @@ MAPPING
         as a numeric (floating point) value if that is possible without loss
         of precision. Otherwise it will preserve the number as a string
         value (in which case you lose roundtripping ability, as the JSON
-        number will be re-encoded toa JSON string).
+        number will be re-encoded to a JSON string).
 
         Numbers containing a fractional or exponential part will always be
         represented as numeric (floating point) values, possibly at a loss
@@ -1129,7 +1135,7 @@ MAPPING
     true, false
         These JSON atoms become "JSON::true" and "JSON::false",
         respectively. They are overloaded to act almost exactly like the
-        numbers 1 and 0. You can check wether a scalar is a JSON boolean by
+        numbers 1 and 0. You can check whether a scalar is a JSON boolean by
         using the "JSON::is_bool" function.
 
         If "JSON::true" and "JSON::false" are used as strings or compared as
@@ -1163,7 +1169,7 @@ MAPPING
         encoded in a pseudo-random order that can change between runs of the
         same program but stays generally the same within a single run of a
         program. "JSON" optionally sort the hash keys (determined by the
-        *canonical* flag), so the same datastructure will serialise to the
+        *canonical* flag), so the same data structure will serialise to the
         same JSON text (given same settings and version of JSON::XS), but
         this incurs a runtime overhead and is only rarely useful, e.g. when
         you want to compare some JSON text against another for equality.
@@ -1262,7 +1268,7 @@ BACKEND MODULE DECISION
     or later.
 
     The "JSON" constructor method returns an object inherited from the
-    backend module, and JSON::XS object is a blessed scaler reference while
+    backend module, and JSON::XS object is a blessed scalar reference while
     JSON::PP is a blessed hash reference.
 
     So, your program should not depend on the backend module, especially
@@ -1284,7 +1290,7 @@ BACKEND MODULE DECISION
   
       $json->is_pp; # 0 or 1
 
-    If you set an environment variable "PERL_JSON_BACKEND", The calling
+    If you set an environment variable "PERL_JSON_BACKEND", the calling
     action will be changed.
 
     PERL_JSON_BACKEND = 0 or PERL_JSON_BACKEND = 'JSON::PP'
@@ -1322,7 +1328,7 @@ USE PP FEATURES EVEN THOUGH XS BACKEND
 
        BEGIN { $ENV{PERL_JSON_BACKEND} = 2 } # with JSON::XS
        use JSON -support_by_pp;
-       my $json = new JSON;
+       my $json = JSON->new;
        $json->allow_nonref->escape_slash->encode("/");
 
     At this time, the returned object is a "JSON::Backend::XS::Supportable"
@@ -1545,7 +1551,7 @@ AUTHOR
     The release of this new version owes to the courtesy of Marc Lehmann.
 
 COPYRIGHT AND LICENSE
-    Copyright 2005-2011 by Makamaka Hannyaharamitu
+    Copyright 2005-2013 by Makamaka Hannyaharamitu
 
     This library is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.

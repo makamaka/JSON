@@ -34,10 +34,10 @@ sub splitter {
 
 
 
-splitter +JSON->new              , '  ["x\\"","\\u1000\\\\n\\nx",1,{"\\\\" :5 , "": "x"}]';
-splitter +JSON->new              , '[ "x\\"","\\u1000\\\\n\\nx" , 1,{"\\\\ " :5 , "": " x"} ] ';
-splitter +JSON->new->allow_nonref, '"test"';
-splitter +JSON->new->allow_nonref, ' "5" ';
+splitter +JSON->new->canonical   , '  ["x\\"","\\u1000\\\\n\\nx",1,{"\\\\" :5 , "": "x"}]';
+splitter +JSON->new->canonical   , '[ "x\\"","\\u1000\\\\n\\nx" , 1,{"\\\\ " :5 , "": " x"} ] ';
+splitter +JSON->new->allow_nonref->canonical, '"test"';
+splitter +JSON->new->allow_nonref->canonical, ' "5" ';
 
 
 

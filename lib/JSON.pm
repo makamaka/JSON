@@ -7,7 +7,7 @@ use base qw(Exporter);
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '2.54';
+    $JSON::VERSION = '2.55';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
     $JSON::DEBUG   = $ENV{ PERL_JSON_DEBUG } if exists $ENV{ PERL_JSON_DEBUG };
 }
@@ -655,7 +655,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
 =head1 VERSION
 
-    2.54
+    2.55
 
 This version is compatible with JSON::XS B<2.27> and later.
 

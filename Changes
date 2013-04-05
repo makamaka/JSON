@@ -22,6 +22,9 @@ JSON distribution inculdes yet another JSON::PP modules.
 They are JSNO::backportPP. So JSON.pm should work as it did at all!
 --------------------------------------------------------------------------
 
+2.55
+	- update JSON::BackportPP version
+
 2.54  Fri Apr  5 16:15:08 2013
 	- fixed t/19_incr.t on perl >= 5.17.10 (wyant, rt#84154)
 	    pathced by mbeijen and modified with demerphq's patch

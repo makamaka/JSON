@@ -618,7 +618,7 @@ BEGIN {
     my $utf8_len;       # utf8 byte length
     # FLAGS
     my $utf8;           # must be utf8
-    my $max_depth;      # max nest nubmer of objects and arrays
+    my $max_depth;      # max nest number of objects and arrays
     my $max_size;
     my $relaxed;
     my $cb_object;
@@ -1051,7 +1051,7 @@ BEGIN {
         my $n    = '';
         my $v;
 
-        # According to RFC4627, hex or oct digts are invalid.
+        # According to RFC4627, hex or oct digits are invalid.
         if($ch eq '0'){
             my $peek = substr($text,$at,1);
             my $hex  = $peek =~ /[xX]/; # 0 or 1
@@ -1341,7 +1341,7 @@ BEGIN {
         *JSON::PP::reftype = \&Scalar::Util::reftype;
         *JSON::PP::refaddr = \&Scalar::Util::refaddr;
     }
-    else{ # This code is from Sclar::Util.
+    else{ # This code is from Scalar::Util.
         # warn $@;
         eval 'sub UNIVERSAL::a_sub_not_likely_to_be_here { ref($_[0]) }';
         *JSON::PP::blessed = sub {
@@ -1390,7 +1390,7 @@ BEGIN {
 }
 
 
-# shamely copied and modified from JSON::XS code.
+# shamelessly copied and modified from JSON::XS code.
 
 $JSON::PP::true  = do { bless \(my $dummy = 1), "JSON::backportPP::Boolean" };
 $JSON::PP::false = do { bless \(my $dummy = 0), "JSON::backportPP::Boolean" };
@@ -1657,23 +1657,26 @@ JSON::PP is a pure-Perl module and has compatibility to JSON::XS.
 
 This module knows how to handle Unicode (depending on Perl version).
 
-See to L<JSON::XS/A FEW NOTES ON UNICODE AND PERL> and L<UNICODE HANDLING ON PERLS>.
+See to L<JSON::XS/A FEW NOTES ON UNICODE AND PERL> and
+L<UNICODE HANDLING ON PERLS>.
 
 
 =item * round-trip integrity
 
-When you serialise a perl data structure using only data types supported
-by JSON and Perl, the deserialised data structure is identical on the Perl
-level. (e.g. the string "2.0" doesn't suddenly become "2" just because
-it looks like a number). There I<are> minor exceptions to this, read the
-MAPPING section below to learn about those.
+When you serialise a perl data structure using only data types
+supported by JSON and Perl, the deserialised data structure is
+identical on the Perl level. (e.g. the string "2.0" doesn't suddenly
+become "2" just because it looks like a number). There I<are> minor
+exceptions to this, read the MAPPING section below to learn about
+those.
 
 
 =item * strict checking of JSON correctness
 
 There is no guessing, no generating of illegal JSON texts by default,
-and only JSON is accepted as input by default (the latter is a security feature).
-But when some options are set, loose checking features are available.
+and only JSON is accepted as input by default (the latter is a
+security feature). But when some options are set, loose checking
+features are available.
 
 =back
 
@@ -2239,7 +2242,7 @@ effect on C<encode> (yet).
 If no argument is given, the limit check will be deactivated (same as when
 C<0> is specified).
 
-See L<JSON::XS/SSECURITY CONSIDERATIONS> for more info on why this is useful.
+See L<JSON::XS/SECURITY CONSIDERATIONS> for more info on why this is useful.
 
 =head2 encode
 
@@ -2594,7 +2597,7 @@ C<JSON> will install these missing overloading features to the backend modules.
 
 A JSON null atom becomes C<undef> in Perl.
 
-C<JSON::PP::null> returns C<unddef>.
+C<JSON::PP::null> returns C<undef>.
 
 =back
 
@@ -2680,7 +2683,7 @@ You can force the type to be a number by numifying it:
 
    my $x = "3"; # some variable containing a string
    $x += 0;     # numify it, ensuring it will be dumped as a number
-   $x *= 1;     # same thing, the choise is yours.
+   $x *= 1;     # same thing, the choice is yours.
 
 You can not currently force the type in other, less obscure, ways.
 
@@ -2789,7 +2792,7 @@ Makamaka Hannyaharamitu, E<lt>makamaka[at]cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2007-2011 by Makamaka Hannyaharamitu
+Copyright 2007-2012 by Makamaka Hannyaharamitu
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 

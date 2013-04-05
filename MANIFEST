@@ -56,6 +56,7 @@ t/x00_load.t
 t/x02_error.t
 t/x12_blessed.t
 t/x16_tied.t
+t/x17_strange_overload.t
 t/xe01_property.t
 t/xe02_bool.t
 t/xe03_bool2.t

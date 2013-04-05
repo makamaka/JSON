@@ -6,7 +6,7 @@ use lib qw( ./lib );
 
 $| = 1;
 
-eval q| require JSON |;
+eval q| no warnings 'prototype'; require JSON |;
 
 # B module can't install? I'm not careful for such a problem.
 # Leave us alone today?
@@ -15,36 +15,39 @@ if ($@) {
     print "Set the environmental variable 'PERL_DL_NONLAZY' with 0.\n";
     print "And see to ExtUtils::MM_Unix.\n";
     print "perl says : $@";
-    print "We do not make Makefile by requiring Perl version 7.0.\n";
-    require 7.0000;
+    print "We do not create a Makefile.\n";
+    exit(1);
 }
 
 
 my $version     = JSON->VERSION;
 my $req_xs_ver  = JSON->require_xs_version;
-my $has_xs      = 0;
+my $xs_mod;
 my $xs_ver_is_ok;
 my $message;
 my $pp_only = $ENV{ PERL_ONLY } || $ENV{ NO_XS };
 
-eval q| require JSON::XS |;
+for (qw(Cpanel::JSON::XS JSON::XS)) {
+  eval qq| no warnings 'prototype'; require $_ |;
+  unless ($@) {
+    $xs_mod = $_;
+    last;
+  }
+}
 
-$has_xs = 1 unless ($@);
-
-
-if ($has_xs) {
-    my $xs_version = JSON::XS->VERSION;
+if ($xs_mod) {
+    my $xs_version = $xs_mod->VERSION;
     if ($xs_version >= $req_xs_ver) {
-        $message = "You have JSON::XS (v.$xs_version), so JSON can work very fast!!";
+        $message = "You have $xs_mod (v.$xs_version), so JSON can work very fast!!";
         $xs_ver_is_ok++;
     }
     else {
-        $message = "Your JSON::XS version is $xs_version, but if you install v.$req_xs_ver,\n"
+        $message = "Your $xs_mod version is $xs_version, but if you install v.$req_xs_ver,\n"
                  . "JSON will work faster.";
     }
 }
 else {
-    $message = "If you install JSON::XS v.$req_xs_ver, it makes JSON faster.";
+    $message = "If you install $xs_mod v.$req_xs_ver, it makes JSON faster.";
 }
 
 print <<EOF;
@@ -66,10 +69,10 @@ my @prereq_pm;
 
 if ( not $pp_only and can_auto_xs_install() and not $xs_ver_is_ok ) {
 
-    my $prompt = prompt("Do you want to install JSON::XS?(Y/n)", 'Y');
+    my $prompt = prompt("Do you want to install Cpanel::JSON::XS?(Y/n)", 'Y');
 
     if ( $prompt =~ /^[yY]/ ) {
-        @prereq_pm = ( 'JSON::XS' => $req_xs_ver );
+        @prereq_pm = ( 'Cpanel::JSON::XS' => $req_xs_ver );
     }
 
 }
@@ -113,7 +116,8 @@ if ($] < 5.006) { # I saw to http://d.hatena.ne.jp/asakusabashi/20051231/p1
 
 
 sub can_auto_xs_install {
-    return 0 if $] < 5.008002; # JSON::XS requires
+    #return 0 if $] < 5.008002; # JSON::XS requires
+    return 0 if $] < 5.006002; # Cpanel::JSON::XS requires
     return 0 unless ( $ENV{PERL5_CPAN_IS_RUNNING} or $ENV{PERL5_CPANM_IS_RUNNING} ); # not cpan/cpanm running
     return can_cc();
 }

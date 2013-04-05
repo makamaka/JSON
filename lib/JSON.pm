@@ -1,22 +1,21 @@
 package JSON;
 
-
 use strict;
 use Carp ();
 use base qw(Exporter);
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '2.53';
+    $JSON::VERSION = '2.54';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
     $JSON::DEBUG   = $ENV{ PERL_JSON_DEBUG } if exists $ENV{ PERL_JSON_DEBUG };
 }
 
-my $Module_XS  = 'JSON::XS';
 my $Module_PP  = 'JSON::PP';
 my $Module_bp  = 'JSON::backportPP'; # included in JSON distribution
 my $PP_Version = '2.27200';
-my $XS_Version = '2.27';
+my $Module_XS  = 'JSON::XS'; # or Cpanel::JSON::XS transparently
+my $XS_Version = '2.27';     # Cpanel::JSON::XS features the same major version numbers as JSON::XS
 
 
 # XS and PP common methods
@@ -32,7 +31,7 @@ my @Properties = qw/
     allow_blessed convert_blessed shrink max_depth max_size allow_unknown
 /;
 
-my @XSOnlyMethods = qw//; # Currently nothing
+my @XSOnlyMethods = qw//; # Currently nothing, just 'binary' with Cpanel::JSON::XS
 
 my @PPOnlyMethods = qw/
     indent_length sort_by
@@ -61,7 +60,7 @@ unless ($JSON::Backend) {
     elsif ($backend eq '0' or $backend eq 'JSON::PP') {
         _load_pp();
     }
-    elsif ($backend eq '2' or $backend eq 'JSON::XS') {
+    elsif ($backend eq '2' or $backend =~ /JSON::XS/) {
         _load_xs();
     }
     elsif ($backend eq 'JSON::backportPP') {
@@ -186,11 +185,10 @@ sub backend {
     $JSON::Backend;
 }
 
-#*module = *backend;
-
+# *module = *backend;
 
 sub is_xs {
-    return $_[0]->module eq $Module_XS;
+    return $_[0]->backend eq $Module_XS;
 }
 
 
@@ -243,16 +241,18 @@ sub property {
 sub _load_xs {
     my $opt = shift;
 
-    $JSON::DEBUG and Carp::carp "Load $Module_XS.";
-
     # if called after install module, overload is disable.... why?
     JSON::Boolean::_overrride_overload($Module_XS);
     JSON::Boolean::_overrride_overload($Module_PP);
 
-    eval qq|
-        use $Module_XS $XS_Version ();
-    |;
-
+    for (qw(Cpanel::JSON::XS JSON::XS)) {
+      $JSON::DEBUG and Carp::carp "Load $_.";
+      eval qq| no warnings 'prototype'; use $_ $XS_Version|;
+      unless ($@) {
+	$Module_XS = $_;
+	last;
+      }
+    }
     if ($@) {
         if (defined $opt and $opt & $_INSTALL_DONT_DIE) {
             $JSON::DEBUG and Carp::carp "Can't load $Module_XS...($@)";
@@ -265,6 +265,10 @@ sub _load_xs {
         _set_module( $JSON::Backend = $Module_XS );
         my $data = join("", <DATA>); # this code is from Jcode 2.xx.
         close(DATA);
+	if ($Module_XS ne 'JSON::XS') {
+	  $data =~ s/JSON::XS/$Module_XS/g;
+	}
+	no warnings 'prototype';
         eval $data;
         JSON::Backend::XS->init;
     }
@@ -374,6 +378,13 @@ sub _overrride_overload {
         my $false = do { bless \(my $dummy = 0), $boolean };
         *JSON::XS::true  = sub () { $true };
         *JSON::XS::false = sub () { $false };
+    }
+    elsif ( exists $INC{'Cpanel/JSON/XS.pm'} and $boolean eq 'Cpanel::JSON::XS::Boolean' ) {
+        local $^W;
+        my $true  = do { bless \(my $dummy = 1), $boolean };
+        my $false = do { bless \(my $dummy = 0), $boolean };
+        *Cpanel::JSON::XS::true  = sub () { $true };
+        *Cpanel::JSON::XS::false = sub () { $false };
     }
     elsif ( exists $INC{'JSON/PP.pm'} and $boolean eq 'JSON::PP::Boolean' ) {
         local $^W;
@@ -725,6 +736,10 @@ Even though there are limitations, this feature is available since Perl version 
 
 JSON::XS requires Perl 5.8.2 (but works correctly in 5.8.8 or later), so in older versions
 C<JSON> should call JSON::PP as the backend which can be used since Perl 5.005.
+Cpanel::JSON::XS works back to Perl 5.6.2, just multibyte unicode characters are
+not supported priopr to 5.8.1. Note that Cpanel::JSON::XS has additional 
+L<Cpanel::JSON::XS/binary> methods which ignore the encoding and encodes/decodes
+all strings as bytes.
 
 With Perl 5.8.x JSON::PP works, but from 5.8.0 to 5.8.2, because of a Perl side problem,
 JSON::PP works slower in the versions. And in 5.005, the Unicode handling is not available.
@@ -1944,11 +1959,12 @@ See to L<JSON::XS/JSON and YAML>.
 
 =head1 BACKEND MODULE DECISION
 
-When you use C<JSON>, C<JSON> tries to C<use> JSON::XS. If this call failed, it will
-C<uses> JSON::PP. The required JSON::XS version is I<2.2> or later.
+When you use C<JSON>, C<JSON> tries to C<use> Cpanel::JSON::XS
+If this call failed, it will JSON::XS or fallback to JSON::PP.
+The required JSON::XS version is I<2.27> or later.
 
 The C<JSON> constructor method returns an object inherited from the backend module,
-and JSON::XS object is a blessed scalar reference while JSON::PP is a blessed hash
+and *JSON::XS object is a blessed scalar reference while JSON::PP is a blessed hash
 reference.
 
 So, your program should not depend on the backend module, especially
@@ -1959,7 +1975,7 @@ returned objects should not be modified.
 
 To check the backend module, there are some methods - C<backend>, C<is_pp> and C<is_xs>.
 
-  JSON->backend; # 'JSON::XS' or 'JSON::PP'
+  JSON->backend; # 'Cpanel::JSON::XS', 'JSON::XS' or 'JSON::PP'
   
   JSON->backend->is_pp: # 0 or 1
   
@@ -1980,12 +1996,13 @@ Always use JSON::PP
 
 =item PERL_JSON_BACKEND == 1 or PERL_JSON_BACKEND = 'JSON::XS,JSON::PP'
 
-(The default) Use compiled JSON::XS if it is properly compiled & installed,
-otherwise use JSON::PP.
+(The default) Use compiled Cpanel::JSON::XS or JSON::XS if it is 
+properly compiled & installed, otherwise use JSON::PP.
 
-=item PERL_JSON_BACKEND == 2 or PERL_JSON_BACKEND = 'JSON::XS'
+=item PERL_JSON_BACKEND == 2 or PERL_JSON_BACKEND = 'Cpanel::JSON::XS,JSON::XS'
 
-Always use compiled JSON::XS, die if it isn't properly compiled & installed.
+Always use compiled Cpanel::JSON::XS or JSON::XS.
+die if it isn't properly compiled & installed.
 
 =item PERL_JSON_BACKEND = 'JSON::backportPP'
 
@@ -2010,7 +2027,7 @@ Many methods are available with either JSON::XS or JSON::PP and
 when the backend module is JSON::XS, if any JSON::PP specific (i.e. JSON::XS unsupported)
 method is called, it will C<warn> and be noop.
 
-But If you C<use> C<JSON> passing the optional string C<-support_by_pp>,
+But if you C<use> C<JSON> passing the optional string C<-support_by_pp>,
 it makes a part of those unsupported methods available.
 This feature is achieved by using JSON::PP in C<de/encode>.
 
@@ -2258,7 +2275,6 @@ Note that it was C<toJson> in old version, but now not C<toJson> but C<TO_JSON>.
 
 No test with JSON::PP. If with JSON::XS, See to L<JSON::XS/THREADS>.
 
-
 =head1 BUGS
 
 Please report bugs relevant to C<JSON> to E<lt>makamaka[at]cpan.orgE<gt>.
@@ -2268,7 +2284,7 @@ Please report bugs relevant to C<JSON> to E<lt>makamaka[at]cpan.orgE<gt>.
 
 Most of the document is copied and modified from JSON::XS doc.
 
-L<JSON::XS>, L<JSON::PP>
+L<JSON::XS>, L<JSON::PP>, L<Cpanel::JSON::PP>
 
 C<RFC4627>(L<http://www.ietf.org/rfc/rfc4627.txt>)
 
@@ -2277,6 +2293,8 @@ C<RFC4627>(L<http://www.ietf.org/rfc/rfc4627.txt>)
 Makamaka Hannyaharamitu, E<lt>makamaka[at]cpan.orgE<gt>
 
 JSON::XS was written by  Marc Lehmann <schmorp[at]schmorp.de>
+
+Cpanel::JSON::XS is maintained by cPanel Inc. <cpan[at]cpanel.net>
 
 The release of this new version owes to the courtesy of Marc Lehmann.
 

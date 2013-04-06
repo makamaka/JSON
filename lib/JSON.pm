@@ -134,7 +134,7 @@ sub objToJson {
 
 # INTERFACES
 
-sub to_json ($@) {
+sub to_json ($;$) {
     if (
         ref($_[0]) eq 'JSON'
         or (@_ > 2 and $_[0] eq 'JSON')
@@ -154,7 +154,7 @@ sub to_json ($@) {
 }
 
 
-sub from_json ($@) {
+sub from_json ($;$) {
     if ( ref($_[0]) eq 'JSON' or $_[0] eq 'JSON' ) {
         Carp::croak "from_json should not be called as a method.";
     }

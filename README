@@ -1,4 +1,4 @@
-JSON version 2.56
+JSON version 2.57
 =================
 
 JSON::PP was included in JSON distribution (CPAN module).
@@ -56,7 +56,7 @@ SYNOPSIS
      # recommend to use (en|de)code_json.
 
 VERSION
-        2.56
+        2.57
 
     This version is compatible with JSON::XS 2.27 and later.
 

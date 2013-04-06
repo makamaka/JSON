@@ -22,6 +22,9 @@ JSON distribution inculdes yet another JSON::PP modules.
 They are JSNO::backportPP. So JSON.pm should work as it did at all!
 --------------------------------------------------------------------------
 
+2.57
+	- t/x17_strage_overload.t didn't work correctly.
+
 2.56  Sat Apr  6 09:58:32 2013
 	- fixed t/x17_strage_overload.t (rt#84451 by Ricardo Signes)
 

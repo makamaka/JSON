@@ -13,8 +13,9 @@ From version 1.xx to 2.xx, JSON was totally rewritten.
 
 ##########################################################################
 
-2.58  
+2.58 Thu May 23 09:04:37 2013
 	- support PUREPERL_ONLY install option. (rt#84876)
+	   (PERL_ONLY and NO_XS are not yet removed)
 	- stop installing JSON::XS automatically on Perl 5.18
 
 2.57

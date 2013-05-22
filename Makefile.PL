@@ -25,7 +25,7 @@ my $req_xs_ver  = JSON->require_xs_version;
 my $has_xs      = 0;
 my $xs_ver_is_ok;
 my $message;
-my $pp_only = $ENV{ PERL_ONLY } || $ENV{ NO_XS };
+my $pp_only = $ENV{ PUREPERL_ONLY } || $ENV{ PERL_ONLY } || $ENV{ NO_XS };
 
 eval q| require JSON::XS |;
 
@@ -115,6 +115,7 @@ if ($] < 5.006) { # I saw to http://d.hatena.ne.jp/asakusabashi/20051231/p1
 sub can_auto_xs_install {
     return 0 if $] < 5.008002; # JSON::XS requires
     return 0 unless ( $ENV{PERL5_CPAN_IS_RUNNING} or $ENV{PERL5_CPANM_IS_RUNNING} ); # not cpan/cpanm running
+    return 0 if $] > 5.017; # JSON::XS test fails.
     return can_cc();
 }
 

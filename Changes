@@ -2,7 +2,7 @@ Revision history for Perl extension JSON.
 
 ## JSON version 2.xx #####################################################
 
-In this version, JSON was totally rewritten.
+From version 1.xx to 2.xx, JSON was totally rewritten.
 
   * JSON becomes a wrapper to JSON::XS or JSON::PP!
   * objToJson() and jsonToObj() are obsoleted!
@@ -13,14 +13,9 @@ In this version, JSON was totally rewritten.
 
 ##########################################################################
 
---------------------------------------------------------------------------
-JSON::PP had been inculded in JSON distribution (CPAN module).
-It was a perl core module in Perl 5.14.
-And JSON::PP was split away it.
-
-JSON distribution inculdes yet another JSON::PP modules.
-They are JSNO::backportPP. So JSON.pm should work as it did at all!
---------------------------------------------------------------------------
+2.58  
+	- support PUREPERL_ONLY install option. (rt#84876)
+	- stop installing JSON::XS automatically on Perl 5.18
 
 2.57
 	- t/x17_strage_overload.t didn't work correctly.

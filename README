@@ -1,14 +1,17 @@
 JSON version 2.57
 =================
 
-JSON::PP was included in JSON distribution (CPAN module).
-It comes to be a perl core module in Perl 5.14.
-And JSON::PP will be split away it.
+"JSON::PP" was earlier included in the "JSON" distribution,
+but has since Perl 5.14 been a core module. For this reason,
+"JSON::PP" was removed from the "JSON" distribution and can
+now be found also in the Perl5 repository at
 
-This developer-version is for the preparation.
+    http://perl5.git.perl.org/perl.git
 
-    * JSON distribution will include yet another JSON::PP modules.
-      They are JSON::backportPP. So JSON.pm should work as it did at all!
+(The newest "JSON::PP" version still exists in CPAN.)
+
+Instead, the "JSON" distribution will include "JSON::backportPP"
+for backwards computability. JSON.pm should thus work as it did before.
 
 =================
 

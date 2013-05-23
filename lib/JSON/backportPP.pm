@@ -12,7 +12,8 @@ use Carp ();
 use B ();
 #use Devel::Peek;
 
-$JSON::PP::VERSION = '2.27202';
+use vars qw($VERSION);
+$VERSION = '2.27202';
 
 @JSON::PP::EXPORT = qw(encode_json decode_json from_json to_json);
 
@@ -1286,7 +1287,8 @@ BEGIN {
     }
 
     if ($] >= 5.008 and $] < 5.008003) { # join() in 5.8.0 - 5.8.2 is broken.
-        package JSON::PP;
+        package # hide from PAUSE
+          JSON::PP;
         require subs;
         subs->import('join');
         eval q|
@@ -1416,8 +1418,8 @@ use overload (
 
 ###############################
 
-package
-    JSON::PP::IncrParser;
+package # hide from PAUSE
+  JSON::PP::IncrParser;
 
 use strict;
 
@@ -1428,7 +1430,8 @@ use constant INCR_M_JSON => 3; # outside anything, count nesting
 use constant INCR_M_C0   => 4;
 use constant INCR_M_C1   => 5;
 
-$JSON::PP::IncrParser::VERSION = '1.01';
+use vars qw($VERSION);
+$VERSION = '1.01';
 
 my $unpack_format = $] < 5.006 ? 'C*' : 'U*';
 

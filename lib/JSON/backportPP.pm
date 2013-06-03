@@ -610,7 +610,7 @@ BEGIN {
 
     my $text; # json data
     my $at;   # offset
-    my $ch;   # 1chracter
+    my $ch;   # first character
     my $len;  # text length (changed according to UTF8 or NON UTF8)
     # INTERNAL
     my $depth;          # nest counter

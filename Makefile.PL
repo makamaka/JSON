@@ -22,7 +22,6 @@ if ($@) {
 
 my $version     = JSON->VERSION;
 my $message;
-my $pp_only = $ENV{ PUREPERL_ONLY } || $ENV{ PERL_ONLY } || $ENV{ NO_XS };
 
 
 print <<EOF;

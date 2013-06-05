@@ -24,6 +24,11 @@ To install this module type the following:
    make test
    make install
 
+if you use cpanm, can install JSON::XS at once.
+
+   cpanm  --with-recommends JSON
+
+
 NAME
     JSON - JSON (JavaScript Object Notation) encoder/decoder
 

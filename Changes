@@ -13,7 +13,16 @@ From version 1.xx to 2.xx, JSON was totally rewritten.
 
 ##########################################################################
 
-2.58 Thu May 23 09:04:37 2013
+2.59  Wed Jun  5 14:35:54 2013
+	- PUREPERL_ONLY support was not supported...
+	    and finally remove all PP options from Makefile.PL.
+	- recommend JSON::XS instead of conditionally requiring it
+	     patched by miyagaw
+	  ( for example, $ cpanm --with-recommends JSON)
+	- Hide more packages from PAUSE (and other stuff)
+	     patched by miyagawa
+
+2.58  Thu May 23 09:04:37 2013
 	- support PUREPERL_ONLY install option. (rt#84876)
 	   (PERL_ONLY and NO_XS are not yet removed)
 	- stop installing JSON::XS automatically on Perl 5.18

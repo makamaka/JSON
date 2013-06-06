@@ -190,12 +190,12 @@ sub backend {
 
 
 sub is_xs {
-    return $_[0]->module eq $Module_XS;
+    return $_[0]->backend eq $Module_XS;
 }
 
 
 sub is_pp {
-    return not $_[0]->xs;
+    return not $_[0]->is_xs;
 }
 
 

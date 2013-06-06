@@ -15,7 +15,7 @@ From version 1.xx to 2.xx, JSON was totally rewritten.
 
 2.60
 	- $json->is_xs, $json->is_pp was completely broken.
-	    pointed by emceelam
+	    pointed by rt#75867 and emceelam
 
 2.59  Wed Jun  5 14:35:54 2013
 	- PUREPERL_ONLY support was not supported...

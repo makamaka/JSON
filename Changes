@@ -26,6 +26,9 @@ In other word, JSON::PP::Boolean overload numeric only.
 
 ##########################################################################
 
+	- support Cpanel::JSON::XS as a backend module.
+
+
 2.90  Wed Oct 30 19:48:43 2013
 
 	**** Please see to the headline in this file. ****

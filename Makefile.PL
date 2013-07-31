@@ -11,12 +11,12 @@ eval q| require JSON |;
 # B module can't install? I'm not careful for such a problem.
 # Leave us alone today?
 if ($@) {
-    print "We try to look up lib/JSON.pm, but in vain. B module can't install?\n";
-    print "Set the environmental variable 'PERL_DL_NONLAZY' with 0.\n";
-    print "And see to ExtUtils::MM_Unix.\n";
+    print "Loading lib/JSON.pm failed. B module can't install?\n";
     print "perl says : $@";
-    print "We do not make Makefile by requiring Perl version 7.0.\n";
-    require 7.0000;
+    print "Set the environmental variable 'PERL_DL_NONLAZY' to 0.\n";
+    print "And see ExtUtils::MM_Unix.\n";
+    print "No Makefile created.\n";
+    exit(0);
 }
 
 

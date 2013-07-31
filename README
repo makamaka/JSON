@@ -1,4 +1,4 @@
-JSON version 2.58
+JSON version 2.60
 =================
 
 "JSON::PP" was earlier included in the "JSON" distribution,
@@ -64,7 +64,7 @@ SYNOPSIS
      # recommend to use (en|de)code_json.
 
 VERSION
-        2.58
+        2.60
 
     This version is compatible with JSON::XS 2.27 and later.
 

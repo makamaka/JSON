@@ -13,7 +13,8 @@ From version 1.xx to 2.xx, JSON was totally rewritten.
 
 ##########################################################################
 
-2.60
+2.60  Wed Jul 31 18:09:50 2013
+	- support Cpanel::JSON::XS as a backend module.
 	- $json->is_xs, $json->is_pp was completely broken.
 	    pointed by rt#75867 and emceelam
 

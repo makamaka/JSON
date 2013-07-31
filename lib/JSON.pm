@@ -7,16 +7,17 @@ use base qw(Exporter);
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '2.59';
+    $JSON::VERSION = '2.60';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
     $JSON::DEBUG   = $ENV{ PERL_JSON_DEBUG } if exists $ENV{ PERL_JSON_DEBUG };
 }
 
-my $Module_XS  = 'JSON::XS';
 my $Module_PP  = 'JSON::PP';
 my $Module_bp  = 'JSON::backportPP'; # included in JSON distribution
 my $PP_Version = '2.27200';
-my $XS_Version = '2.34';
+my $Module_XS  = 'JSON::XS'; # or Cpanel::JSON::XS transparently
+my $XS_Version = '2.34';     # Cpanel::JSON::XS features the same major version numbers as JSON::XS
+my $Cpanel_XS_Version = '2.33'; # but C::J::X is 2.33
 
 
 # XS and PP common methods
@@ -243,15 +244,20 @@ sub property {
 sub _load_xs {
     my $opt = shift;
 
-    $JSON::DEBUG and Carp::carp "Load $Module_XS.";
-
     # if called after install module, overload is disable.... why?
     JSON::Boolean::_overrride_overload($Module_XS);
     JSON::Boolean::_overrride_overload($Module_PP);
 
-    eval qq|
-        use $Module_XS $XS_Version ();
-    |;
+    for ( ['Cpanel::JSON::XS' => $Cpanel_XS_Version], ['JSON::XS' => $XS_Version] ) {
+        my ( $xs, $v ) = @$_;
+        $JSON::DEBUG and Carp::carp "Try to load $xs.";
+        eval qq| use $xs $v () |;
+        unless ($@) {
+            $JSON::DEBUG and Carp::carp "$xs was loaded.";
+            $Module_XS = $xs;
+            last;
+        }
+    }
 
     if ($@) {
         if (defined $opt and $opt & $_INSTALL_DONT_DIE) {
@@ -265,6 +271,9 @@ sub _load_xs {
         _set_module( $JSON::Backend = $Module_XS );
         my $data = join("", <DATA>); # this code is from Jcode 2.xx.
         close(DATA);
+        if ($Module_XS ne 'JSON::XS') {
+            $data =~ s/JSON::XS/$Module_XS/g;
+        }
         eval $data;
         JSON::Backend::XS->init;
     }
@@ -374,6 +383,13 @@ sub _overrride_overload {
         my $false = do { bless \(my $dummy = 0), $boolean };
         *JSON::XS::true  = sub () { $true };
         *JSON::XS::false = sub () { $false };
+    }
+    elsif ( exists $INC{'Cpanel/JSON/XS.pm'} and $boolean eq 'Cpanel::JSON::XS::Boolean' ) {
+        local $^W;
+        my $true  = do { bless \(my $dummy = 1), $boolean };
+        my $false = do { bless \(my $dummy = 0), $boolean };
+        *Cpanel::JSON::XS::true  = sub () { $true };
+        *Cpanel::JSON::XS::false = sub () { $false };
     }
     elsif ( exists $INC{'JSON/PP.pm'} and $boolean eq 'JSON::PP::Boolean' ) {
         local $^W;
@@ -655,7 +671,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
 =head1 VERSION
 
-    2.59
+    2.60
 
 This version is compatible with JSON::XS B<2.34> and later.
 

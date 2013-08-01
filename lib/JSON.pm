@@ -249,7 +249,7 @@ sub _load_xs {
     JSON::Boolean::_overrride_overload($Module_XS);
     JSON::Boolean::_overrride_overload($Module_PP);
 
-    for ( ['Cpanel::JSON::XS' => $Cpanel_XS_Version], ['JSON::XS' => $XS_Version] ) {
+    for ( ['JSON::XS' => $XS_Version], ['Cpanel::JSON::XS' => $Cpanel_XS_Version] ) {
         my ( $xs, $v ) = @$_;
         $JSON::DEBUG and Carp::carp "Try to load $xs.";
         eval qq| use $xs $v () |;
@@ -378,7 +378,7 @@ sub _overrride_overload {
                 }
             },
         );
-    |, $boolean);
+    |, $boolean) if $boolean ne 'Cpanel::JSON::XS::Boolean';
 
     if ($@) { Carp::croak $@; }
 

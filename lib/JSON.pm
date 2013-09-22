@@ -676,7 +676,7 @@ be found also in the Perl5 repository at
 (The newest JSON::PP version still exists in CPAN.)
 
 Instead, the C<JSON> distribution will include JSON::backportPP
-for backwards computability. JSON.pm should thus work as it did
+for backwards compatibility. JSON.pm should thus work as it did
 before.
 
 =head1 DESCRIPTION

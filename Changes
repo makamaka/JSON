@@ -13,6 +13,11 @@ From version 1.xx to 2.xx, JSON was totally rewritten.
 
 ##########################################################################
 
+2.61  Thu Oct 17 19:38:55 2013
+	- fixed return/or in _incr_parse
+	  reported and patched by MAUKE, sprout and rjbs
+	  https://rt.cpan.org/Public/Bug/Display.html?id=86948
+
 2.60
 	- $json->is_xs, $json->is_pp was completely broken.
 	    pointed by rt#75867 and emceelam

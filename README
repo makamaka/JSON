@@ -64,9 +64,10 @@ SYNOPSIS
      # recommend to use (en|de)code_json.
 
 VERSION
-        2.58
+        2.90
 
-    This version is compatible with JSON::XS 2.27 and later.
+    This version is compatible with JSON::XS 2.34 and later.
+    (Not yet compatble to JSON::XS B<3.0x>.)
 
 NOTE
     JSON::PP was earlier included in the "JSON" distribution, but has since
@@ -82,6 +83,31 @@ NOTE
     backwards computability. JSON.pm should thus work as it did before.
 
 DESCRIPTION
+     *************************** CAUTION **************************************
+     *                                                                        *
+     * INCOMPATIBLE CHANGE (JSON::XS version 2.90)                            *
+     *                                                                        *
+     * JSON.pm had patched JSON::XS::Boolean and JSON::PP::Boolean internally *
+     * on loading time for making these modules inherit JSON::Boolean.        *
+     * But since JSON::XS v3.0 it use Types::Serialiser as boolean class.     *
+     * Then now JSON.pm breaks boolean classe overload features and           *
+     * -support_by_pp if JSON::XS v3.0 or later is installed.                 *
+     *                                                                        *
+     * JSON::true and JSON::false returned JSON::Boolean objects.             *
+     * For workaround, they return JSON::PP::Boolean objects in this version. *
+     *                                                                        *
+     *     isa_ok(JSON::true, 'JSON::PP::Boolean');                           *
+     *                                                                        *
+     * And it discards a feature:                                             *
+     *                                                                        *
+     *     ok(JSON::true eq 'true');                                          *
+     *                                                                        *
+     * In other word, JSON::PP::Boolean overload numeric only.                *
+     *                                                                        *
+     *     ok( JSON::true == 1 );                                             *
+     *                                                                        *
+     **************************************************************************
+
      ************************** CAUTION ********************************
      * This is 'JSON module version 2' and there are many differences  *
      * to version 1.xx                                                 *
@@ -1146,15 +1172,9 @@ MAPPING
         numbers 1 and 0. You can check whether a scalar is a JSON boolean by
         using the "JSON::is_bool" function.
 
-        If "JSON::true" and "JSON::false" are used as strings or compared as
-        strings, they represent as "true" and "false" respectively.
-
-           print JSON::true . "\n";
-            => true
            print JSON::true + 1;
             => 1
 
-           ok(JSON::true eq 'true');
            ok(JSON::true eq  '1');
            ok(JSON::true == 1);
 

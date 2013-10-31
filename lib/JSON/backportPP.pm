@@ -13,7 +13,7 @@ use B ();
 #use Devel::Peek;
 
 use vars qw($VERSION);
-$VERSION = '2.27203';
+$VERSION = '2.27204';
 
 @JSON::PP::EXPORT = qw(encode_json decode_json from_json to_json);
 

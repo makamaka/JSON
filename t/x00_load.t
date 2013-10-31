@@ -9,6 +9,7 @@ use JSON;
 
 SKIP: {
     skip "can't use JSON::XS.", 1, unless( JSON->backend->is_xs );
-    ok(1, "load JSON::XS");
+    diag("load JSON::XS v." . JSON->backend->VERSION );
+    ok(1, "load JSON::XS v." . JSON->backend->VERSION );
 }
 

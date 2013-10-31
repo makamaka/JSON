@@ -1394,8 +1394,22 @@ BEGIN {
 
 # shamelessly copied and modified from JSON::XS code.
 
-$JSON::PP::true  = do { bless \(my $dummy = 1), "JSON::backportPP::Boolean" };
-$JSON::PP::false = do { bless \(my $dummy = 0), "JSON::backportPP::Boolean" };
+unless ( $INC{'JSON/PP.pm'} ) {
+    eval q|
+        package
+            JSON::PP::Boolean;
+
+        use overload (
+            "0+"     => sub { ${$_[0]} },
+            "++"     => sub { $_[0] = ${$_[0]} + 1 },
+            "--"     => sub { $_[0] = ${$_[0]} - 1 },
+            fallback => 1,
+        );
+    |;
+}
+
+$JSON::PP::true  = do { bless \(my $dummy = 1), "JSON::PP::Boolean" };
+$JSON::PP::false = do { bless \(my $dummy = 0), "JSON::PP::Boolean" };
 
 sub is_bool { defined $_[0] and UNIVERSAL::isa($_[0], "JSON::PP::Boolean"); }
 
@@ -1404,17 +1418,6 @@ sub false { $JSON::PP::false }
 sub null  { undef; }
 
 ###############################
-
-package JSON::backportPP::Boolean;
-
-@JSON::backportPP::Boolean::ISA = ('JSON::PP::Boolean');
-use overload (
-   "0+"     => sub { ${$_[0]} },
-   "++"     => sub { $_[0] = ${$_[0]} + 1 },
-   "--"     => sub { $_[0] = ${$_[0]} - 1 },
-   fallback => 1,
-);
-
 
 ###############################
 

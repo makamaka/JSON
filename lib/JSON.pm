@@ -172,6 +172,7 @@ sub from_json ($@) {
 }
 
 
+
 sub true  { $JSON::true  }
 
 sub false { $JSON::false }
@@ -321,7 +322,10 @@ sub _set_module {
     $JSON::false = ${"$module\::false"};
 
     push @JSON::ISA, $module;
-    push @{"$module\::Boolean::ISA"}, qw(JSON::Boolean);
+    if ( JSON->is_xs and JSON->backend->VERSION < 3 ) {
+        eval 'package JSON::PP::Boolean';
+        push @{"$module\::Boolean::ISA"}, qw(JSON::PP::Boolean);
+    }
 
     *{"JSON::is_bool"} = \&{"$module\::is_bool"};
 
@@ -346,6 +350,7 @@ package JSON::Boolean;
 my %Installed;
 
 sub _overrride_overload {
+    return; # this function is currently disable.
     return if ($Installed{ $_[0] }++);
 
     my $boolean = $_[0] . '::Boolean';
@@ -486,8 +491,8 @@ sub support_by_pp {
         $pkg->_make_unsupported_method($method => $type);
     }
 
-    push @{"JSON::XS::Boolean::ISA"}, qw(JSON::PP::Boolean);
-    push @{"JSON::PP::Boolean::ISA"}, qw(JSON::Boolean);
+#    push @{"JSON::XS::Boolean::ISA"}, qw(JSON::PP::Boolean);
+#    push @{"JSON::PP::Boolean::ISA"}, qw(JSON::Boolean);
 
     $JSON::DEBUG and Carp::carp("set -support_by_pp mode.");
 

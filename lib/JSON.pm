@@ -62,7 +62,8 @@ unless ($JSON::Backend) {
     elsif ($backend eq '0' or $backend eq 'JSON::PP') {
         _load_pp();
     }
-    elsif ($backend eq '2' or $backend eq 'JSON::XS') {
+    elsif ($backend eq '2' or $backend eq 'JSON::XS'
+        or $backend eq '3' or $backend eq 'Cpanel::JSON::XS') {
         _load_xs();
     }
     elsif ($backend eq 'JSON::backportPP') {

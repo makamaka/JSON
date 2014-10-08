@@ -868,7 +868,7 @@ to parse it, returning the resulting reference.
 
 This function call is functionally identical to:
 
-    $perl_scalar = JSON->decode($json_text)
+    $perl_scalar = JSON->new->decode($json_text)
 
 Takes a hash reference as the second.
 

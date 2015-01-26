@@ -8,7 +8,7 @@
 use Test::More;
 use strict;
 
-BEGIN { plan tests => 17 };
+BEGIN { plan tests => 18 };
 
 BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::backportPP"; }
 
@@ -90,4 +90,8 @@ is($obj->{id},"abc\\ndef",q|{"id":"abc\\\ndef"}|);
 
 $obj = $pc->decode(q|{"id":"abc\\\\\ndef"}|);
 is($obj->{id},"abc\\\ndef",q|{"id":"abc\\\\\ndef"}|);
+
+$obj = {test => "\'I said\', \"She said\""};
+$str = $pc->encode($obj);
+is($str,q|{"test":"'I said', \"She said\""}|);
 

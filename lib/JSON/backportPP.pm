@@ -322,7 +322,42 @@ sub allow_bigint {
 
                 return $self->value_to_json($obj) if ( $obj->isa('JSON::PP::Boolean') );
 
-                if ( $convert_blessed and $obj->can('TO_JSON') ) {
+                if ( $convert_blessed and $obj->can('TO_JSON_WITH_TYPE') ) { #API based on email tread from Houston.PM
+                    my @results=$obj->TO_JSON_WITH_TYPE();
+                    encode_error(sprintf("%s::TO_JSON_WITH_TYPE method returned invalid data", $type)) if @results > 2;
+                    my ($rformat, $payload) = @results;
+                    encode_error(sprintf(q{%s::TO_JSON_WITH_TYPE method returned undefined format.}, $type)) unless defined($rformat);
+                    if ($rformat eq "NUMBER") {                   #RFC 4627 - TODO format directly instead of going throuigh value_to_json so NUMBER=>"1.1" is 1.1 not "1.1"
+                      return $self->value_to_json($payload + 0);
+                    } elsif ($rformat eq "STRING") {              #RFC 4627 - TODO format directly instead of going throuigh value_to_json
+                      return $self->value_to_json($payload . "");
+                    } elsif ($rformat eq "BOOLEAN") {             #RFC 4627 - normal case (MUCH easier API than the BOOLEAN object mess)
+                      return $payload ? 'true' : 'false';
+                    } elsif ($rformat eq "ARRAY") {               #RFC 4627 - normal case
+                      encode_error(sprintf(q{%s::TO_JSON_WITH_TYPE format ARRAY requires ARRAY reference payload.}, $type))
+                        unless reftype($payload) eq "ARRAY";
+                      return $self->array_to_json($payload);
+                    } elsif ($rformat eq "OBJECT") {              #RFC 4627 - Recursive
+                      return $self->object_to_json($payload);
+                    } elsif ($rformat eq 'NULL') {                #RFC 4627
+                      return 'null';
+                    } elsif ($rformat eq "HASH") {                #Perl-ish - support ordered and unordered hashes
+                      my $reftype = reftype($payload) || '';
+                      if ($reftype eq 'HASH') {                   #normal case unordered hash
+                        return $self->hash_to_json($payload);
+                      } elsif ($reftype eq 'ARRAY') {             #new case ordered hash
+                        return $self->array_to_json_as_ordered_hash($payload);
+                      } else {
+                        encode_error(sprintf(q{%s::TO_JSON_WITH_TYPE format OBJECT and HASH requires HASH or ARRAY reference payload.}, $type));
+                      }
+                    } elsif ($rformat eq "SCALAR") {              #Perl-ish - normal case
+                      return $self->value_to_json($payload);
+                    } elsif ($rformat eq 'UNDEF') {               #Perl-ish
+                      return 'null';
+                    } else {
+                      encode_error(sprintf(q{%s::TO_JSON_WITH_TYPE method returned invalid format "%s". Expected one of NUMBER, STRING, BOOLEAN, ARRAY, OBJECT, NULL, HASH, SCALAR, UNDEF}, $type, $rformat));
+                    }
+                } elsif ( $convert_blessed and $obj->can('TO_JSON') ) {
                     my $result = $obj->TO_JSON();
                     if ( defined $result and ref( $result ) ) {
                         if ( refaddr( $obj ) eq refaddr( $result ) ) {
@@ -396,6 +431,38 @@ sub allow_bigint {
         $self->_down_indent() if ($indent);
 
         return '[' . ( @res ? $pre : '' ) . ( @res ? join( ",$pre", @res ) . $post : '' ) . ']';
+    }
+
+
+    sub array_to_json_as_ordered_hash {
+        my ($self, $obj) = @_;
+        my @res;
+
+        encode_error("array_to_json_as_ordered_hash argument must be an array reference") unless reftype($obj) eq "ARRAY";
+        encode_error("array_to_json_as_ordered_hash array reference must have even number of elements") if @$obj % 2;
+        encode_error("json text or perl structure exceeds maximum nesting level (max_depth set too low?)")
+                                         if (++$depth > $max_depth);
+
+        my ($pre, $post) = $indent ? $self->_up_indent() : ('', '');
+        my $del = ($space_before ? ' ' : '') . ':' . ($space_after ? ' ' : '');
+
+        my $isKey=1;
+        my $k;
+        for my $v (@$obj){
+            if ($isKey) {
+              $k=$v; #store key for next loop
+            } else {
+              push @res, string_to_json( $self, $k )
+                            .  $del
+                            . ( $self->object_to_json( $v ) || $self->value_to_json( $v ) );
+            }
+            $isKey=!$isKey; #flip flop key
+        }
+
+        --$depth;
+        $self->_down_indent() if ($indent);
+
+        return   '{' . ( @res ? $pre : '' ) . ( @res ? join( ",$pre", @res ) . $post : '' )  . '}';
     }
 
 

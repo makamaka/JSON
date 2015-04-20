@@ -22,6 +22,7 @@ t/09_pc_extra_number.t
 t/10_pc_keysort.t
 t/11_pc_expo.t
 t/12_blessed.t
+t/12_blessed_with_type.t
 t/13_limit.t
 t/14_latin1.t
 t/15_prefix.t

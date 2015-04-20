@@ -334,7 +334,7 @@ sub allow_bigint {
                     } elsif ($rformat eq "BOOLEAN") {             #RFC 4627 - normal case (MUCH easier API than the BOOLEAN object mess)
                       return $payload ? 'true' : 'false';
                     } elsif ($rformat eq "ARRAY") {               #RFC 4627 - normal case
-                      encode_error(sprintf(q{%s::TO_JSON_WITH_TYPE format ARRAY requires ARRAY reference payload.}, $type))
+                      encode_error(sprintf(q{%s::TO_JSON_WITH_TYPE format "ARRAY" requires ARRAY reference payload.}, $type))
                         unless reftype($payload) eq "ARRAY";
                       return $self->array_to_json($payload);
                     } elsif ($rformat eq "OBJECT") {              #RFC 4627 - Recursive
@@ -348,7 +348,7 @@ sub allow_bigint {
                       } elsif ($reftype eq 'ARRAY') {             #new case ordered hash
                         return $self->array_to_json_as_ordered_hash($payload);
                       } else {
-                        encode_error(sprintf(q{%s::TO_JSON_WITH_TYPE format OBJECT and HASH requires HASH or ARRAY reference payload.}, $type));
+                        encode_error(sprintf(q{%s::TO_JSON_WITH_TYPE format "HASH" requires HASH or ARRAY reference payload.}, $type));
                       }
                     } elsif ($rformat eq "SCALAR") {              #Perl-ish - normal case
                       return $self->value_to_json($payload);

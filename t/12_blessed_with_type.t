@@ -2,7 +2,7 @@
 
 use strict;
 use Test::More;
-BEGIN { plan tests => 27 };
+BEGIN { plan tests => 30 };
 
 BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::backportPP"; }
 
@@ -77,6 +77,15 @@ is($js->encode (bless {}, 'XR'), 'false', "TO_JSON_WITH_TYPE BOOLEAN");
 
 {package XS; sub TO_JSON_WITH_TYPE {return BOOLEAN=>()};}
 is($js->encode (bless {}, 'XS'), 'false', "TO_JSON_WITH_TYPE BOOLEAN");
+
+{package XT; sub TO_JSON_WITH_TYPE {return BOOLEAN=>"0E0"};} #true but zero in Perl
+is($js->encode (bless {}, 'XT'), 'true', "TO_JSON_WITH_TYPE BOOLEAN");
+
+{package XU; sub TO_JSON_WITH_TYPE {return BOOLEAN=>"true"};}  #this is "true"
+is($js->encode (bless {}, 'XU'), 'true', "TO_JSON_WITH_TYPE BOOLEAN");
+
+{package XV; sub TO_JSON_WITH_TYPE {return BOOLEAN=>"false"};}  #this is "true" not false
+is($js->encode (bless {}, 'XV'), 'true', "TO_JSON_WITH_TYPE BOOLEAN");
 
 {package FA; sub TO_JSON_WITH_TYPE {return HASH=>[a=>1,b=>2,c=>3, "f"]};}
 eval { $js->encode (bless {}, 'FA') }; ok ($@ =~ m/must have even/, "TO_JSON_WITH_TYPE HASH uneven array");

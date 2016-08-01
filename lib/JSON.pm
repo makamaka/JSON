@@ -1505,7 +1505,7 @@ silently stop parsing there and return the number of characters consumed
 so far.
 
    JSON->new->decode_prefix ("[1] the tail")
-   => ([], 3)
+   => ([1], 3)
 
 See to L<JSON::XS/OBJECT-ORIENTED INTERFACE>
 

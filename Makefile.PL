@@ -35,8 +35,8 @@ $message
  *                                                                        *
  * JSON.pm had patched JSON::XS::Boolean and JSON::PP::Boolean internally *
  * on loading time for making these modules inherit JSON::Boolean.        *
- * But since JSON::XS v3.0 it use Types::Serialiser as boolean class.     *
- * Then now JSON.pm breaks boolean classe overload features and           *
+ * But since JSON::XS v3.0 it uses Types::Serialiser as boolean class.    *
+ * Then now JSON.pm breaks boolean class overload features and            *
  * -support_by_pp if JSON::XS v3.0 or later is installed.                 *
  *                                                                        *
  * JSON::true and JSON::false returned JSON::Boolean objects.             *
@@ -48,7 +48,7 @@ $message
  *                                                                        *
  *     ok(JSON::true eq 'true');                                          *
  *                                                                        *
- * In other word, JSON::PP::Boolean overload numeric only.                *
+ * In other words, JSON::PP::Boolean overloads numeric only.              *
  *                                                                        *
  *     ok( JSON::true == 1 );                                             *
  *                                                                        *
@@ -58,8 +58,8 @@ $message
  ************************** CAUTION **************************
  * This is 'JSON version 2' and there are many differences   *
  * to version 1.xx                                           *
- * Please check your applications useing old version.        *
- *   See to 'INCOMPATIBLE CHANGES TO OLD VERSION' and 'TIPS' *
+ * Please check your applications that use old version.      *
+ *   See 'INCOMPATIBLE CHANGES TO OLD VERSION' and 'TIPS'    *
  *************************************************************
 
 

@@ -1651,7 +1651,7 @@ See to L<JSON::PP/JSON::PP OWN METHODS> in detail.
 If you use C<JSON> with additional C<-support_by_pp>, some methods
 are available even with JSON::XS. See to L<USE PP FEATURES EVEN THOUGH XS BACKEND>.
 
-   BEING { $ENV{PERL_JSON_BACKEND} = 'JSON::XS' }
+   BEGIN { $ENV{PERL_JSON_BACKEND} = 'JSON::XS' }
    
    use JSON -support_by_pp;
    

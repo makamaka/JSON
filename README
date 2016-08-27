@@ -1071,7 +1071,7 @@ JSON::PP SUPPORT METHODS
         $json = $json->loose([$enable])
 
     The unescaped [\x00-\x1f\x22\x2f\x5c] strings are invalid in JSON
-    strings and the module doesn't allow to "decode" to these (except for
+    strings and the module doesn't allow one to "decode" to these (except for
     \x2f). If $enable is true (or missing), then "decode" will accept these
     unescaped strings.
 

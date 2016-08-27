@@ -1718,7 +1718,7 @@ See to L<MAPPING> about the conversion of JSON number.
     $json = $json->loose([$enable])
 
 The unescaped [\x00-\x1f\x22\x2f\x5c] strings are invalid in JSON strings
-and the module doesn't allow to C<decode> to these (except for \x2f).
+and the module doesn't allow one to C<decode> to these (except for \x2f).
 If C<$enable> is true (or missing), then C<decode>  will accept these
 unescaped strings.
 

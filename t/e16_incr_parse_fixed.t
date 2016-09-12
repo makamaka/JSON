@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 BEGIN {
     $ENV{ PERL_JSON_BACKEND } = $ARGV[0] || 'JSON::backportPP';
 }

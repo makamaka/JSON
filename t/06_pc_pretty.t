@@ -1,5 +1,3 @@
-#! perl
-
 # copied over from JSON::PC and modified to use JSON
 # copied over from JSON::XS and modified to use JSON
 

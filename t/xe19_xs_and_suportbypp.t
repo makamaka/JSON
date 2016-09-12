@@ -1,5 +1,3 @@
-#! perl
-
 # https://rt.cpan.org/Public/Bug/Display.html?id=52847
 
 use strict;

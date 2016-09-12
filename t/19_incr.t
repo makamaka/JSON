@@ -1,5 +1,3 @@
-#!/usr/bin/perl -w
-
 # copied over from JSON::XS and modified to use JSON
 
 use strict;

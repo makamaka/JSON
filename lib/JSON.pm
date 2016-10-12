@@ -246,10 +246,6 @@ sub _load_xs {
 
     $JSON::DEBUG and Carp::carp "Load $Module_XS.";
 
-    # if called after install module, overload is disable.... why?
-    JSON::Boolean::_overrride_overload($Module_XS);
-    JSON::Boolean::_overrride_overload($Module_PP);
-
     eval qq|
         use $Module_XS $XS_Version ();
     |;
@@ -280,10 +276,6 @@ sub _load_pp {
 
     $JSON::DEBUG and Carp::carp "Load $backend.";
 
-    # if called after install module, overload is disable.... why?
-    JSON::Boolean::_overrride_overload($Module_XS);
-    JSON::Boolean::_overrride_overload($backend);
-
     if ( $_USSING_bpPP ) {
         eval qq| require $backend |;
     }
@@ -296,7 +288,6 @@ sub _load_pp {
             $JSON::DEBUG and Carp::carp "Can't load $Module_PP ($@), so try to load $Module_bp";
             $_USSING_bpPP++;
             $backend = $Module_bp;
-            JSON::Boolean::_overrride_overload($backend);
             local $^W; # if PP installed but invalid version, backportPP redefines methods.
             eval qq| require $Module_bp |;
         }
@@ -349,47 +340,6 @@ package JSON::Boolean;
 
 my %Installed;
 
-sub _overrride_overload {
-    return; # this function is currently disable.
-    return if ($Installed{ $_[0] }++);
-
-    my $boolean = $_[0] . '::Boolean';
-
-    eval sprintf(q|
-        package %s;
-        use overload (
-            '""' => sub { ${$_[0]} == 1 ? 'true' : 'false' },
-            'eq' => sub {
-                my ($obj, $op) = ref ($_[0]) ? ($_[0], $_[1]) : ($_[1], $_[0]);
-                if ($op eq 'true' or $op eq 'false') {
-                    return "$obj" eq 'true' ? 'true' eq $op : 'false' eq $op;
-                }
-                else {
-                    return $obj ? 1 == $op : 0 == $op;
-                }
-            },
-        );
-    |, $boolean);
-
-    if ($@) { Carp::croak $@; }
-
-    if ( exists $INC{'JSON/XS.pm'} and $boolean eq 'JSON::XS::Boolean' ) {
-        local $^W;
-        my $true  = do { bless \(my $dummy = 1), $boolean };
-        my $false = do { bless \(my $dummy = 0), $boolean };
-        *JSON::XS::true  = sub () { $true };
-        *JSON::XS::false = sub () { $false };
-    }
-    elsif ( exists $INC{'JSON/PP.pm'} and $boolean eq 'JSON::PP::Boolean' ) {
-        local $^W;
-        my $true  = do { bless \(my $dummy = 1), $boolean };
-        my $false = do { bless \(my $dummy = 0), $boolean };
-        *JSON::PP::true  = sub { $true };
-        *JSON::PP::false = sub { $false };
-    }
-
-    return 1;
-}
 
 
 #

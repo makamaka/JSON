@@ -54,13 +54,24 @@ unless ($JSON::Backend) {
 
     my $backend = exists $ENV{PERL_JSON_BACKEND} ? $ENV{PERL_JSON_BACKEND} : 1;
 
-    if ($backend eq '1' or $backend =~ /JSON::XS\s*,\s*JSON::PP/) {
+    if ($backend eq '1') {
+        $backend = 'JSON::XS,JSON::PP';
+    }
+    elsif ($backend eq '0') {
+        $backend = 'JSON::PP';
+    }
+    elsif ($backend eq '2') {
+        $backend = 'JSON::XS';
+    }
+    $backend =~ s/\s+//g;
+
+    if ($backend =~ /JSON::XS,JSON::PP/) {
         _load_xs($_INSTALL_DONT_DIE) or _load_pp();
     }
-    elsif ($backend eq '0' or $backend eq 'JSON::PP') {
+    elsif ($backend eq 'JSON::PP') {
         _load_pp();
     }
-    elsif ($backend eq '2' or $backend eq 'JSON::XS') {
+    elsif ($backend eq 'JSON::XS') {
         _load_xs();
     }
     elsif ($backend eq 'JSON::backportPP') {

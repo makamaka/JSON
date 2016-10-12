@@ -333,16 +333,6 @@ sub _set_module {
 
 
 #
-# JSON Boolean
-#
-
-package JSON::Boolean;
-
-my %Installed;
-
-
-
-#
 # Helper classes for Backend Module (PP)
 #
 

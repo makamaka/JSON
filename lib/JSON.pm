@@ -42,7 +42,6 @@ my @PPOnlyMethods = qw/
 
 # used in _load_xs and _load_pp ($INSTALL_ONLY is not used currently)
 my $_INSTALL_DONT_DIE  = 1; # When _load_xs fails to load XS, don't die.
-my $_INSTALL_ONLY      = 2; # Don't call _set_methods()
 my $_ALLOW_UNSUPPORTED = 0;
 my $_UNIV_CONV_BLESSED = 0;
 my $_USSING_bpPP       = 0;
@@ -263,13 +262,11 @@ sub _load_xs {
     my $opt = shift;
     __load_xs($opt);
 
-    unless (defined $opt and $opt & $_INSTALL_ONLY) {
-        _set_module( $JSON::Backend = $Module_XS );
-        my $data = join("", <DATA>); # this code is from Jcode 2.xx.
-        close(DATA);
-        eval $data;
-        JSON::Backend::XS->init;
-    }
+    _set_module( $JSON::Backend = $Module_XS );
+    my $data = join("", <DATA>); # this code is from Jcode 2.xx.
+    close(DATA);
+    eval $data;
+    JSON::Backend::XS->init;
 
     return 1;
 };
@@ -304,10 +301,8 @@ sub _load_pp {
     my $opt = shift;
     __load_pp($opt);
 
-    unless (defined $opt and $opt & $_INSTALL_ONLY) {
-        _set_module( $JSON::Backend = $Module_PP ); # even if backportPP, set $Backend with 'JSON::PP'
-        JSON::Backend::PP->init;
-    }
+    _set_module( $JSON::Backend = $Module_PP ); # even if backportPP, set $Backend with 'JSON::PP'
+    JSON::Backend::PP->init;
 };
 
 

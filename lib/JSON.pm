@@ -406,168 +406,29 @@ sub init {
 sub support_by_pp {
     my ($class, @methods) = @_;
 
+    JSON::__load_pp();
+
     local $^W;
     no strict qw(refs);
-
-    my $JSON_XS_encode_orignal     = \&JSON::XS::encode;
-    my $JSON_XS_decode_orignal     = \&JSON::XS::decode;
-    my $JSON_XS_incr_parse_orignal = \&JSON::XS::incr_parse;
-
-    *JSON::XS::decode     = \&JSON::Backend::XS::Supportable::_decode;
-    *JSON::XS::encode     = \&JSON::Backend::XS::Supportable::_encode;
-    *JSON::XS::incr_parse = \&JSON::Backend::XS::Supportable::_incr_parse;
-
-    *{JSON::XS::_original_decode}     = $JSON_XS_decode_orignal;
-    *{JSON::XS::_original_encode}     = $JSON_XS_encode_orignal;
-    *{JSON::XS::_original_incr_parse} = $JSON_XS_incr_parse_orignal;
-
-    push @JSON::Backend::XS::Supportable::ISA, 'JSON';
-
-    my $pkg = 'JSON::Backend::XS::Supportable';
-
-    *{JSON::new} = sub {
-        my $proto = JSON::XS->new; $$proto = 0;
-        bless  $proto, $pkg;
-    };
-
 
     for my $method (@methods) {
-        my $flag = uc($method);
-        my $type |= (UNSUPPORTED_ENCODE_FLAG->{$flag} || 0);
-           $type |= (UNSUPPORTED_DECODE_FLAG->{$flag} || 0);
-
-        next unless($type);
-
-        $pkg->_make_unsupported_method($method => $type);
+        my $pp_method = JSON::PP->can($method) or next;
+        *{"JSON::$method"} = sub {
+            if (!$_[0]->isa('JSON::PP')) {
+                my $xs_self = $_[0];
+                my $pp_self = JSON::PP->new;
+                for (@Properties) {
+                     my $getter = "get_$_";
+                    $pp_self->$_($xs_self->$getter);
+                }
+                $_[0] = $pp_self;
+            }
+            $pp_method->(@_);
+        };
     }
-
-#    push @{"JSON::XS::Boolean::ISA"}, qw(JSON::PP::Boolean);
-#    push @{"JSON::PP::Boolean::ISA"}, qw(JSON::Boolean);
 
     $JSON::DEBUG and Carp::carp("set -support_by_pp mode.");
-
-    return 1;
 }
-
-
-
-
-#
-# Helper classes for XS
-#
-
-package JSON::Backend::XS::Supportable;
-
-$Carp::Internal{'JSON::Backend::XS::Supportable'} = 1;
-
-sub _make_unsupported_method {
-    my ($pkg, $method, $type) = @_;
-
-    local $^W;
-    no strict qw(refs);
-
-    *{"$pkg\::$method"} = sub {
-        local $^W;
-        if (defined $_[1] ? $_[1] : 1) {
-            ${$_[0]} |= $type;
-        }
-        else {
-            ${$_[0]} &= ~$type;
-        }
-        $_[0];
-    };
-
-    *{"$pkg\::get_$method"} = sub {
-        ${$_[0]} & $type ? 1 : '';
-    };
-
-}
-
-
-sub _set_for_pp {
-    JSON::_load_pp( $_INSTALL_ONLY );
-
-    my $type  = shift;
-    my $pp    = JSON::PP->new;
-    my $prop = $_[0]->property;
-
-    for my $name (keys %$prop) {
-        $pp->$name( $prop->{$name} ? $prop->{$name} : 0 );
-    }
-
-    my $unsupported = $type eq 'encode' ? JSON::Backend::XS::UNSUPPORTED_ENCODE_FLAG
-                                        : JSON::Backend::XS::UNSUPPORTED_DECODE_FLAG;
-    my $flags       = ${$_[0]} || 0;
-
-    for my $name (keys %$unsupported) {
-        next if ($name eq 'EXPANDED'); # for developer's
-        my $enable = ($flags & $unsupported->{$name}) ? 1 : 0;
-        my $method = lc $name;
-        $pp->$method($enable);
-    }
-
-    $pp->indent_length( $_[0]->get_indent_length );
-
-    return $pp;
-}
-
-sub _encode { # using with PP encode
-    if (${$_[0]}) {
-        _set_for_pp('encode' => @_)->encode($_[1]);
-    }
-    else {
-        $_[0]->_original_encode( $_[1] );
-    }
-}
-
-
-sub _decode { # if unsupported-flag is set, use PP
-    if (${$_[0]}) {
-        _set_for_pp('decode' => @_)->decode($_[1]);
-    }
-    else {
-        $_[0]->_original_decode( $_[1] );
-    }
-}
-
-
-sub decode_prefix { # if unsupported-flag is set, use PP
-    _set_for_pp('decode' => @_)->decode_prefix($_[1]);
-}
-
-
-sub _incr_parse {
-    if (${$_[0]}) {
-        _set_for_pp('decode' => @_)->incr_parse($_[1]);
-    }
-    else {
-        $_[0]->_original_incr_parse( $_[1] );
-    }
-}
-
-
-sub get_indent_length {
-    ${$_[0]} << 4 >> 16;
-}
-
-
-sub indent_length {
-    my $length = $_[1];
-
-    if (!defined $length or $length > 15 or $length < 0) {
-        Carp::carp "The acceptable range of indent_length() is 0 to 15.";
-    }
-    else {
-        local $^W;
-        $length <<= 12;
-        ${$_[0]} &= ~ JSON::Backend::XS::INDENT_LENGTH_FLAG;
-        ${$_[0]} |= $length;
-        *JSON::XS::encode = \&JSON::Backend::XS::Supportable::_encode;
-    }
-
-    $_[0];
-}
-
 
 1;
 __END__

@@ -286,7 +286,7 @@ sub _load_xs {
     my $data = join("", <DATA>); # this code is from Jcode 2.xx.
     close(DATA);
     eval $data;
-    JSON::Backend::XS->init;
+    JSON::Backend::XS->init($module);
 
     return 1;
 };
@@ -317,7 +317,7 @@ sub _load_pp {
     __load_pp($module, $opt);
 
     _set_module( $JSON::Backend = 'JSON::PP' ); # even if backportPP, set $Backend with 'JSON::PP'
-    JSON::Backend::PP->init;
+    JSON::Backend::PP->init($module);
 };
 
 
@@ -359,6 +359,10 @@ sub _set_module {
 package JSON::Backend::PP;
 
 sub init {
+    my ($class, $module) = @_;
+
+    # name may vary, but the module should (always) be a JSON::PP
+
     local $^W;
     no strict qw(refs); # this routine may be called after JSON::Backend::XS init was called.
     *{"JSON::decode_json"} = \&{"JSON::PP::decode_json"};
@@ -385,12 +389,14 @@ __DATA__
 package JSON::Backend::XS;
 
 sub init {
+    my ($class, $module) = @_;
+
     local $^W;
     no strict qw(refs);
-    *{"JSON::decode_json"} = \&{"JSON::XS::decode_json"};
-    *{"JSON::encode_json"} = \&{"JSON::XS::encode_json"};
-    *{"JSON::XS::is_xs"}  = sub { 1 };
-    *{"JSON::XS::is_pp"}  = sub { 0 };
+    *{"JSON::decode_json"} = \&{"$module\::decode_json"};
+    *{"JSON::encode_json"} = \&{"$module\::encode_json"};
+    *{"$module\::is_xs"}  = sub { 1 };
+    *{"$module\::is_pp"}  = sub { 0 };
     return 1;
 }
 

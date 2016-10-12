@@ -90,15 +90,21 @@ sub import {
             $no_export++, next;
         }
         elsif ( $tag eq '-convert_blessed_universally' ) {
+            my $org_encode = $JSON::Backend->can('encode');
             eval q|
                 require B;
-                *UNIVERSAL::TO_JSON = sub {
-                    my $b_obj = B::svref_2object( $_[0] );
-                    return    $b_obj->isa('B::HV') ? { %{ $_[0] } }
-                            : $b_obj->isa('B::AV') ? [ @{ $_[0] } ]
-                            : undef
-                            ;
-                }
+                local $^W;
+                no strict 'refs';
+                *{"${JSON::Backend}\::encode"} = sub {
+                    local *UNIVERSAL::TO_JSON = sub {
+                        my $b_obj = B::svref_2object( $_[0] );
+                        return    $b_obj->isa('B::HV') ? { %{ $_[0] } }
+                                : $b_obj->isa('B::AV') ? [ @{ $_[0] } ]
+                                : undef
+                                ;
+                    };
+                    $org_encode->(@_);
+                };
             | if ( !$_UNIV_CONV_BLESSED++ );
             next;
         }

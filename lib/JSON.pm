@@ -68,14 +68,14 @@ unless ($JSON::Backend) {
     my @backend_modules = split /,/, $backend;
     while(my $module = shift @backend_modules) {
         if ($module =~ /JSON::XS/) {
-            _load_xs(@backend_modules ? $_INSTALL_DONT_DIE : 0);
+            _load_xs($module, @backend_modules ? $_INSTALL_DONT_DIE : 0);
         }
         elsif ($module =~ /JSON::PP/) {
-            _load_pp();
+            _load_pp($module);
         }
         elsif ($module =~ /JSON::backportPP/) {
             $_USSING_bpPP = 1;
-            _load_pp();
+            _load_pp($module);
         }
         else {
             Carp::croak "The value of environmental variable 'PERL_JSON_BACKEND' is invalid.";
@@ -259,7 +259,7 @@ sub property {
 # INTERNAL
 
 sub __load_xs {
-    my $opt = shift;
+    my ($module, $opt) = @_;
 
     $JSON::DEBUG and Carp::carp "Load $Module_XS.";
 
@@ -277,8 +277,8 @@ sub __load_xs {
 }
 
 sub _load_xs {
-    my $opt = shift;
-    __load_xs($opt);
+    my ($module, $opt) = @_;
+    __load_xs($module, $opt);
 
     _set_module( $JSON::Backend = $Module_XS );
     my $data = join("", <DATA>); # this code is from Jcode 2.xx.
@@ -291,7 +291,7 @@ sub _load_xs {
 
 
 sub __load_pp {
-    my $opt = shift;
+    my ($module, $opt) = @_;
     my $backend = $_USSING_bpPP ? $Module_bp : $Module_PP;
 
     $JSON::DEBUG and Carp::carp "Load $backend.";
@@ -316,8 +316,8 @@ sub __load_pp {
 }
 
 sub _load_pp {
-    my $opt = shift;
-    __load_pp($opt);
+    my ($module, $opt) = @_;
+    __load_pp($module, $opt);
 
     _set_module( $JSON::Backend = $Module_PP ); # even if backportPP, set $Backend with 'JSON::PP'
     JSON::Backend::PP->init;

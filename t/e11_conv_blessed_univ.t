@@ -1,12 +1,14 @@
 
 use strict;
 use Test::More;
-BEGIN { plan tests => 3 };
+BEGIN { plan tests => 7 };
 
 BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::backportPP"; }
 
 use JSON -convert_blessed_universally;
 
+ok( !Test->can('TO_JSON') );
+ok( Test2->can('TO_JSON') );
 
 my $obj  = Test->new( [ 1, 2, {foo => 'bar'} ] );
 
@@ -24,6 +26,8 @@ $json->allow_blessed(0)->convert_blessed(1);
 
 is( $json->encode( $obj ), '[1,2,{"foo":"bar"},"hoge"]'  );
 
+ok( !Test->can('TO_JSON') );
+ok( Test2->can('TO_JSON') );
 
 package Test;
 

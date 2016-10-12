@@ -15,9 +15,10 @@ BEGIN {
 my $Module_XS  = 'JSON::XS';
 my $Module_PP  = 'JSON::PP';
 my $Module_bp  = 'JSON::backportPP'; # included in JSON distribution
-my $PP_Version = '2.27203';
-my $XS_Version = '2.34';
-
+my %RequiredVersion = (
+    'JSON::PP' => '2.27203',
+    'JSON::XS' => '2.34',
+);
 
 # XS and PP common methods
 
@@ -197,7 +198,7 @@ sub false { $JSON::false }
 sub null  { undef; }
 
 
-sub require_xs_version { $XS_Version; }
+sub require_xs_version { $RequiredVersion{'JSON::XS'}; }
 
 sub backend {
     my $proto = shift;
@@ -262,9 +263,10 @@ sub __load_xs {
     my ($module, $opt) = @_;
 
     $JSON::DEBUG and Carp::carp "Load $module.";
+    my $required_version = $RequiredVersion{$module};
 
     eval qq|
-        use $module $XS_Version ();
+        use $module $required_version ();
     |;
 
     if ($@) {
@@ -294,13 +296,9 @@ sub __load_pp {
     my ($module, $opt) = @_;
 
     $JSON::DEBUG and Carp::carp "Load $module.";
+    my $required_version = $RequiredVersion{$module} || '';
 
-    if ( $_USSING_bpPP ) {
-        eval qq| require $module |;
-    }
-    else {
-        eval qq| use $module $PP_Version () |;
-    }
+    eval qq| use $module $required_version () |;
 
     if ($@) {
         if ( $module eq $Module_PP ) {

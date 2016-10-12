@@ -241,7 +241,7 @@ sub property {
 
 # INTERNAL
 
-sub _load_xs {
+sub __load_xs {
     my $opt = shift;
 
     $JSON::DEBUG and Carp::carp "Load $Module_XS.";
@@ -257,6 +257,11 @@ sub _load_xs {
         }
         Carp::croak $@;
     }
+}
+
+sub _load_xs {
+    my $opt = shift;
+    __load_xs($opt);
 
     unless (defined $opt and $opt & $_INSTALL_ONLY) {
         _set_module( $JSON::Backend = $Module_XS );
@@ -270,7 +275,7 @@ sub _load_xs {
 };
 
 
-sub _load_pp {
+sub __load_pp {
     my $opt = shift;
     my $backend = $_USSING_bpPP ? $Module_bp : $Module_PP;
 
@@ -293,6 +298,11 @@ sub _load_pp {
         }
         Carp::croak $@ if $@;
     }
+}
+
+sub _load_pp {
+    my $opt = shift;
+    __load_pp($opt);
 
     unless (defined $opt and $opt & $_INSTALL_ONLY) {
         _set_module( $JSON::Backend = $Module_PP ); # even if backportPP, set $Backend with 'JSON::PP'

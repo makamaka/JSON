@@ -261,15 +261,15 @@ sub property {
 sub __load_xs {
     my ($module, $opt) = @_;
 
-    $JSON::DEBUG and Carp::carp "Load $Module_XS.";
+    $JSON::DEBUG and Carp::carp "Load $module.";
 
     eval qq|
-        use $Module_XS $XS_Version ();
+        use $module $XS_Version ();
     |;
 
     if ($@) {
         if (defined $opt and $opt & $_INSTALL_DONT_DIE) {
-            $JSON::DEBUG and Carp::carp "Can't load $Module_XS...($@)";
+            $JSON::DEBUG and Carp::carp "Can't load $module...($@)";
             return 0;
         }
         Carp::croak $@;
@@ -280,7 +280,7 @@ sub _load_xs {
     my ($module, $opt) = @_;
     __load_xs($module, $opt);
 
-    _set_module( $JSON::Backend = $Module_XS );
+    _set_module( $JSON::Backend = $module );
     my $data = join("", <DATA>); # this code is from Jcode 2.xx.
     close(DATA);
     eval $data;
@@ -292,24 +292,23 @@ sub _load_xs {
 
 sub __load_pp {
     my ($module, $opt) = @_;
-    my $backend = $_USSING_bpPP ? $Module_bp : $Module_PP;
 
-    $JSON::DEBUG and Carp::carp "Load $backend.";
+    $JSON::DEBUG and Carp::carp "Load $module.";
 
     if ( $_USSING_bpPP ) {
-        eval qq| require $backend |;
+        eval qq| require $module |;
     }
     else {
-        eval qq| use $backend $PP_Version () |;
+        eval qq| use $module $PP_Version () |;
     }
 
     if ($@) {
-        if ( $backend eq $Module_PP ) {
-            $JSON::DEBUG and Carp::carp "Can't load $Module_PP ($@), so try to load $Module_bp";
+        if ( $module eq $Module_PP ) {
+            $JSON::DEBUG and Carp::carp "Can't load $module ($@), so try to load $Module_bp";
             $_USSING_bpPP++;
-            $backend = $Module_bp;
+            $module = $Module_bp;
             local $^W; # if PP installed but invalid version, backportPP redefines methods.
-            eval qq| require $Module_bp |;
+            eval qq| require $module |;
         }
         Carp::croak $@ if $@;
     }
@@ -319,7 +318,7 @@ sub _load_pp {
     my ($module, $opt) = @_;
     __load_pp($module, $opt);
 
-    _set_module( $JSON::Backend = $Module_PP ); # even if backportPP, set $Backend with 'JSON::PP'
+    _set_module( $JSON::Backend = 'JSON::PP' ); # even if backportPP, set $Backend with 'JSON::PP'
     JSON::Backend::PP->init;
 };
 
@@ -401,7 +400,7 @@ sub init {
 sub support_by_pp {
     my ($class, @methods) = @_;
 
-    JSON::__load_pp();
+    JSON::__load_pp('JSON::PP');
 
     local $^W;
     no strict qw(refs);

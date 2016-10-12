@@ -65,21 +65,22 @@ unless ($JSON::Backend) {
     }
     $backend =~ s/\s+//g;
 
-    if ($backend =~ /JSON::XS,JSON::PP/) {
-        _load_xs($_INSTALL_DONT_DIE) or _load_pp();
-    }
-    elsif ($backend eq 'JSON::PP') {
-        _load_pp();
-    }
-    elsif ($backend eq 'JSON::XS') {
-        _load_xs();
-    }
-    elsif ($backend eq 'JSON::backportPP') {
-        $_USSING_bpPP = 1;
-        _load_pp();
-    }
-    else {
-        Carp::croak "The value of environmental variable 'PERL_JSON_BACKEND' is invalid.";
+    my @backend_modules = split /,/, $backend;
+    while(my $module = shift @backend_modules) {
+        if ($module =~ /JSON::XS/) {
+            _load_xs(@backend_modules ? $_INSTALL_DONT_DIE : 0);
+        }
+        elsif ($module =~ /JSON::PP/) {
+            _load_pp();
+        }
+        elsif ($module =~ /JSON::backportPP/) {
+            $_USSING_bpPP = 1;
+            _load_pp();
+        }
+        else {
+            Carp::croak "The value of environmental variable 'PERL_JSON_BACKEND' is invalid.";
+        }
+        last if $JSON::Backend;
     }
 }
 

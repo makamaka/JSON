@@ -7,12 +7,12 @@ BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::backportPP"; }
 
 use JSON -convert_blessed_universally;
 
-ok( !Test->can('TO_JSON') );
-ok( Test2->can('TO_JSON') );
+ok( !MyTest->can('TO_JSON') );
+ok( MyTest2->can('TO_JSON') );
 
-my $obj  = Test->new( [ 1, 2, {foo => 'bar'} ] );
+my $obj  = MyTest->new( [ 1, 2, {foo => 'bar'} ] );
 
-$obj->[3] = Test2->new( { a => 'b' } );
+$obj->[3] = MyTest2->new( { a => 'b' } );
 
 my $json = JSON->new->allow_blessed->convert_blessed;
 
@@ -26,10 +26,10 @@ $json->allow_blessed(0)->convert_blessed(1);
 
 is( $json->encode( $obj ), '[1,2,{"foo":"bar"},"hoge"]'  );
 
-ok( !Test->can('TO_JSON') );
-ok( Test2->can('TO_JSON') );
+ok( !MyTest->can('TO_JSON') );
+ok( MyTest2->can('TO_JSON') );
 
-package Test;
+package MyTest;
 
 sub new {
     bless $_[1], $_[0];
@@ -37,7 +37,7 @@ sub new {
 
 
 
-package Test2;
+package MyTest2;
 
 sub new {
     bless $_[1], $_[0];

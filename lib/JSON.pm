@@ -369,24 +369,6 @@ __DATA__
 
 package JSON::Backend::XS;
 
-use constant INDENT_LENGTH_FLAG => 15 << 12;
-
-use constant UNSUPPORTED_ENCODE_FLAG => {
-    ESCAPE_SLASH      => 0x00000010,
-    ALLOW_BIGNUM      => 0x00000020,
-    AS_NONBLESSED     => 0x00000040,
-    EXPANDED          => 0x10000000, # for developer's
-};
-
-use constant UNSUPPORTED_DECODE_FLAG => {
-    LOOSE             => 0x00000001,
-    ALLOW_BIGNUM      => 0x00000002,
-    ALLOW_BAREKEY     => 0x00000004,
-    ALLOW_SINGLEQUOTE => 0x00000008,
-    EXPANDED          => 0x20000000, # for developer's
-};
-
-
 sub init {
     local $^W;
     no strict qw(refs);

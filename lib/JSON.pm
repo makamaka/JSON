@@ -42,7 +42,6 @@ my @PPOnlyMethods = qw/
 my $_INSTALL_DONT_DIE  = 1; # When _load_xs fails to load XS, don't die.
 my $_ALLOW_UNSUPPORTED = 0;
 my $_UNIV_CONV_BLESSED = 0;
-my $_USSING_bpPP       = 0;
 
 
 # Check the environment variable to decide worker module. 
@@ -72,7 +71,6 @@ unless ($JSON::Backend) {
             _load_pp($module);
         }
         elsif ($module =~ /JSON::backportPP/) {
-            $_USSING_bpPP = 1;
             _load_pp($module);
         }
         else {
@@ -299,7 +297,6 @@ sub __load_pp {
     if ($@) {
         if ( $module eq 'JSON::PP' ) {
             $JSON::DEBUG and Carp::carp "Can't load $module ($@), so try to load JSON::backportPP";
-            $_USSING_bpPP++;
             $module = 'JSON::BackportPP';
             local $^W; # if PP installed but invalid version, backportPP redefines methods.
             eval qq| require $module |;

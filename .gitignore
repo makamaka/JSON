@@ -3,6 +3,7 @@ inc
 cover_db
 Makefile
 META.yml
+MYMETA.*
 pm_to_blib
 *.tar.gz
 *.tgz

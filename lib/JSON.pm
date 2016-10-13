@@ -282,7 +282,6 @@ sub _load_xs {
     my ($module, $opt) = @_;
     __load_xs($module, $opt);
 
-    $JSON::Backend = $module;
     my $data = join("", <DATA>); # this code is from Jcode 2.xx.
     close(DATA);
     eval $data;
@@ -316,7 +315,6 @@ sub _load_pp {
     my ($module, $opt) = @_;
     __load_pp($module, $opt);
 
-    $JSON::Backend = 'JSON::PP'; # even if backportPP, set $Backend with 'JSON::PP'
     JSON::Backend::PP->init($module);
 };
 
@@ -343,6 +341,7 @@ sub init {
     $JSON::false = ${"JSON::PP::false"};
 
     push @JSON::ISA, 'JSON::PP';
+    $JSON::Backend = 'JSON::PP';
 
     for my $method (@XSOnlyMethods) {
         *{"JSON::$method"} = sub {
@@ -385,6 +384,8 @@ sub init {
     $JSON::false = ${"$module\::false"};
 
     push @JSON::ISA, $module;
+    $JSON::Backend = $module;
+
     if ( $module->VERSION < 3 ) {
         eval 'package JSON::PP::Boolean';
         push @{"$module\::Boolean::ISA"}, qw(JSON::PP::Boolean);

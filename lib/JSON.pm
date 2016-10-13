@@ -258,7 +258,7 @@ sub __load_xs {
     my ($module, $opt) = @_;
 
     $JSON::DEBUG and Carp::carp "Load $module.";
-    my $required_version = $RequiredVersion{$module};
+    my $required_version = $RequiredVersion{$module} || '';
 
     eval qq|
         use $module $required_version ();

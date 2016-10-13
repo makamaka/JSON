@@ -12,9 +12,6 @@ BEGIN {
     $JSON::DEBUG   = $ENV{ PERL_JSON_DEBUG } if exists $ENV{ PERL_JSON_DEBUG };
 }
 
-my $Module_XS  = 'JSON::XS';
-my $Module_PP  = 'JSON::PP';
-my $Module_bp  = 'JSON::backportPP'; # included in JSON distribution
 my %RequiredVersion = (
     'JSON::PP' => '2.27203',
     'JSON::XS' => '2.34',
@@ -300,10 +297,10 @@ sub __load_pp {
     eval qq| use $module $required_version () |;
 
     if ($@) {
-        if ( $module eq $Module_PP ) {
-            $JSON::DEBUG and Carp::carp "Can't load $module ($@), so try to load $Module_bp";
+        if ( $module eq 'JSON::PP' ) {
+            $JSON::DEBUG and Carp::carp "Can't load $module ($@), so try to load JSON::backportPP";
             $_USSING_bpPP++;
-            $module = $Module_bp;
+            $module = 'JSON::BackportPP';
             local $^W; # if PP installed but invalid version, backportPP redefines methods.
             eval qq| require $module |;
         }

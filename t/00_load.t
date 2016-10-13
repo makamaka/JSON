@@ -11,5 +11,5 @@ BEGIN {
 ok( exists $INC{ 'JSON/backportPP.pm' }, 'load backportPP' );
 ok( ! exists $INC{ 'JSON/PP.pm' }, q/didn't load PP/ );
 
-is( JSON->backend, 'JSON::PP' );
+isa_ok( JSON->backend, 'JSON::PP' );
 ok( JSON->backend->is_pp );

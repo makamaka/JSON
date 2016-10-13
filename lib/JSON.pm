@@ -95,7 +95,7 @@ sub import {
         if ($tag eq '-support_by_pp') {
             if (!$_ALLOW_UNSUPPORTED++) {
                 JSON::Backend::XS
-                    ->support_by_pp(@PPOnlyMethods) if ($JSON::Backend eq $Module_XS);
+                    ->support_by_pp(@PPOnlyMethods) if ($JSON::Backend->is_xs);
             }
             next;
         }
@@ -209,12 +209,12 @@ sub backend {
 
 
 sub is_xs {
-    return $_[0]->backend eq $Module_XS;
+    return $_[0]->backend->is_xs;
 }
 
 
 sub is_pp {
-    return not $_[0]->is_xs;
+    return $_[0]->backend->is_pp;
 }
 
 
@@ -334,15 +334,13 @@ sub init {
     *{"JSON::decode_json"} = \&{"JSON::PP::decode_json"};
     *{"JSON::encode_json"} = \&{"JSON::PP::encode_json"};
     *{"JSON::is_bool"} = \&{"JSON::PP::is_bool"};
-    *{"JSON::PP::is_xs"}  = sub { 0 };
-    *{"JSON::PP::is_pp"}  = sub { 1 };
 
     $JSON::true  = ${"JSON::PP::true"};
     $JSON::false = ${"JSON::PP::false"};
 
     push @JSON::Backend::PP::ISA, 'JSON::PP';
     push @JSON::ISA, 'JSON::Backend::PP';
-    $JSON::Backend = 'JSON::PP';
+    $JSON::Backend = 'JSON::Backend::PP';
 
     for my $method (@XSOnlyMethods) {
         *{"JSON::$method"} = sub {
@@ -353,6 +351,9 @@ sub init {
 
     return 1;
 }
+
+sub is_xs { 0 };
+sub is_pp { 1 };
 
 #
 # To save memory, the below lines are read only when XS backend is used.
@@ -378,15 +379,13 @@ sub init {
     *{"JSON::decode_json"} = \&{"$module\::decode_json"};
     *{"JSON::encode_json"} = \&{"$module\::encode_json"};
     *{"JSON::is_bool"} = \&{"$module\::is_bool"};
-    *{"$module\::is_xs"}  = sub { 1 };
-    *{"$module\::is_pp"}  = sub { 0 };
 
     $JSON::true  = ${"$module\::true"};
     $JSON::false = ${"$module\::false"};
 
     push @JSON::Backend::XS::ISA, $module;
     push @JSON::ISA, 'JSON::Backend::XS';
-    $JSON::Backend = $module;
+    $JSON::Backend = 'JSON::Backend::XS';
 
     if ( $module->VERSION < 3 ) {
         eval 'package JSON::PP::Boolean';
@@ -403,6 +402,8 @@ sub init {
     return 1;
 }
 
+sub is_xs { 1 };
+sub is_pp { 0 };
 
 sub support_by_pp {
     my ($class, @methods) = @_;

@@ -340,7 +340,8 @@ sub init {
     $JSON::true  = ${"JSON::PP::true"};
     $JSON::false = ${"JSON::PP::false"};
 
-    push @JSON::ISA, 'JSON::PP';
+    push @JSON::Backend::PP::ISA, 'JSON::PP';
+    push @JSON::ISA, 'JSON::Backend::PP';
     $JSON::Backend = 'JSON::PP';
 
     for my $method (@XSOnlyMethods) {
@@ -383,7 +384,8 @@ sub init {
     $JSON::true  = ${"$module\::true"};
     $JSON::false = ${"$module\::false"};
 
-    push @JSON::ISA, $module;
+    push @JSON::Backend::XS::ISA, $module;
+    push @JSON::ISA, 'JSON::Backend::XS';
     $JSON::Backend = $module;
 
     if ( $module->VERSION < 3 ) {

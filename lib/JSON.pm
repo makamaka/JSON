@@ -333,8 +333,8 @@ sub init {
     $JSON::false = ${"JSON::PP::false"};
 
     push @JSON::Backend::PP::ISA, 'JSON::PP';
-    push @JSON::ISA, 'JSON::Backend::PP';
-    $JSON::Backend = 'JSON::Backend::PP';
+    push @JSON::ISA, $class;
+    $JSON::Backend = $class;
 
     for my $method (@XSOnlyMethods) {
         *{"JSON::$method"} = sub {
@@ -378,8 +378,8 @@ sub init {
     $JSON::false = ${"$module\::false"};
 
     push @JSON::Backend::XS::ISA, $module;
-    push @JSON::ISA, 'JSON::Backend::XS';
-    $JSON::Backend = 'JSON::Backend::XS';
+    push @JSON::ISA, $class;
+    $JSON::Backend = $class;
 
     if ( $module->VERSION < 3 ) {
         eval 'package JSON::PP::Boolean';

@@ -13,7 +13,6 @@ BEGIN {
 
 use JSON;
 
-print JSON->backend, "\t", JSON->backend->VERSION, "\n";
 
 my $data = ["\x{3042}\x{3044}\x{3046}\x{3048}\x{304a}",
             "\x{304b}\x{304d}\x{304f}\x{3051}\x{3053}"];
@@ -33,7 +32,7 @@ eval {
     $j->incr_text;
 };
 
-like( $@, qr/incr_text can not be called when the incremental parser already started parsing/ );
+like( $@, qr/incr_text cannot be called when the incremental parser already started parsing/ );
 
 $object = $j->incr_parse($parts[1]);
 

@@ -75,7 +75,7 @@ splitter +JSON->new->allow_nonref, ' "5" ';
    ok ('[5]' eq $coder->encode (scalar $coder->incr_parse), "sparse3");
 }
 
-
+1
 TEST
 
 

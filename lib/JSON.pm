@@ -282,7 +282,7 @@ sub _load_xs {
     my ($module, $opt) = @_;
     __load_xs($module, $opt);
 
-    _set_module( $JSON::Backend = $module );
+    $JSON::Backend = $module;
     my $data = join("", <DATA>); # this code is from Jcode 2.xx.
     close(DATA);
     eval $data;
@@ -316,41 +316,9 @@ sub _load_pp {
     my ($module, $opt) = @_;
     __load_pp($module, $opt);
 
-    _set_module( $JSON::Backend = 'JSON::PP' ); # even if backportPP, set $Backend with 'JSON::PP'
+    $JSON::Backend = 'JSON::PP'; # even if backportPP, set $Backend with 'JSON::PP'
     JSON::Backend::PP->init($module);
 };
-
-
-sub _set_module {
-    return if defined $JSON::true;
-
-    my $module = shift;
-
-    local $^W;
-    no strict qw(refs);
-
-    $JSON::true  = ${"$module\::true"};
-    $JSON::false = ${"$module\::false"};
-
-    push @JSON::ISA, $module;
-    if ( JSON->is_xs and JSON->backend->VERSION < 3 ) {
-        eval 'package JSON::PP::Boolean';
-        push @{"$module\::Boolean::ISA"}, qw(JSON::PP::Boolean);
-    }
-
-    *{"JSON::is_bool"} = \&{"$module\::is_bool"};
-
-    for my $method ($module eq $Module_XS ? @PPOnlyMethods : @XSOnlyMethods) {
-        *{"JSON::$method"} = sub {
-            Carp::carp("$method is not supported in $module.");
-            $_[0];
-        };
-    }
-
-    return 1;
-}
-
-
 
 #
 # Helper classes for Backend Module (PP)
@@ -367,8 +335,22 @@ sub init {
     no strict qw(refs); # this routine may be called after JSON::Backend::XS init was called.
     *{"JSON::decode_json"} = \&{"JSON::PP::decode_json"};
     *{"JSON::encode_json"} = \&{"JSON::PP::encode_json"};
+    *{"JSON::is_bool"} = \&{"JSON::PP::is_bool"};
     *{"JSON::PP::is_xs"}  = sub { 0 };
     *{"JSON::PP::is_pp"}  = sub { 1 };
+
+    $JSON::true  = ${"JSON::PP::true"};
+    $JSON::false = ${"JSON::PP::false"};
+
+    push @JSON::ISA, 'JSON::PP';
+
+    for my $method (@XSOnlyMethods) {
+        *{"JSON::$method"} = sub {
+            Carp::carp("$method is not supported in $module.");
+            $_[0];
+        };
+    }
+
     return 1;
 }
 
@@ -395,8 +377,26 @@ sub init {
     no strict qw(refs);
     *{"JSON::decode_json"} = \&{"$module\::decode_json"};
     *{"JSON::encode_json"} = \&{"$module\::encode_json"};
+    *{"JSON::is_bool"} = \&{"$module\::is_bool"};
     *{"$module\::is_xs"}  = sub { 1 };
     *{"$module\::is_pp"}  = sub { 0 };
+
+    $JSON::true  = ${"$module\::true"};
+    $JSON::false = ${"$module\::false"};
+
+    push @JSON::ISA, $module;
+    if ( $module->VERSION < 3 ) {
+        eval 'package JSON::PP::Boolean';
+        push @{"$module\::Boolean::ISA"}, qw(JSON::PP::Boolean);
+    }
+
+    for my $method (@PPOnlyMethods) {
+        *{"JSON::$method"} = sub {
+            Carp::carp("$method is not supported in $module.");
+            $_[0];
+        };
+    }
+
     return 1;
 }
 

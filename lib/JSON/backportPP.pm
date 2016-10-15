@@ -230,7 +230,8 @@ sub sort_by {
 }
 
 sub allow_bigint {
-    Carp::carp("allow_bigint() is obsoleted. use allow_bignum() insted.");
+    Carp::carp("allow_bigint() is obsoleted. use allow_bignum() instead.");
+    $_[0]->allow_bignum;
 }
 
 ###############################

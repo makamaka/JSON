@@ -1,0 +1,28 @@
+language: perl
+perl:
+  - "5.8"
+env:
+  - JSON_PP_VERSION=
+  - JSON_XS_VERSION=
+  - CPANEL_JSON_XS_VERSION=
+matrix:
+  include:
+    - perl: 5.8
+      env: JSON_XS_VERSION=3.02
+    - perl: 5.8
+      env: JSON_XS_VERSION=2.34
+    - perl: 5.8
+      env: JSON_PP_VERSION=2.27400
+    - perl: 5.8
+      env: JSON_PP_VERSION=2.27101
+    - perl: 5.8
+      env: CPANEL_JSON_XS_VERSION=3.0218
+before_install:
+  - test $JSON_PP_VERSION && cpanm -n JSON::XS@$JSON_XS_VERSION
+  - test $JSON_XS_VERSION && cpanm -n JSON::XS@$JSON_XS_VERSION
+  - test $CPANEL_JSON_XS_VERSION && cpanm -n Cpanel::JSON::XS@$CPANEL_JSON_XS_VERSION
+script:
+  - test ! $JSON_PP_VERSION && test ! $JSON_XS_VERSION && test ! $CPANEL_JSON_XS_VERSION && perl Makefile.PL make test
+  - test $JSON_PP_VERSION && perl Makefile.PL && PERL_JSON_BACKEND=JSON::PP make test
+  - test $JSON_XS_VERSION && perl Makefile.PL && PERL_JSON_BACKEND=JSON::XS make test
+  - test $CPANEL_JSON_XS_VERSION && perl Makefile.PL && PERL_JSON_BACKEND=Cpanel::JSON::XS make test

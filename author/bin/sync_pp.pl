@@ -3,7 +3,11 @@
 use strict;
 use warnings;
 use FindBin;
+use lib "$FindBin::Bin/../../lib";
 use Path::Tiny;
+use JSON;
+
+my $re_pp_methods = join '|', JSON->pureperl_only_methods;
 
 my $root = path("$FindBin::Bin/../..");
 my $pp_root = $root->parent->child('JSON-PP');
@@ -45,7 +49,14 @@ for my $pp_test ($pp_root->child('t')->children) {
     if ($basename =~ /\.t$/) {
         my $content = $pp_test->slurp;
         $content =~ s/JSON::PP(::|->|;| |\.|$)/JSON$1/mg;
-        $content =~ s|\$ENV{PERL_JSON_BACKEND} = 0|\$ENV{PERL_JSON_BACKEND} = "JSON::backportPP"|;
+        $content =~ s/\$ENV{PERL_JSON_BACKEND} = 0/\$ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"/;
+        if ($content !~ /\$ENV{PERL_JSON_BACKEND}/) {
+            $content =~ s/use JSON;/BEGIN { \$ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }\n\nuse JSON;/;
+        }
+
+        if ($content =~ /$re_pp_methods/) {
+            $content =~ s/use JSON;/use JSON -support_by_pp;/g;
+        }
 
         # special cases
         if ($basename eq '104_sortby.t') {

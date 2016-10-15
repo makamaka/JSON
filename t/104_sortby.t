@@ -3,7 +3,7 @@ use Test::More;
 use strict;
 BEGIN { plan tests => 3 };
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
-use JSON;
+use JSON -support_by_pp;
 #########################
 
 my ($js,$obj);

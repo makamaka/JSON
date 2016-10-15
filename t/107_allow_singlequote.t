@@ -3,7 +3,7 @@ use Test::More;
 use strict;
 BEGIN { plan tests => 4 };
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
-use JSON;
+use JSON -support_by_pp;
 #########################
 
 my $json = JSON->new->allow_nonref;

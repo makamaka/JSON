@@ -5,7 +5,7 @@ BEGIN { plan tests => 6 };
 
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
-use JSON;
+use JSON -support_by_pp;
 
 eval q| require Math::BigInt |;
 

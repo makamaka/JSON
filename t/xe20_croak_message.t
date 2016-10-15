@@ -6,7 +6,8 @@ use Test::More;
 BEGIN { plan tests => 1 };
 BEGIN { $ENV{PERL_JSON_BACKEND} = 1; }
 
-use JSON; # currently it can't pass with -support_by_pp;
+use JSON -support_by_pp;
+#use JSON; # currently it can't pass with -support_by_pp;
 
 
 SKIP: {

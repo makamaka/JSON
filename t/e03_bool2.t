@@ -2,7 +2,7 @@ use Test::More;
 
 BEGIN { plan tests => 16 };
 
-BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::backportPP"; }
+BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 use JSON;
 
 is(to_json([JSON::true]),  q|[true]|);

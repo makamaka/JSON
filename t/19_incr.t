@@ -4,7 +4,7 @@ use strict;
 
 use Test::More;
 BEGIN { plan tests => 697 };
-BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::backportPP"; }
+BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
 
 use JSON;

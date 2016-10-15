@@ -4,7 +4,7 @@ use Test::More;
 
 BEGIN { plan tests => 4 };
 
-BEGIN { $ENV{PERL_JSON_BACKEND} = 1; }
+BEGIN { $ENV{PERL_JSON_BACKEND} ||= 1; }
 
 use JSON -support_by_pp;
 

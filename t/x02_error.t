@@ -2,7 +2,7 @@ use strict;
 use Test::More;
 BEGIN { plan tests => 31 };
 
-BEGIN { $ENV{PERL_JSON_BACKEND} = 1; }
+BEGIN { $ENV{PERL_JSON_BACKEND} ||= 1; }
 
 local $^W;
 

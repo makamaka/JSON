@@ -1,7 +1,7 @@
 
 use strict;
 use Test::More;
-BEGIN { plan tests => 6 };
+BEGIN { plan tests => 7 };
 
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
@@ -10,7 +10,7 @@ use JSON -support_by_pp;
 eval q| require Math::BigInt |;
 
 SKIP: {
-    skip "Can't load Math::BigInt.", 6 if ($@);
+    skip "Can't load Math::BigInt.", 7 if ($@);
 
     my $v = Math::BigInt->VERSION;
     $v =~ s/_.+$// if $v;
@@ -37,5 +37,6 @@ isa_ok($num, 'Math::BigFloat');
 is("$num", '2.0000000000000000001');
 is($json->encode($num), '2.0000000000000000001');
 
+is($json->encode([Math::BigInt->new("0")]), '[0]', "zero bigint is 0 (the number), not '0' (the string)" );
 
 }

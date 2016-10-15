@@ -13,10 +13,18 @@ my $json = new JSON;
 
 
 is($json->encode([!1]),   '[""]');
+if ($json->backend->isa('Cpanel::JSON::XS')) {
+is($json->encode([!!2]), '[1]');
+} else {
 is($json->encode([!!2]), '["1"]');
+}
 
 is($json->encode([ 'a' eq 'b'  ]), '[""]');
+if ($json->backend->isa('Cpanel::JSON::XS')) {
+is($json->encode([ 'a' eq 'a'  ]), '[1]');
+} else {
 is($json->encode([ 'a' eq 'a'  ]), '["1"]');
+}
 
 is($json->encode([ ('a' eq 'b') + 1  ]), '[1]');
 is($json->encode([ ('a' eq 'a') + 1  ]), '[2]');

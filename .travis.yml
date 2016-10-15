@@ -2,10 +2,6 @@ language: perl
 perl:
   - "5.8"
   - "5.24"
-env:
-  - JSON_PP_VERSION=
-  - JSON_XS_VERSION=
-  - CPANEL_JSON_XS_VERSION=
 matrix:
   include:
     - perl: 5.8

@@ -1,7 +1,7 @@
 
 use strict;
 use Test::More;
-BEGIN { plan tests => 6 };
+BEGIN { plan tests => 7 };
 
 BEGIN { $ENV{PERL_JSON_BACKEND} = "JSON::backportPP"; }
 
@@ -37,5 +37,6 @@ isa_ok($num, 'Math::BigFloat');
 is("$num", '2.0000000000000000001');
 is($json->encode($num), '2.0000000000000000001');
 
+is($json->encode([Math::BigInt->new("0")]), '[0]', "zero bigint is 0 (the number), not '0' (the string)" );
 
 }

@@ -273,6 +273,7 @@ sub __load_xs {
         }
         Carp::croak $@;
     }
+    return 1;
 }
 
 sub _load_xs {
@@ -305,6 +306,7 @@ sub __load_pp {
         }
         Carp::croak $@ if $@;
     }
+    return 1;
 }
 
 sub _load_pp {

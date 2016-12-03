@@ -65,6 +65,9 @@ for my $pp_test ($pp_root->child('t')->children) {
             $content =~ s/JSON::hoge/JSON::PP::hoge/g;
             $content =~ s/\$JSON::(a|b)\b/\$JSON::PP::$1/g;
         }
+        if ($basename eq 'gh_28_json_test_suite.t') {
+            $content =~ s/\$ENV{PERL_JSON_BACKEND} \|\|= "JSON::backportPP"/\$ENV{PERL_JSON_BACKEND} = "JSON::backportPP"/;
+        }
 
         $json_test->spew($content);
         print STDERR "copied $pp_test to $json_test\n";

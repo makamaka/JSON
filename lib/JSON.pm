@@ -3,7 +3,9 @@ package JSON;
 
 use strict;
 use Carp ();
-use base qw(Exporter);
+use Exporter;
+BEGIN { @JSON::ISA = 'Exporter' }
+
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {

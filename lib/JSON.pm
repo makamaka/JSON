@@ -299,7 +299,7 @@ sub __load_pp {
     if ($@) {
         if ( $module eq 'JSON::PP' ) {
             $JSON::DEBUG and Carp::carp "Can't load $module ($@), so try to load JSON::backportPP";
-            $module = 'JSON::BackportPP';
+            $module = 'JSON::backportPP';
             local $^W; # if PP installed but invalid version, backportPP redefines methods.
             eval qq| require $module |;
         }

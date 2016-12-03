@@ -22,4 +22,4 @@ script:
   - if test ! $JSON_PP_VERSION && test ! $JSON_XS_VERSION && test ! $CPANEL_JSON_XS_VERSION; then perl Makefile.PL && make test; else true; fi
   - if test $JSON_PP_VERSION; then perl Makefile.PL && PERL_JSON_BACKEND=JSON::PP make test; else true; fi
   - if test $JSON_XS_VERSION; then perl Makefile.PL && PERL_JSON_BACKEND=JSON::XS make test; else true; fi
-  - if test $CPANEL_JSON_XS_VERSION; perl Makefile.PL && PERL_JSON_BACKEND=Cpanel::JSON::XS make test; else true; fi
+  - if test $CPANEL_JSON_XS_VERSION; then perl Makefile.PL && PERL_JSON_BACKEND=Cpanel::JSON::XS make test; else true; fi

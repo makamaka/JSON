@@ -52,7 +52,7 @@ for my $pp_test ($pp_root->child('t')->children) {
         my $content = $pp_test->slurp;
         $content =~ s/JSON::PP(::|->|;| |\.|$)/JSON$1/mg;
         $content =~ s/\$ENV{PERL_JSON_BACKEND} = 0/\$ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"/;
-        $content =~ s/\{\s*#SKIP_UNLESS_PP (\S+)\s*,\s*(\S)/SKIP: { skip "requires \$JSON::BackendModule $1 or newer", $2 if JSON->backend->is_pp and eval \$JSON::BackendModulePP->VERSION < $1;/g;
+        $content =~ s/\{\s*#SKIP_UNLESS_PP (\S+)\s*,\s*(\S)/SKIP: { skip "requires \$JSON::BackendModule $1 or newer", $2 if \$JSON::BackendModulePP and eval \$JSON::BackendModulePP->VERSION < $1;/g;
         $content =~ s/\{\s*#SKIP_IF_CPANEL/SKIP: { skip "not for \$JSON::BackendModule", 1 if \$JSON::BackendModule eq 'Cpanel::JSON::XS';/g;
         $content =~ s/#SKIP_ALL_UNLESS_PP (\S+)/BEGIN { plan skip_all => "requires \$JSON::BackendModule $1 or newer" if JSON->backend->is_pp and eval \$JSON::BackendModule->VERSION < $1 }/g;
         $content =~ s/#SKIP_ALL_IF_XS/BEGIN { plan skip_all => "not for \$JSON::BackendModule" if \$JSON::BackendModule eq 'JSON::XS' }/g;

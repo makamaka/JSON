@@ -37,8 +37,7 @@ isa_ok($num, 'Math::BigFloat');
 is("$num", '2.0000000000000000001');
 is($json->encode($num), '2.0000000000000000001');
 
-SKIP: { skip "requires $JSON::BackendModule 2.90 or newer", 1 if JSON->backend->is_pp and eval $JSON::BackendModulePP->VERSION < 2.90;
-diag "$JSON::BackendModulePP $JSON::BackendModulePP->VERSION";
+SKIP: { skip "requires $JSON::BackendModule 2.90 or newer", 1 if $JSON::BackendModulePP and eval $JSON::BackendModulePP->VERSION < 2.90;
 is($json->encode([Math::BigInt->new("0")]), '[0]', "zero bigint is 0 (the number), not '0' (the string)" );
 }
 }

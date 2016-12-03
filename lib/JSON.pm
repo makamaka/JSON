@@ -274,6 +274,7 @@ sub __load_xs {
         }
         Carp::croak $@;
     }
+    $JSON::BackendModuleXS = $module;
     return 1;
 }
 
@@ -307,6 +308,7 @@ sub __load_pp {
         }
         Carp::croak $@ if $@;
     }
+    $JSON::BackendModulePP = $module;
     return 1;
 }
 

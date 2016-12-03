@@ -14,6 +14,8 @@ use JSON;
 
 my $json = JSON->new->utf8->max_depth(32)->canonical;
 
+my $vax_float = (pack("d",1) =~ /^[\x80\x10]\x40/);
+
 binmode DATA;
 my $num = 1;
 for (;;) {
@@ -23,6 +25,9 @@ for (;;) {
       or last;
    $/ = "\n";
    my $name = <DATA>;
+   if ($vax_float && $name =~ /pass1.json/) {
+       $test =~ s/\b23456789012E66\b/23456789012E20/;
+   }
    if (my $perl = eval { $json->decode ($test) }) {
       ok ($name =~ /^pass/, $name);
 #print $json->encode ($perl), "\n";

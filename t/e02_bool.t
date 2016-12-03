@@ -11,16 +11,21 @@ use JSON;
 
 my $json = new JSON;
 
+note $json->backend->isa('JSON::PP');
+my $not_not_a_number_is_a_number = (
+  $json->backend->isa('Cpanel::JSON::XS') ||
+  ($json->backend->isa('JSON::PP') && ($JSON::PP::Boolean::VERSION || $JSON::backportPP::Boolean::VERSION))
+) ? 1 : 0;
 
 is($json->encode([!1]),   '[""]');
-if ($json->backend->isa('Cpanel::JSON::XS')) {
+if ($not_not_a_number_is_a_number) {
 is($json->encode([!!2]), '[1]');
 } else {
 is($json->encode([!!2]), '["1"]');
 }
 
 is($json->encode([ 'a' eq 'b'  ]), '[""]');
-if ($json->backend->isa('Cpanel::JSON::XS')) {
+if ($not_not_a_number_is_a_number) {
 is($json->encode([ 'a' eq 'a'  ]), '[1]');
 } else {
 is($json->encode([ 'a' eq 'a'  ]), '["1"]');

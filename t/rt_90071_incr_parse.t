@@ -1,8 +1,11 @@
 use strict;
 use Test::More;
-BEGIN { plan tests => 2 };
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 use JSON;
+
+BEGIN { skip_all "requires $JSON::BackendModule 2.90 or newer" if JSON->backend->is_pp and eval $JSON::BackendModule->VERSION < 2.90 }
+
+BEGIN { plan tests => 2 };
 
 my $json = JSON->new;
 my $kb = 'a' x 1024;

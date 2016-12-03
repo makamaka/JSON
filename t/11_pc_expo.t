@@ -22,8 +22,10 @@ is($js,'[-12.34]', 'digit -12.34');
 $js  = q|[-1.234e5]|;
 $obj = $pc->decode($js);
 is($obj->[0], -123400, 'digit -1.234e5');
+SKIP: { skip "not for $JSON::BackendModule", 1 if $JSON::BackendModule eq 'Cpanel::JSON::XS';
 $js = $pc->encode($obj);
 is($js,'[-123400]', 'digit -1.234e5');
+}
 
 $js  = q|[1.23E-4]|;
 $obj = $pc->decode($js);

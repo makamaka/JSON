@@ -277,7 +277,7 @@ sub __load_xs {
 
 sub _load_xs {
     my ($module, $opt) = @_;
-    __load_xs($module, $opt);
+    __load_xs($module, $opt) or return;
 
     my $data = join("", <DATA>); # this code is from Jcode 2.xx.
     close(DATA);

@@ -2,7 +2,9 @@ Revision history for Perl extension JSON.
 
 2.91_01 2016-12-03
 	- PERL_JSON_BACKEND now accepts Cpanel::JSON::XS as well
-	- made convert_blessed_universally and support_by_pp less harmful
+	- tweaked tests to support various backends
+	- made convert_blessed_universally (for Perl 5.18+) and
+	  support_by_pp less harmful
 	- fixed N/A exit code in Makefile.PL (bulk88)
 	- various doc patches from gregoa, topaz, zoffix, singingfish,
 	  yanick, dsteinbrunner, Toby Inkster

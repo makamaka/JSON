@@ -106,6 +106,7 @@ sub import {
                 local $^W;
                 no strict 'refs';
                 *{"${JSON::Backend}\::encode"} = sub {
+                    # only works with Perl 5.18+
                     local *UNIVERSAL::TO_JSON = sub {
                         my $b_obj = B::svref_2object( $_[0] );
                         return    $b_obj->isa('B::HV') ? { %{ $_[0] } }

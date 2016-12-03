@@ -26,7 +26,10 @@ $json->allow_blessed(0)->convert_blessed(1);
 
 is( $json->encode( $obj ), '[1,2,{"foo":"bar"},"hoge"]'  );
 
-ok( !MyTest->can('TO_JSON') );
+SKIP: {
+    skip "only works with 5.18+", 1 if $] < 5.018;
+    ok( !MyTest->can('TO_JSON') );
+}
 ok( MyTest2->can('TO_JSON') );
 
 package MyTest;

@@ -3,6 +3,5 @@ use strict;
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
 use JSON;
-diag ($JSON::BackendModule);
-diag ($JSON::BackendModule->VERSION);
+diag ($JSON::BackendModule.' '.$JSON::BackendModule->VERSION);
 ok 1;

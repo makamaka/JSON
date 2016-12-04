@@ -410,7 +410,7 @@ sub allow_bigint {
         if (USE_B) {
             my $b_obj = B::svref_2object(\$value);
             my $flags = $b_obj->FLAGS;
-            return 1 if $flags & ( B::SVp_IOK | B::SVp_NOK ) and !( $flags & B::SVp_POK );
+            return 1 if $flags & ( B::SVp_IOK() | B::SVp_NOK() ) and !( $flags & B::SVp_POK() );
             return;
         } else {
             no warnings 'numeric';

@@ -1,5 +1,8 @@
 Revision history for Perl extension JSON.
 
+2.91_02 2016-12-04
+	- fixed not to fail tests under Perl 5.25.* (srezic++)
+
 2.91_01 2016-12-03
 	- PERL_JSON_BACKEND now accepts Cpanel::JSON::XS as well
 	- tweaked tests to support various backends

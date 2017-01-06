@@ -483,69 +483,6 @@ use only common features (most important ones are described below), migration
 from backend to backend should be reasonably easy. For details, see each
 backend module you use.
 
-=head2 FEATURES
-
-=over
-
-=item * correct unicode handling
-
-This module (i.e. backend modules) knows how to handle Unicode, documents
-how and when it does so, and even documents what "correct" means.
-
-Even though there are limitations, this feature is available since Perl version 5.6.
-
-JSON::XS requires Perl 5.8.2 (but works correctly in 5.8.8 or later), so in older versions
-C<JSON> should call JSON::PP as the backend which can be used since Perl 5.005.
-
-With Perl 5.8.x JSON::PP works, but from 5.8.0 to 5.8.2, because of a Perl side problem,
-JSON::PP works slower in the versions. And in 5.005, the Unicode handling is not available.
-See to L<JSON::PP/UNICODE HANDLING ON PERLS> for more information.
-
-See also to L<JSON::XS/A FEW NOTES ON UNICODE AND PERL>
-and L<JSON::XS/ENCODING/CODESET_FLAG_NOTES>.
-
-
-=item * round-trip integrity
-
-When you serialise a perl data structure using only data types supported
-by JSON and Perl, the deserialised data structure is identical on the Perl
-level. (e.g. the string "2.0" doesn't suddenly become "2" just because
-it looks like a number). There I<are> minor exceptions to this, read the
-L</MAPPING> section below to learn about those.
-
-
-=item * strict checking of JSON correctness
-
-There is no guessing, no generating of illegal JSON texts by default,
-and only JSON is accepted as input by default (the latter is a security
-feature).
-
-See to L<JSON::XS/FEATURES> and L<JSON::PP/FEATURES>.
-
-=item * fast
-
-This module returns a JSON::XS object itself if available.
-Compared to other JSON modules and other serialisers such as Storable,
-JSON::XS usually compares favorably in terms of speed, too.
-
-If not available, C<JSON> returns a JSON::PP object instead of JSON::XS and
-it is very slow as pure-Perl.
-
-=item * simple to use
-
-This module has both a simple functional interface as well as an
-object oriented interface interface.
-
-=item * reasonably versatile output formats
-
-You can choose between the most compact guaranteed-single-line format possible
-(nice for simple line-based protocols), a pure-ASCII format (for when your transport
-is not 8-bit clean, still supports the whole Unicode range), or a pretty-printed
-format (for when you want to read that stuff). Or you can combine those features
-in whatever way you like.
-
-=back
-
 =head1 FUNCTIONAL INTERFACE
 
 Some documents are copied and modified from L<JSON::XS/FUNCTIONAL INTERFACE>.

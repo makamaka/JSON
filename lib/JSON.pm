@@ -483,6 +483,32 @@ use only common features (most important ones are described below), migration
 from backend to backend should be reasonably easy. For details, see each
 backend module you use.
 
+=head1 CHOOSING BACKEND
+
+This module respects an environmental variable called C<PERL_JSON_BACKEND>
+when it decides a backend module to use. If this environmental variable is
+not set, it tries to load JSON::XS, and if JSON::XS is not available, it
+falls back on JSON::PP, and then JSON::backportPP if JSON::PP is not available
+either.
+
+If you always don't want it to fall back on pure perl modules, set the
+variable like this (C<export> may be C<setenv>, C<set> and the likes,
+depending on your environment):
+
+  > export PERL_JSON_BACKEND=JSON::XS
+
+If you prefer Cpanel::JSON::XS to JSON::XS, then:
+
+  > export PERL_JSON_BACKEND=Cpanel::JSON::XS,JSON::XS,JSON::PP
+
+You may also want to set this variable at the top of your test files, in order
+not to be bothered with incompatibilities between backends (you need to wrap
+this in C<BEGIN>, and set before actually C<use>-ing JSON module, as it decides
+its backend as soon as it's loaded):
+
+  BEGIN { $ENV{PERL_JSON_BACKEND}='JSON::backportPP'; }
+  use JSON;
+
 =head1 FUNCTIONAL INTERFACE
 
 Some documents are copied and modified from L<JSON::XS/FUNCTIONAL INTERFACE>.

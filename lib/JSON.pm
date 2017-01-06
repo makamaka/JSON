@@ -464,62 +464,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
 
     2.91_01
 
-This version is compatible with JSON::XS B<2.34> and later.
-(Not yet compatble to JSON::XS B<3.0x>.)
-
-
-=head1 NOTE
-
-JSON::PP was earlier included in the C<JSON> distribution, but
-has since Perl 5.14 been a core module. For this reason,
-L<JSON::PP> was removed from the JSON distribution and can now
-be found also in the Perl5 repository at
-
-=over
-
-=item * L<http://perl5.git.perl.org/perl.git>
-
-=back
-
-(The newest JSON::PP version still exists in CPAN.)
-
-Instead, the C<JSON> distribution will include JSON::backportPP
-for backwards compatibility. JSON.pm should thus work as it did
-before.
-
 =head1 DESCRIPTION
-
- *************************** CAUTION **************************************
- *                                                                        *
- * INCOMPATIBLE CHANGE (JSON::XS version 2.90)                            *
- *                                                                        *
- * JSON.pm had patched JSON::XS::Boolean and JSON::PP::Boolean internally *
- * on loading time for making these modules inherit JSON::Boolean.        *
- * But since JSON::XS v3.0 it use Types::Serialiser as boolean class.     *
- * Then now JSON.pm breaks boolean classe overload features and           *
- * -support_by_pp if JSON::XS v3.0 or later is installed.                 *
- *                                                                        *
- * JSON::true and JSON::false returned JSON::Boolean objects.             *
- * For workaround, they return JSON::PP::Boolean objects in this version. *
- *                                                                        *
- *     isa_ok(JSON::true, 'JSON::PP::Boolean');                           *
- *                                                                        *
- * And it discards a feature:                                             *
- *                                                                        *
- *     ok(JSON::true eq 'true');                                          *
- *                                                                        *
- * In other word, JSON::PP::Boolean overload numeric only.                *
- *                                                                        *
- *     ok( JSON::true == 1 );                                             *
- *                                                                        *
- **************************************************************************
-
- ************************** CAUTION ********************************
- * This is 'JSON module version 2' and there are many differences  *
- * to version 1.xx                                                 *
- * Please check your applications using old version.              *
- *   See to 'INCOMPATIBLE CHANGES TO OLD VERSION'                  *
- *******************************************************************
 
 JSON (JavaScript Object Notation) is a simple data format.
 See to L<http://www.json.org/> and C<RFC4627>(L<http://www.ietf.org/rfc/rfc4627.txt>).

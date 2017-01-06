@@ -466,29 +466,22 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
 
 =head1 DESCRIPTION
 
-JSON (JavaScript Object Notation) is a simple data format.
-See to L<http://www.json.org/> and C<RFC4627>(L<http://www.ietf.org/rfc/rfc4627.txt>).
+This module is a thin wrapper for L<JSON::XS>-compatible modules with a few
+additional features. All the backend modules convert a Perl data structure
+to a JSON text as of RFC4627 (which we know is obsolete but we still stick
+to; see below for an option to support part of RFC7159) and vice versa.
+This module uses L<JSON::XS> by default, and when JSON::XS is not available,
+this module falls back on L<JSON::PP>, which is in the Perl core since 5.14.
+If JSON::PP is not available either, this module then falls back on
+JSON::backportPP (which is actually JSON::PP in a different .pm file)
+bundled in the same distribution as this module. You can also explicitly
+specify to use L<Cpanel::JSON::XS>, a fork of JSON::XS by Reini Urban.
 
-This module converts Perl data structures to JSON and vice versa using either
-L<JSON::XS> or L<JSON::PP>.
-
-JSON::XS is the fastest and most proper JSON module on CPAN which must be
-compiled and installed in your environment.
-JSON::PP is a pure-Perl module which is bundled in this distribution and
-has a strong compatibility to JSON::XS.
-
-This module try to use JSON::XS by default and fail to it, use JSON::PP instead.
-So its features completely depend on JSON::XS or JSON::PP.
-
-See to L<BACKEND MODULE DECISION>.
-
-To distinguish the module name 'JSON' and the format type JSON,
-the former is quoted by CE<lt>E<gt> (its results vary with your using media),
-and the latter is left just as it is.
-
-Module name : C<JSON>
-
-Format type : JSON
+All these backend modules have slight incompatibilities between them,
+including extra features that other modules don't support, but as long as you
+use only common features (most important ones are described below), migration
+from backend to backend should be reasonably easy. For details, see each
+backend module you use.
 
 =head2 FEATURES
 

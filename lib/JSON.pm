@@ -459,16 +459,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  $perl_scalar = $json->decode( $json_text );
  
  $pretty_printed = $json->pretty->encode( $perl_scalar ); # pretty-printing
- 
- # option-acceptable interfaces (expect/generate UNICODE by default)
- 
- $json_text   = to_json( $perl_scalar, { ascii => 1, pretty => 1 } );
- $perl_scalar = from_json( $json_text, { utf8  => 1 } );
- 
- # Between (en|de)code_json and (to|from)_json, if you want to write
- # a code which communicates to an outer world (encoded in UTF-8),
- # recommend to use (en|de)code_json.
- 
+
 =head1 VERSION
 
     2.91_01

@@ -460,11 +460,6 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
  $pretty_printed = $json->pretty->encode( $perl_scalar ); # pretty-printing
  
- # If you want to use PP only support features, call with '-support_by_pp'
- # When XS unsupported feature is enable, using PP (de|en)code instead of XS ones.
- 
- use JSON -support_by_pp;
- 
  # option-acceptable interfaces (expect/generate UNICODE by default)
  
  $json_text   = to_json( $perl_scalar, { ascii => 1, pretty => 1 } );

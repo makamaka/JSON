@@ -509,6 +509,87 @@ its backend as soon as it's loaded):
   BEGIN { $ENV{PERL_JSON_BACKEND}='JSON::backportPP'; }
   use JSON;
 
+=head1 USING OPTIONAL FEATURES
+
+There are a few options you can set when you C<use> this module:
+
+=over
+
+=item -support_by_pp
+
+   BEGIN { $ENV{PERL_JSON_BACKEND} = 'JSON::XS' }
+   
+   use JSON -support_by_pp;
+   
+   my $json = JSON->new;
+   # escape_slash is for JSON::PP only.
+   $json->allow_nonref->escape_slash->encode("/");
+
+With this option, this module loads its pure perl backend along with
+its XS backend (if available), and lets the XS backend to watch if you set
+a flag only JSON::PP supports. When you do, the internal JSON::XS object
+is replaced with a newly created JSON::PP object with the setting copied
+from the XS object, so that you can use JSON::PP flags (and its slower
+C<decode>/C<encode> methods) from then on. In other words, this is not
+something that allows you to hook JSON::XS to change its behavior while
+keeping its speed. JSON::XS and JSON::PP objects are quite different
+(JSON::XS object is a blessed scalar reference, while JSON::PP object is
+a blessed hash reference), and can't share their internals.
+
+To avoid needless overhead (by copying settings), you are advised not
+to use this option and just to use JSON::PP explicitly when you need
+JSON::PP features.
+
+=item -convert_blessed_universally
+
+   use JSON -convert_blessed_universally;
+
+   my $json = JSON->new->allow_nonref->convert_blessed;
+   my $object = bless {foo => 'bar'}, 'Foo';
+   $json->encode($object); # => {"foo":"bar"}
+
+JSON::XS-compatible backend modules don't encode blessed objects by
+default (except for their boolean values, which are typically blessed
+JSON::PP::Boolean objects). If you need to encode a data structure
+that may contain objects, you usually need to look into the structure
+and replace objects with alternative non-blessed values, or enable
+C<convert_blessed> and provide a C<TO_JSON> method for each object's
+(base) class that may be found in the structure, in order to let the
+methods replace the objects with whatever scalar values the methods
+return.
+
+If you need to serialise data structures that may contain arbitrary
+objects, it's probably better to use other serialisers (such as
+L<Sereal> or L<Storable> for example), but if you do want to use
+this module for that purpose, C<-convert_blessed_universally> option
+may help, which tweaks C<encode> method of the backend to install
+C<UNIVERSAL::TO_JSON> method (locally) before encoding, so that
+all the objects that don't have their own C<TO_JSON> method can
+fall back on the method in the C<UNIVERSAL> namespace. Note that you
+still need to enable C<convert_blessed> flag to actually encode
+objects in a data structure, and C<UNIVERSAL::TO_JSON> method
+installed by this option only converts blessed hash/array references
+into their unblessed clone (including private keys/values that are
+not supposed to be exposed). Other blessed references will be
+converted into null.
+
+This feature is experimental and may be removed in the future.
+
+=item -no_export
+
+When you don't want to import functional interfaces from a module, you
+usually supply C<()> to its C<use> statement.
+
+    use JSON (); # no functional interfaces
+
+If you don't want to import functional interfaces, but you also want to
+use any of the above options, add C<-no_export> to the option list.
+
+   # no functional interfaces, while JSON::PP support is enabled.
+   use JSON -support_by_pp, -no_export;
+
+=back
+
 =head1 FUNCTIONAL INTERFACE
 
 Some documents are copied and modified from L<JSON::XS/FUNCTIONAL INTERFACE>.

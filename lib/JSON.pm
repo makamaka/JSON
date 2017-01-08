@@ -1592,34 +1592,6 @@ proper subset of most 8-bit and multibyte encodings in use in the world.
 
 =back
 
-=head1 USE PP FEATURES EVEN THOUGH XS BACKEND
-
-Many methods are available with either JSON::XS or JSON::PP and
-when the backend module is JSON::XS, if any JSON::PP specific (i.e. JSON::XS unsupported)
-method is called, it will C<warn> and be noop.
-
-But If you C<use> C<JSON> passing the optional string C<-support_by_pp>,
-it makes a part of those unsupported methods available.
-This feature is achieved by using JSON::PP in C<de/encode>.
-
-   BEGIN { $ENV{PERL_JSON_BACKEND} = 2 } # with JSON::XS
-   use JSON -support_by_pp;
-   my $json = JSON->new;
-   $json->allow_nonref->escape_slash->encode("/");
-
-At this time, the returned object is a C<JSON::Backend::XS::Supportable>
-object (re-blessed XS object), and  by checking JSON::XS unsupported flags
-in de/encoding, can support some unsupported methods - C<loose>, C<allow_bignum>,
-C<allow_barekey>, C<allow_singlequote>, C<escape_slash> and C<indent_length>.
-
-When any unsupported methods are not enable, C<XS de/encode> will be
-used as is. The switch is achieved by changing the symbolic tables.
-
-C<-support_by_pp> is effective only when the backend module is JSON::XS
-and it makes the de/encoding speed down a bit.
-
-See to L<JSON::PP SUPPORT METHODS>.
-
 =head1 INCOMPATIBLE CHANGES TO OLD VERSION
 
 There are big incompatibility between new version (2.00) and old (1.xx).

@@ -1592,6 +1592,18 @@ proper subset of most 8-bit and multibyte encodings in use in the world.
 
 =back
 
+=head1 BACKWARD INCOMPATIBILITY
+
+Since version 2.90, stringification (and string comparison) for
+C<JSON::true> and C<JSON::false> has not been overloaded. It shouldn't
+matter as long as you treat them as boolean values, but a code that
+expects they are stringified as "true" or "false" doesn't work as
+you have expected any more.
+
+    if (JSON::true eq 'true') {  # now fails
+
+    print "The result is $JSON::true now."; # => The result is 1 now.
+
 =head1 BUGS
 
 Please report bugs relevant to C<JSON> to E<lt>makamaka[at]cpan.orgE<gt>.

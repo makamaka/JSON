@@ -1454,6 +1454,46 @@ error to pass those in.
 
 =back
 
+=head2 OBJECT SERIALISATION
+
+As for Perl objects, this module only supports a pure JSON representation
+(without the ability to deserialise the object automatically again).
+
+=head3 SERIALISATION
+
+What happens when this module encounters a Perl object depends on the
+C<allow_blessed> and C<convert_blessed> settings, which are used in
+this order:
+
+=over 4
+
+=item 1. C<convert_blessed> is enabled and the object has a C<TO_JSON> method.
+
+In this case, the C<TO_JSON> method of the object is invoked in scalar
+context. It must return a single scalar that can be directly encoded into
+JSON. This scalar replaces the object in the JSON text.
+
+For example, the following C<TO_JSON> method will convert all L<URI>
+objects to JSON strings when serialised. The fact that these values
+originally were L<URI> objects is lost.
+
+   sub URI::TO_JSON {
+      my ($uri) = @_;
+      $uri->as_string
+   }
+
+=item 2. C<allow_blessed> is enabled.
+
+The object will be serialised as a JSON null value.
+
+=item 3. none of the above
+
+If none of the settings are enabled or the respective methods are missing,
+this module throws an exception.
+
+=back
+
+
 =head1 JSON and ECMAscript
 
 See to L<JSON::XS/JSON and ECMAscript>.

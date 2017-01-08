@@ -592,18 +592,27 @@ use any of the above options, add C<-no_export> to the option list.
 
 =head1 FUNCTIONAL INTERFACE
 
-Some documents are copied and modified from L<JSON::XS/FUNCTIONAL INTERFACE>.
-C<to_json> and C<from_json> are additional functions.
+This section is taken from JSON::XS. C<encode_json> and C<decode_json>
+are exported by default.
+
+This module also exports C<to_json> and C<from_json> for backward
+compatibility. These are slower, and may expect/generate different stuff
+from what C<encode_json> and C<decode_json> do, depending on their
+options. It's better just to use Object-Oriented interfaces than using
+these two functions.
 
 =head2 encode_json
 
     $json_text = encode_json $perl_scalar
 
-Converts the given Perl data structure to a UTF-8 encoded, binary string.
+Converts the given Perl data structure to a UTF-8 encoded, binary string
+(that is, the string contains octets only). Croaks on error.
 
 This function call is functionally identical to:
 
     $json_text = JSON->new->utf8->encode($perl_scalar)
+
+Except being faster.
 
 =head2 decode_json
 
@@ -611,63 +620,51 @@ This function call is functionally identical to:
 
 The opposite of C<encode_json>: expects an UTF-8 (binary) string and tries
 to parse that as an UTF-8 encoded JSON text, returning the resulting
-reference.
+reference. Croaks on error.
 
 This function call is functionally identical to:
 
     $perl_scalar = JSON->new->utf8->decode($json_text)
 
+Except being faster.
 
 =head2 to_json
 
-   $json_text = to_json($perl_scalar)
+   $json_text = to_json($perl_scalar[, $optional_hashref])
 
-Converts the given Perl data structure to a json string.
+Converts the given Perl data structure to a Unicode string by default.
+Croaks on error.
 
-This function call is functionally identical to:
+Basically, this function call is functionally identical to:
 
    $json_text = JSON->new->encode($perl_scalar)
 
-Takes a hash reference as the second.
+Except being slower.
 
-   $json_text = to_json($perl_scalar, $flag_hashref)
-
-So,
+You can pass an optional hash reference to modify its behavior, but
+that may change what C<to_json> expects/generates (see
+C<ENCODING/CODESET FLAG NOTES> for details).
 
    $json_text = to_json($perl_scalar, {utf8 => 1, pretty => 1})
-
-equivalent to:
-
-   $json_text = JSON->new->utf8(1)->pretty(1)->encode($perl_scalar)
-
-If you want to write a modern perl code which communicates to outer world,
-you should use C<encode_json> (supposed that JSON data are encoded in UTF-8).
+   # => JSON->new->utf8(1)->pretty(1)->encode($perl_scalar)
 
 =head2 from_json
 
-   $perl_scalar = from_json($json_text)
+   $perl_scalar = from_json($json_text[, $optional_hashref])
 
-The opposite of C<to_json>: expects a json string and tries
-to parse it, returning the resulting reference.
+The opposite of C<to_json>: expects a Unicode string and tries
+to parse it, returning the resulting reference. Croaks on error.
 
-This function call is functionally identical to:
+Basically, this function call is functionally identical to:
 
     $perl_scalar = JSON->new->decode($json_text)
 
-Takes a hash reference as the second.
-
-    $perl_scalar = from_json($json_text, $flag_hashref)
-
-So,
+You can pass an optional hash reference to modify its behavior, but
+that may change what C<from_json> expects/generates (see
+C<ENCODING/CODESET FLAG NOTES> for details).
 
     $perl_scalar = from_json($json_text, {utf8 => 1})
-
-equivalent to:
-
-    $perl_scalar = JSON->new->utf8(1)->decode($json_text)
-
-If you want to write a modern perl code which communicates to outer world,
-you should use C<decode_json> (supposed that JSON data are encoded in UTF-8).
+    # => JSON->new->utf8(1)->decode($json_text)
 
 =head2 JSON::is_bool
 
@@ -676,20 +673,6 @@ you should use C<decode_json> (supposed that JSON data are encoded in UTF-8).
 Returns true if the passed scalar represents either JSON::true or
 JSON::false, two constants that act like C<1> and C<0> respectively
 and are also used to represent JSON C<true> and C<false> in Perl strings.
-
-=head2 JSON::true
-
-Returns JSON true value which is blessed object.
-It C<isa> JSON::Boolean object.
-
-=head2 JSON::false
-
-Returns JSON false value which is blessed object.
-It C<isa> JSON::Boolean object.
-
-=head2 JSON::null
-
-Returns C<undef>.
 
 See L<MAPPING>, below, for more information on how JSON values are mapped to
 Perl.

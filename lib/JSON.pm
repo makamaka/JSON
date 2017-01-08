@@ -1185,20 +1185,22 @@ You can use this to get/set a value of a particular flag.
 
 =head1 INCREMENTAL PARSING
 
-Most of this section are copied and modified from L<JSON::XS/INCREMENTAL PARSING>.
+This section is also taken from JSON::XS.
 
-In some cases, there is the need for incremental parsing of JSON texts.
-This module does allow you to parse a JSON stream incrementally.
-It does so by accumulating text until it has a full JSON object, which
-it then can decode. This process is similar to using C<decode_prefix>
-to see if a full JSON object is available, but is much more efficient
-(and can be implemented with a minimum of method calls).
+In some cases, there is the need for incremental parsing of JSON
+texts. While this module always has to keep both JSON text and resulting
+Perl data structure in memory at one time, it does allow you to parse a
+JSON stream incrementally. It does so by accumulating text until it has
+a full JSON object, which it then can decode. This process is similar to
+using C<decode_prefix> to see if a full JSON object is available, but
+is much more efficient (and can be implemented with a minimum of method
+calls).
 
-The backend module will only attempt to parse the JSON text once it is sure it
+This module will only attempt to parse the JSON text once it is sure it
 has enough text to get a decisive result, using a very simple but
 truly incremental parser. This means that it sometimes won't stop as
-early as the full parser, for example, it doesn't detect parenthesis
-mismatches. The only thing it guarantees is that it starts decoding as
+early as the full parser, for example, it doesn't detect mismatched
+parentheses. The only thing it guarantees is that it starts decoding as
 soon as a syntactically valid JSON text has been seen. This means you need
 to set resource limits (e.g. C<max_size>) to ensure the parser will stop
 parsing in the presence if syntax errors.
@@ -1233,13 +1235,14 @@ using the method.
 
 And finally, in list context, it will try to extract as many objects
 from the stream as it can find and return them, or the empty list
-otherwise. For this to work, there must be no separators between the JSON
-objects or arrays, instead they must be concatenated back-to-back. If
-an error occurs, an exception will be raised as in the scalar context
-case. Note that in this case, any previously-parsed JSON texts will be
-lost.
+otherwise. For this to work, there must be no separators (other than
+whitespace) between the JSON objects or arrays, instead they must be
+concatenated back-to-back. If an error occurs, an exception will be
+raised as in the scalar context case. Note that in this case, any
+previously-parsed JSON texts will be lost.
 
-Example: Parse some JSON arrays/objects in a given string and return them.
+Example: Parse some JSON arrays/objects in a given string and return
+them.
 
     my @objs = JSON->new->incr_parse ("[5][7][1,2]");
 
@@ -1255,27 +1258,26 @@ although in simple tests it might actually work, it I<will> fail under
 real world conditions). As a special exception, you can also call this
 method before having parsed anything.
 
+That means you can only use this function to look at or manipulate text
+before or after complete JSON objects, not while the parser is in the
+middle of parsing a JSON object.
+
 This function is useful in two cases: a) finding the trailing text after a
 JSON object or b) parsing multiple JSON objects separated by non-JSON text
 (such as commas).
-
-    $json->incr_text =~ s/\s*,\s*//;
-
-In Perl 5.005, C<lvalue> attribute is not available.
-You must write codes like the below:
-
-    $string = $json->incr_text;
-    $string =~ s/\s*,\s*//;
-    $json->incr_text( $string );
 
 =head2 incr_skip
 
     $json->incr_skip
 
-This will reset the state of the incremental parser and will remove the
-parsed text from the input buffer. This is useful after C<incr_parse>
-died, in which case the input buffer and incremental parser state is left
-unchanged, to skip the text parsed so far and to reset the parse state.
+This will reset the state of the incremental parser and will remove
+the parsed text from the input buffer so far. This is useful after
+C<incr_parse> died, in which case the input buffer and incremental parser
+state is left unchanged, to skip the text parsed so far and to reset the
+parse state.
+
+The difference to C<incr_reset> is that only text until the parse error
+occurred is removed.
 
 =head2 incr_reset
 
@@ -1287,9 +1289,6 @@ it will be as if the parser had never parsed anything.
 This is useful if you want to repeatedly parse JSON objects and want to
 ignore any trailing data, which means you have to reset the parser after
 each successful decode.
-
-See to L<JSON::XS/INCREMENTAL PARSING> for examples.
-
 
 =head1 JSON::PP SUPPORT METHODS
 

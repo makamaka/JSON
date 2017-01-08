@@ -1592,20 +1592,6 @@ proper subset of most 8-bit and multibyte encodings in use in the world.
 
 =back
 
-
-=head1 TODO
-
-=over
-
-=item example programs
-
-=back
-
-=head1 THREADS
-
-No test with JSON::PP. If with JSON::XS, See to L<JSON::XS/THREADS>.
-
-
 =head1 BUGS
 
 Please report bugs relevant to C<JSON> to E<lt>makamaka[at]cpan.orgE<gt>.

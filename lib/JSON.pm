@@ -1148,31 +1148,40 @@ and you need to know where the JSON text ends.
    JSON->new->decode_prefix ("[1] the tail")
    => ([1], 3)
 
+=head1 ADDITIONAL METHODS
+
+The following methods are for this module only.
+
+=head2 backend
+
+    $backend = $json->backend
+
+Returns the backend this module currently uses, which should be
+JSON::Backend::XS (which inherits JSON::XS or Cpanel::JSON::XS),
+or JSON::Backend::PP (which inherits JSON::PP).
+
+=head2 is_xs
+
+    $boolean = $json->is_xs
+
+Returns true if the backend inherits JSON::XS or Cpanel::JSON::XS.
+
+=head2 is_pp
+
+    $boolean = $json->is_pp
+
+Returns true if the backend inherits JSON::PP.
 
 =head2 property
 
-    $boolean = $json->property($property_name)
+    $settings = $json->property()
 
-Returns a boolean value about above some properties.
+Returns a reference to a hash that holds all the common flag settings.
 
-The available properties are C<ascii>, C<latin1>, C<utf8>,
-C<indent>,C<space_before>, C<space_after>, C<relaxed>, C<canonical>,
-C<allow_nonref>, C<allow_unknown>, C<allow_blessed>, C<convert_blessed>,
-C<shrink>, C<max_depth> and C<max_size>.
+    $json = $json->property('utf8' => 1)
+    $value = $json->property('utf8') # 1
 
-   $boolean = $json->property('utf8');
-    => 0
-   $json->utf8;
-   $boolean = $json->property('utf8');
-    => 1
-
-Sets the property with a given boolean value.
-
-    $json = $json->property($property_name => $boolean);
-
-With no argument, it returns all the above properties as a hash reference.
-
-    $flag_hashref = $json->property();
+You can use this to get/set a value of a particular flag.
 
 =head1 INCREMENTAL PARSING
 

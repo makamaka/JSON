@@ -1592,68 +1592,6 @@ proper subset of most 8-bit and multibyte encodings in use in the world.
 
 =back
 
-=head1 BACKEND MODULE DECISION
-
-When you use C<JSON>, C<JSON> tries to C<use> JSON::XS. If this call failed, it will
-C<uses> JSON::PP. The required JSON::XS version is I<2.2> or later.
-
-The C<JSON> constructor method returns an object inherited from the backend module,
-and JSON::XS object is a blessed scalar reference while JSON::PP is a blessed hash
-reference.
-
-So, your program should not depend on the backend module, especially
-returned objects should not be modified.
-
- my $json = JSON->new; # XS or PP?
- $json->{stash} = 'this is xs object'; # this code may raise an error!
-
-To check the backend module, there are some methods - C<backend>, C<is_pp> and C<is_xs>.
-
-  JSON->backend; # 'JSON::XS' or 'JSON::PP'
-  
-  JSON->backend->is_pp: # 0 or 1
-  
-  JSON->backend->is_xs: # 1 or 0
-  
-  $json->is_xs; # 1 or 0
-  
-  $json->is_pp; # 0 or 1
-
-
-If you set an environment variable C<PERL_JSON_BACKEND>, the calling action will be changed.
-
-=over
-
-=item PERL_JSON_BACKEND = 0 or PERL_JSON_BACKEND = 'JSON::PP'
-
-Always use JSON::PP
-
-=item PERL_JSON_BACKEND == 1 or PERL_JSON_BACKEND = 'JSON::XS,JSON::PP'
-
-(The default) Use compiled JSON::XS if it is properly compiled & installed,
-otherwise use JSON::PP.
-
-=item PERL_JSON_BACKEND == 2 or PERL_JSON_BACKEND = 'JSON::XS'
-
-Always use compiled JSON::XS, die if it isn't properly compiled & installed.
-
-=item PERL_JSON_BACKEND = 'JSON::backportPP'
-
-Always use JSON::backportPP.
-JSON::backportPP is JSON::PP back port module.
-C<JSON> includes JSON::backportPP instead of JSON::PP.
-
-=back
-
-These ideas come from L<DBI::PurePerl> mechanism.
-
-example:
-
- BEGIN { $ENV{PERL_JSON_BACKEND} = 'JSON::PP' }
- use JSON; # always uses JSON::PP
-
-In future, it may be able to specify another module.
-
 =head1 USE PP FEATURES EVEN THOUGH XS BACKEND
 
 Many methods are available with either JSON::XS or JSON::PP and

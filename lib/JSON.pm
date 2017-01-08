@@ -1493,6 +1493,104 @@ this module throws an exception.
 
 =back
 
+=head1 ENCODING/CODESET FLAG NOTES
+
+This section is taken from JSON::XS.
+
+The interested reader might have seen a number of flags that signify
+encodings or codesets - C<utf8>, C<latin1> and C<ascii>. There seems to be
+some confusion on what these do, so here is a short comparison:
+
+C<utf8> controls whether the JSON text created by C<encode> (and expected
+by C<decode>) is UTF-8 encoded or not, while C<latin1> and C<ascii> only
+control whether C<encode> escapes character values outside their respective
+codeset range. Neither of these flags conflict with each other, although
+some combinations make less sense than others.
+
+Care has been taken to make all flags symmetrical with respect to
+C<encode> and C<decode>, that is, texts encoded with any combination of
+these flag values will be correctly decoded when the same flags are used
+- in general, if you use different flag settings while encoding vs. when
+decoding you likely have a bug somewhere.
+
+Below comes a verbose discussion of these flags. Note that a "codeset" is
+simply an abstract set of character-codepoint pairs, while an encoding
+takes those codepoint numbers and I<encodes> them, in our case into
+octets. Unicode is (among other things) a codeset, UTF-8 is an encoding,
+and ISO-8859-1 (= latin 1) and ASCII are both codesets I<and> encodings at
+the same time, which can be confusing.
+
+=over 4
+
+=item C<utf8> flag disabled
+
+When C<utf8> is disabled (the default), then C<encode>/C<decode> generate
+and expect Unicode strings, that is, characters with high ordinal Unicode
+values (> 255) will be encoded as such characters, and likewise such
+characters are decoded as-is, no changes to them will be done, except
+"(re-)interpreting" them as Unicode codepoints or Unicode characters,
+respectively (to Perl, these are the same thing in strings unless you do
+funny/weird/dumb stuff).
+
+This is useful when you want to do the encoding yourself (e.g. when you
+want to have UTF-16 encoded JSON texts) or when some other layer does
+the encoding for you (for example, when printing to a terminal using a
+filehandle that transparently encodes to UTF-8 you certainly do NOT want
+to UTF-8 encode your data first and have Perl encode it another time).
+
+=item C<utf8> flag enabled
+
+If the C<utf8>-flag is enabled, C<encode>/C<decode> will encode all
+characters using the corresponding UTF-8 multi-byte sequence, and will
+expect your input strings to be encoded as UTF-8, that is, no "character"
+of the input string must have any value > 255, as UTF-8 does not allow
+that.
+
+The C<utf8> flag therefore switches between two modes: disabled means you
+will get a Unicode string in Perl, enabled means you get an UTF-8 encoded
+octet/binary string in Perl.
+
+=item C<latin1> or C<ascii> flags enabled
+
+With C<latin1> (or C<ascii>) enabled, C<encode> will escape characters
+with ordinal values > 255 (> 127 with C<ascii>) and encode the remaining
+characters as specified by the C<utf8> flag.
+
+If C<utf8> is disabled, then the result is also correctly encoded in those
+character sets (as both are proper subsets of Unicode, meaning that a
+Unicode string with all character values < 256 is the same thing as a
+ISO-8859-1 string, and a Unicode string with all character values < 128 is
+the same thing as an ASCII string in Perl).
+
+If C<utf8> is enabled, you still get a correct UTF-8-encoded string,
+regardless of these flags, just some more characters will be escaped using
+C<\uXXXX> then before.
+
+Note that ISO-8859-1-I<encoded> strings are not compatible with UTF-8
+encoding, while ASCII-encoded strings are. That is because the ISO-8859-1
+encoding is NOT a subset of UTF-8 (despite the ISO-8859-1 I<codeset> being
+a subset of Unicode), while ASCII is.
+
+Surprisingly, C<decode> will ignore these flags and so treat all input
+values as governed by the C<utf8> flag. If it is disabled, this allows you
+to decode ISO-8859-1- and ASCII-encoded strings, as both strict subsets of
+Unicode. If it is enabled, you can correctly decode UTF-8 encoded strings.
+
+So neither C<latin1> nor C<ascii> are incompatible with the C<utf8> flag -
+they only govern when the JSON output engine escapes a character or not.
+
+The main use for C<latin1> is to relatively efficiently store binary data
+as JSON, at the expense of breaking compatibility with most JSON decoders.
+
+The main use for C<ascii> is to force the output to not contain characters
+with values > 127, which means you can interpret the resulting string
+as UTF-8, ISO-8859-1, ASCII, KOI8-R or most about any character set and
+8-bit-encoding, and still get the same data structure back. This is useful
+when your channel for JSON transfer is not 8-bit clean or the encoding
+might be mangled in between (e.g. in mail), and works because ASCII is a
+proper subset of most 8-bit and multibyte encodings in use in the world.
+
+=back
 
 =head1 JSON and ECMAscript
 

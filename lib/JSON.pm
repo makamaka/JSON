@@ -1592,16 +1592,6 @@ proper subset of most 8-bit and multibyte encodings in use in the world.
 
 =back
 
-=head1 JSON and ECMAscript
-
-See to L<JSON::XS/JSON and ECMAscript>.
-
-=head1 JSON and YAML
-
-JSON is not a subset of YAML.
-See to L<JSON::XS/JSON and YAML>.
-
-
 =head1 BACKEND MODULE DECISION
 
 When you use C<JSON>, C<JSON> tries to C<use> JSON::XS. If this call failed, it will

@@ -29,39 +29,22 @@ Welcome to JSON (v.$version)
 =============================
 $message
 
- *************************** CAUTION **************************************
- *                                                                        *
- * INCOMPATIBLE CHANGE (JSON::XS version 2.90)                            *
- *                                                                        *
- * JSON.pm had patched JSON::XS::Boolean and JSON::PP::Boolean internally *
- * on loading time for making these modules inherit JSON::Boolean.        *
- * But since JSON::XS v3.0 it uses Types::Serialiser as boolean class.    *
- * Then now JSON.pm breaks boolean class overload features and            *
- * -support_by_pp if JSON::XS v3.0 or later is installed.                 *
- *                                                                        *
- * JSON::true and JSON::false returned JSON::Boolean objects.             *
- * For workaround, they return JSON::PP::Boolean objects in this version. *
- *                                                                        *
- *     isa_ok(JSON::true, 'JSON::PP::Boolean');                           *
- *                                                                        *
- * And it discards a feature:                                             *
- *                                                                        *
- *     ok(JSON::true eq 'true');                                          *
- *                                                                        *
- * In other words, JSON::PP::Boolean overloads numeric only.              *
- *                                                                        *
- *     ok( JSON::true == 1 );                                             *
- *                                                                        *
- **************************************************************************
+ ** BACKWARD INCOMPATIBILITY **
 
+Since version 2.90, stringification (and string comparison) for
+JSON::true and JSON::false has not been overloaded. It shouldn't
+matter as long as you treat them as boolean values, but a code that
+expects they are stringified as "true" or "false" doesn't work as
+you have expected any more.
 
- ************************** CAUTION **************************
- * This is 'JSON version 2' and there are many differences   *
- * to version 1.xx                                           *
- * Please check your applications that use old version.      *
- *   See 'INCOMPATIBLE CHANGES TO OLD VERSION' and 'TIPS'    *
- *************************************************************
+    if (JSON::true eq 'true') {  # now fails
 
+    print "The result is $JSON::true now."; # => The result is 1 now.
+
+And now these boolean values don't inherit JSON::Boolean, either.
+When you need to test a value is a JSON boolean value or not, use
+JSON::is_bool function, instead of testing the value inherits
+a particular boolean class or not.
 
 EOF
 

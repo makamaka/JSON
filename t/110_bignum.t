@@ -31,10 +31,12 @@ isa_ok($num, 'Math::BigInt');
 is("$num", $fix . '100000000000000000000000000000000000000');
 is($json->encode($num), $fix . '100000000000000000000000000000000000000');
 
+SKIP: { skip "requires $JSON::BackendModule 2.91_03 or newer", 2 if $JSON::BackendModulePP and eval $JSON::BackendModulePP->VERSION < 2.91_03;
 $num  = $json->decode(q|10|);
 
-ok(!$num->isa('Math::BigInt'), 'small integer is not a BigInt');
-ok(!$num->isa('Math::BigFloat'), 'small integer is not a BigFloat');
+ok(!(ref $num and $num->isa('Math::BigInt')), 'small integer is not a BigInt');
+ok(!(ref $num and $num->isa('Math::BigFloat')), 'small integer is not a BigFloat');
+}
 
 $num  = $json->decode(q|2.0000000000000000001|);
 

@@ -1611,8 +1611,20 @@ a particular boolean class or not.
 
 =head1 BUGS
 
-Please report bugs relevant to C<JSON> to E<lt>makamaka[at]cpan.orgE<gt>.
+Please report bugs on backend selection and additional features
+this module provides to RT or GitHub issues for this module:
 
+=over 4
+
+=item https://rt.cpan.org/Public/Dist/Display.html?Queue=JSON
+
+=item https://github.com/makamaka/JSON/issues
+
+=back
+
+Please report bugs and feature requests on decoding/encoding
+and boolean behaviors to the author of the backend module you
+are using.
 
 =head1 SEE ALSO
 

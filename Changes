@@ -19,35 +19,9 @@ Revision history for Perl extension JSON.
 	- removed base.pm dependency
 	- updated backportPP with JSON::PP 2.91_01
 
-## JSON version 2.9 #####################################################
-
-CAUTION!!!
-INCOMPATIBLE CHANGE
-
-JSON.pm had patched JSON::XS::Boolean and JSON::PP::Boolean internally
-on loading time for making these modules inherit JSON::Boolean.
-But since JSON::XS v3.0 it use Types::Serialiser as boolean class.
-Then now JSON.pm breaks boolean classe overload features and
--support_by_pp if JSON::XS v3.0 or later is installed.
-
-JSON::true and JSON::false returned JSON::Boolean objects.
-For workaround, they return JSON::PP::Boolean objects in this version.
-
-    isa_ok(JSON::true, 'JSON::PP::Boolean');
-
-And it discards a feature:
-
-    ok(JSON::true eq 'true');
-
-In other word, JSON::PP::Boolean overload numeric only.
-
-    ok( JSON::true == 1 );
-
-##########################################################################
-
 2.90  Wed Oct 30 19:48:43 2013
 
-	**** Please see to the headline in this file. ****
+   ** INCOMPATIBLE CHANGE **
 
 	- workaround for JSON::XS version 3.0 or later installed case.
 
@@ -62,9 +36,6 @@ In other word, JSON::PP::Boolean overload numeric only.
 	   t/xe02_bool.t
 	   t/xe03_bool2.t
 	   t/xe12_boolean.t
-
-	**** Please see to the headline in this file. ****
-
 
 2.61  Thu Oct 17 19:38:55 2013
 	- fixed return/or in _incr_parse

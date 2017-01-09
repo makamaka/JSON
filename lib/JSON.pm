@@ -1604,6 +1604,11 @@ you have expected any more.
 
     print "The result is $JSON::true now."; # => The result is 1 now.
 
+And now these boolean values don't inherit JSON::Boolean, either.
+When you need to test a value is a JSON boolean value or not, use
+C<JSON::is_bool> function, instead of testing the value inherits
+a particular boolean class or not.
+
 =head1 BUGS
 
 Please report bugs relevant to C<JSON> to E<lt>makamaka[at]cpan.orgE<gt>.

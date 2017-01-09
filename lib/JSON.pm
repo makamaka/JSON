@@ -1628,9 +1628,9 @@ are using.
 
 =head1 SEE ALSO
 
-Most of the document is copied and modified from JSON::XS doc.
+L<JSON::XS>, L<Cpanel::JSON::XS>, L<JSON::PP> for backends.
 
-L<JSON::XS>, L<JSON::PP>
+L<JSON::MaybeXS>, an alternative that prefers Cpanel::JSON::XS.
 
 C<RFC4627>(L<http://www.ietf.org/rfc/rfc4627.txt>)
 

@@ -1,5 +1,9 @@
 Revision history for Perl extension JSON.
 
+2.91_03 2017-01-09
+	- reworked documentation, based on the one for JSON::XS
+	- updated backportPP with JSON::PP 2.91_03
+
 2.91_02 2016-12-04
 	- fixed not to fail tests under Perl 5.25.* (srezic++)
 

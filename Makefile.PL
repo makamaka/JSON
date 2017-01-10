@@ -9,13 +9,10 @@ $| = 1;
 $ENV{PERL_JSON_BACKEND} = 'JSON::backportPP';
 eval q| require JSON |;
 
-# B module can't install? I'm not careful for such a problem.
-# Leave us alone today?
 if ($@) {
     print "Loading lib/JSON.pm failed. No B module?\n";
     print "perl says : $@";
-    print "Set the environmental variable 'PERL_DL_NONLAZY' with 0.\n";
-    print "And see to ExtUtils::MM_Unix.\n";
+    print "Setting environmental variable 'PERL_DL_NONLAZY' to 0 may help.\n";
     print "No Makefile created.\n";
     exit 0;
 }

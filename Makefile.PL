@@ -6,6 +6,7 @@ use lib qw( ./lib );
 
 $| = 1;
 
+$ENV{PERL_JSON_BACKEND} = 'JSON::backportPP';
 eval q| require JSON |;
 
 # B module can't install? I'm not careful for such a problem.

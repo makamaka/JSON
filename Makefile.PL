@@ -19,13 +19,10 @@ if ($@) {
 
 
 my $version     = JSON->VERSION;
-my $message;
-
 
 print <<EOF;
 Welcome to JSON (v.$version)
 =============================
-$message
 
  ** BACKWARD INCOMPATIBILITY **
 

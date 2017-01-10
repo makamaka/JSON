@@ -9,7 +9,7 @@ use overload (
     fallback => 1,
 );
 
-$JSON::backportPP::Boolean::VERSION = '2.91_03';
+$JSON::backportPP::Boolean::VERSION = '2.91_04';
 
 1;
 

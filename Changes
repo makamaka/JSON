@@ -1,5 +1,10 @@
 Revision history for Perl extension JSON.
 
+2.93 2017-05-19
+    - add VERSION methods to (abstract) backend packages
+    - explained backward incompatibility about backend method
+    - updated VERSIONs of backportPP modules
+
 2.92 2017-05-15
     - production release
 

@@ -356,6 +356,7 @@ sub init {
 
 sub is_xs { 0 };
 sub is_pp { 1 };
+sub VERSION { $JSON::BackendModule->VERSION }
 
 #
 # To save memory, the below lines are read only when XS backend is used.
@@ -407,6 +408,7 @@ sub init {
 
 sub is_xs { 1 };
 sub is_pp { 0 };
+sub VERSION { $JSON::BackendModule->VERSION }
 
 sub support_by_pp {
     my ($class, @methods) = @_;

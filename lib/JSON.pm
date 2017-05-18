@@ -1158,9 +1158,12 @@ The following methods are for this module only.
 
     $backend = $json->backend
 
-Returns the backend this module currently uses, which should be
-JSON::Backend::XS (which inherits JSON::XS or Cpanel::JSON::XS),
-or JSON::Backend::PP (which inherits JSON::PP).
+Since 2.92, C<backend> method returns an abstract backend module used currently,
+which should be JSON::Backend::XS (which inherits JSON::XS or Cpanel::JSON::XS),
+or JSON::Backend::PP (which inherits JSON::PP), not to monkey-patch the actual
+backend module globally.
+
+If you need to know what is used actually, use C<isa>, instead of string comparison.
 
 =head2 is_xs
 

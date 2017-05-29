@@ -343,6 +343,7 @@ sub init {
     push @JSON::ISA, $class;
     $JSON::Backend = $class;
     $JSON::BackendModule = $module;
+    ${"$class\::VERSION"} = $module->VERSION;
 
     for my $method (@XSOnlyMethods) {
         *{"JSON::$method"} = sub {
@@ -356,7 +357,6 @@ sub init {
 
 sub is_xs { 0 };
 sub is_pp { 1 };
-sub VERSION { shift; $JSON::BackendModule->VERSION(@_) }
 
 #
 # To save memory, the below lines are read only when XS backend is used.
@@ -390,6 +390,7 @@ sub init {
     push @JSON::ISA, $class;
     $JSON::Backend = $class;
     $JSON::BackendModule = $module;
+    ${"$class\::VERSION"} = $module->VERSION;
 
     if ( $module->VERSION < 3 ) {
         eval 'package JSON::PP::Boolean';
@@ -408,7 +409,6 @@ sub init {
 
 sub is_xs { 1 };
 sub is_pp { 0 };
-sub VERSION { shift; $JSON::BackendModule->VERSION(@_) }
 
 sub support_by_pp {
     my ($class, @methods) = @_;

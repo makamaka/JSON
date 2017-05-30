@@ -9,6 +9,15 @@ BEGIN { @JSON::ISA = 'Exporter' }
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
+    local ($SIG{__DIE__}, $SIG{__WARN__}, $@, $!);
+    local @INC = @INC;
+    pop @INC if $INC[-1] eq '.';
+    eval {
+        require JSON::ConfigLocal;
+    };
+}
+
+BEGIN {
     $JSON::VERSION = '2.94';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
     $JSON::DEBUG   = $ENV{ PERL_JSON_DEBUG } if exists $ENV{ PERL_JSON_DEBUG };

@@ -11,7 +11,7 @@ use JSON;
 
 my $json = new JSON;
 
-note $json->backend->isa('JSON::PP');
+diag $json->backend->isa('JSON::PP');
 my $not_not_a_number_is_a_number = (
   $json->backend->isa('Cpanel::JSON::XS') ||
   ($json->backend->isa('JSON::PP') && ($JSON::PP::Boolean::VERSION || $JSON::backportPP::Boolean::VERSION))

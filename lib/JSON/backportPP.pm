@@ -1407,7 +1407,7 @@ BEGIN {
 $JSON::PP::true  = do { bless \(my $dummy = 1), "JSON::PP::Boolean" };
 $JSON::PP::false = do { bless \(my $dummy = 0), "JSON::PP::Boolean" };
 
-sub is_bool { defined $_[0] and UNIVERSAL::isa($_[0], "JSON::PP::Boolean"); }
+sub is_bool { ref $_[0] and $_[0]->isa("JSON::PP::Boolean"); }
 
 sub true  { $JSON::PP::true  }
 sub false { $JSON::PP::false }

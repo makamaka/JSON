@@ -9,7 +9,7 @@ BEGIN { @JSON::ISA = 'Exporter' }
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '2.94';
+    $JSON::VERSION = '2.95';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
     $JSON::DEBUG   = $ENV{ PERL_JSON_DEBUG } if exists $ENV{ PERL_JSON_DEBUG };
 }
@@ -464,7 +464,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
 
 =head1 VERSION
 
-    2.93
+    2.95
 
 =head1 DESCRIPTION
 

@@ -2,7 +2,7 @@
 use strict;
 use Test::More;
 
-BEGIN { plan tests => 77 };
+BEGIN { plan tests => 78 };
 
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
@@ -22,6 +22,7 @@ ok (JSON::is_bool $false);
 ok (++$false == 1);
 ok (!JSON::is_bool $false);
 ok (!JSON::is_bool "JSON::Boolean");
+ok (!JSON::is_bool {}); # GH-34
 
 ok (JSON->new->allow_nonref (1)->decode ('5') == 5);
 ok (JSON->new->allow_nonref (1)->decode ('-5') == -5);

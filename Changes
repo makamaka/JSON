@@ -1,5 +1,11 @@
 Revision history for Perl extension JSON.
 
+2.97000 2017-11-21
+    - updated backportPP with JSON::PP 2.97000
+    - use 5 digit minor version number for a while to avoid
+      confusion
+    - fixed is_bool to use blessed() instead of ref()
+
 2.96 2017-11-20
     - fixed packaging issue
     - updated backportPP with JSON::PP 2.96

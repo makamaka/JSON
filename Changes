@@ -1,5 +1,8 @@
 Revision history for Perl extension JSON.
 
+2.97001 2017-12-21
+    - updated backportPP with JSON::PP 2.97001
+
 2.97000 2017-11-21
     - updated backportPP with JSON::PP 2.97000
     - use 5 digit minor version number for a while to avoid

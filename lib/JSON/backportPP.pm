@@ -15,7 +15,7 @@ use JSON::backportPP::Boolean;
 use Carp ();
 #use Devel::Peek;
 
-$JSON::backportPP::VERSION = '2.97000';
+$JSON::backportPP::VERSION = '2.97001';
 
 @JSON::PP::EXPORT = qw(encode_json decode_json from_json to_json);
 
@@ -417,6 +417,8 @@ sub allow_bigint {
             return;
         } else {
             no warnings 'numeric';
+            # if the utf8 flag is on, it almost certainly started as a string
+            return if utf8::is_utf8($value);
             # detect numbers
             # string & "" -> ""
             # number & "" -> 0 (with warning)
@@ -1657,7 +1659,7 @@ JSON::PP - JSON::XS compatible pure-Perl module.
 
 =head1 VERSION
 
-    2.97000
+    2.97001
 
 =head1 DESCRIPTION
 

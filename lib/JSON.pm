@@ -349,7 +349,7 @@ sub init {
     my $version = ${"$class\::VERSION"} = $module->VERSION;
     $version =~ s/_//;
     if ($version < 3.99) {
-        push @XSOnlyMethods, 'allow_tags';
+        push @XSOnlyMethods, qw/allow_tags get_allow_tags/;
     } else {
         push @Properties, 'allow_tags';
     }

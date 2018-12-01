@@ -46,8 +46,10 @@ eval { JSON->new->decode (*STDERR) }; ok !!$@; # cannot coerce GLOB
 
 eval { decode_json ("\"\xa0") }; ok $@ =~ /malformed.*character/;
 eval { decode_json ("\"\xa0\"") }; ok $@ =~ /malformed.*character/;
+SKIP: { skip "requires JSON::XS 4 compat backend", 4 if ($JSON::BackendModulePP and eval $JSON::BackendModulePP->VERSION < 3) or ($JSON::BackendModule eq 'Cpanel::JSON::XS') or ($JSON::BackendModule eq 'JSON::XS' and $JSON::BackendModule->VERSION < 4);
 eval { decode_json ("1\x01") }; ok $@ =~ /garbage after/;
 eval { decode_json ("1\x00") }; ok $@ =~ /garbage after/;
 eval { decode_json ("\"\"\x00") }; ok $@ =~ /garbage after/;
 eval { decode_json ("[]\x00") }; ok $@ =~ /garbage after/;
+}
 

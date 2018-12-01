@@ -2,12 +2,17 @@
 
 use strict;
 use Test::More;
-BEGIN { plan tests => 20 };
 BEGIN { $^W = 0 } # hate
 
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
 use JSON;
+
+my $backend_version = JSON->backend->VERSION; $backend_version =~ s/_//;
+
+plan skip_all => "allow_tags is not supported" if $backend_version < 3;
+
+plan tests => 20;
 
 my $json = JSON->new->convert_blessed->allow_tags->allow_nonref;
 

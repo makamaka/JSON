@@ -16,12 +16,13 @@ SKIP: {
     my $json = JSON->new;
 
     my $res = eval q{ $json->encode( undef ) };
+    my $error = $@;
 
     # JSON::XS/JSON::PP 4.0 allow nonref by default
-    if ($json->allow_nonref) {
+    if ($json->get_allow_nonref) {
         is $res => 'null';
     } else {
-        like( $@, qr/line 1\./ );
+        like( $error, qr/line 1\./ );
     }
 }
 

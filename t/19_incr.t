@@ -36,10 +36,12 @@ sub splitter {
 
 splitter +JSON->new->allow_nonref (0), '  ["x\\"","\\u1000\\\\n\\nx",1,{"\\\\" :5 , "": "x"}]';
 splitter +JSON->new->allow_nonref (0), '[ "x\\"","\\u1000\\\\n\\nx" , 1,{"\\\\ " :5 , "": " x"} ] ';
-splitter +JSON->new                  , '"test"';
-splitter +JSON->new                  , ' "5" ';
-splitter +JSON->new                  , '-1e5';
-splitter +JSON->new                  , ' 0.00E+00 ';
+splitter +JSON->new->allow_nonref (1), '"test"';
+splitter +JSON->new->allow_nonref (1), ' "5" ';
+splitter +JSON->new->allow_nonref (1), '-1e5';
+SKIP: { skip "requires $JSON::BackendModule 3 or newer", 33 if $JSON::BackendModulePP and eval $JSON::BackendModulePP->VERSION < 3;
+splitter +JSON->new->allow_nonref (1), ' 0.00E+00 ';
+}
 
 {
    my $text = '[5],{"":1} , [ 1,2, 3], {"3":null}';
@@ -57,10 +59,10 @@ splitter +JSON->new                  , ' 0.00E+00 ';
       my $j4 = $coder->incr_parse; ok ($coder->incr_text !~ s/^\s*,//, "cskip4");
       my $j5 = $coder->incr_parse; ok ($coder->incr_text !~ s/^\s*,//, "cskip5");
 
-      ok ('[5]' eq encode_json $j1, "cjson1");
-      ok ('{"":1}' eq encode_json $j2, "cjson2");
-      ok ('[1,2,3]' eq encode_json $j3, "cjson3");
-      ok ('{"3":null}' eq encode_json $j4, "cjson4");
+      ok ('[5]' eq encode_json($j1), "cjson1");
+      ok ('{"":1}' eq encode_json($j2), "cjson2");
+      ok ('[1,2,3]' eq encode_json($j3), "cjson3");
+      ok ('{"3":null}' eq encode_json($j4), "cjson4");
       ok (!defined $j5, "cjson5");
    }
 }

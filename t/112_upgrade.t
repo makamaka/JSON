@@ -17,7 +17,10 @@ my $value = $json->decode( '"\\u00c8"' );
 
 is( $value, chr 0xc8 );
 
-ok( utf8::is_utf8( $value ) );
+SKIP: {
+    skip "UNICODE handling is disabale.", 1 unless $JSON::can_handle_UTF16_and_utf8;
+    ok( utf8::is_utf8( $value ) );
+}
 
 eval { $json->decode( '"' . chr(0xc8) . '"' ) };
 ok( $@ =~ /malformed UTF-8 character in JSON string/ );

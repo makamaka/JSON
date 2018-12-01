@@ -8,12 +8,6 @@ BEGIN { $ENV{PERL_JSON_BACKEND} ||= 1; }
 
 use JSON -support_by_pp;
 
-BEGIN {
-    use lib qw(t);
-    use _unicode_handling;
-}
-
-
 SKIP: {
     skip "can't use JSON::XS.", 4, unless( JSON->backend->is_xs );
 

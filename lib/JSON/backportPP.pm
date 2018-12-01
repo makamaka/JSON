@@ -15,7 +15,7 @@ use JSON::backportPP::Boolean;
 use Carp ();
 #use Devel::Peek;
 
-$JSON::backportPP::VERSION = '2.97001';
+$JSON::backportPP::VERSION = '3.99_01';
 
 @JSON::PP::EXPORT = qw(encode_json decode_json from_json to_json);
 
@@ -43,6 +43,7 @@ use constant P_ESCAPE_SLASH         => 16;
 use constant P_AS_NONBLESSED        => 17;
 
 use constant P_ALLOW_UNKNOWN        => 18;
+use constant P_ALLOW_TAGS           => 19;
 
 use constant OLD_PERL => $] < 5.008 ? 1 : 0;
 use constant USE_B => 0;
@@ -57,6 +58,7 @@ BEGIN {
     my @xs_compati_bit_properties = qw(
             latin1 ascii utf8 indent canonical space_before space_after allow_nonref shrink
             allow_blessed convert_blessed relaxed allow_unknown
+            allow_tags
     );
     my @pp_bit_properties = qw(
             allow_singlequote allow_bignum loose
@@ -132,6 +134,8 @@ sub new {
         max_size    => 0,
         indent_length => 3,
     };
+
+    $self->{PROPS}[P_ALLOW_NONREF] = 1;
 
     bless $self, $class;
 }
@@ -265,6 +269,7 @@ sub allow_bigint {
     my $escape_slash;
     my $bignum;
     my $as_nonblessed;
+    my $allow_tags;
 
     my $depth;
     my $indent_count;
@@ -281,9 +286,9 @@ sub allow_bigint {
         my $props = $self->{PROPS};
 
         ($ascii, $latin1, $utf8, $indent, $canonical, $space_before, $space_after, $allow_blessed,
-            $convert_blessed, $escape_slash, $bignum, $as_nonblessed)
+            $convert_blessed, $escape_slash, $bignum, $as_nonblessed, $allow_tags)
          = @{$props}[P_ASCII .. P_SPACE_AFTER, P_ALLOW_BLESSED, P_CONVERT_BLESSED,
-                    P_ESCAPE_SLASH, P_ALLOW_BIGNUM, P_AS_NONBLESSED];
+                    P_ESCAPE_SLASH, P_ALLOW_BIGNUM, P_AS_NONBLESSED, P_ALLOW_TAGS];
 
         ($max_depth, $indent_length) = @{$self}{qw/max_depth indent_length/};
 
@@ -341,6 +346,21 @@ sub allow_bigint {
                     }
 
                     return $self->object_to_json( $result );
+                }
+
+                if ( $allow_tags and $obj->can('FREEZE') ) {
+                    my $obj_class = ref $obj || $obj;
+                    $obj = bless $obj, $obj_class;
+                    my @results = $obj->FREEZE('JSON');
+                    if ( @results and ref $results[0] ) {
+                        if ( refaddr( $obj ) eq refaddr( $results[0] ) ) {
+                            encode_error( sprintf(
+                                "%s::FREEZE method returned same object as was passed instead of a new one",
+                                ref $obj
+                            ) );
+                        }
+                    }
+                    return '("'.$obj_class.'")['.join(',', @results).']';
                 }
 
                 return "$obj" if ( $bignum and _is_bignum($obj) );
@@ -653,6 +673,7 @@ BEGIN {
     my $singlequote;    # loosely quoting
     my $loose;          # 
     my $allow_barekey;  # bareKey
+    my $allow_tags;
 
     sub _detect_utf_encoding {
         my $text = shift;
@@ -679,8 +700,8 @@ BEGIN {
 
         my $props = $self->{PROPS};
 
-        ($utf8, $relaxed, $loose, $allow_bignum, $allow_barekey, $singlequote)
-            = @{$props}[P_UTF8, P_RELAXED, P_LOOSE .. P_ALLOW_SINGLEQUOTE];
+        ($utf8, $relaxed, $loose, $allow_bignum, $allow_barekey, $singlequote, $allow_tags)
+            = @{$props}[P_UTF8, P_RELAXED, P_LOOSE .. P_ALLOW_SINGLEQUOTE, P_ALLOW_TAGS];
 
         if ( $utf8 ) {
             $encoding = _detect_utf_encoding($text);
@@ -747,6 +768,7 @@ BEGIN {
         return          if(!defined $ch);
         return object() if($ch eq '{');
         return array()  if($ch eq '[');
+        return tag()    if($ch eq '(');
         return string() if($ch eq '"' or ($singlequote and $ch eq "'"));
         return number() if($ch =~ /[0-9]/ or $ch eq '-');
         return word();
@@ -956,6 +978,35 @@ BEGIN {
         decode_error(", or ] expected while parsing array");
     }
 
+    sub tag {
+        decode_error('malformed JSON string, neither array, object, number, string or atom') unless $allow_tags;
+
+        next_chr();
+        white();
+
+        my $tag = value();
+        return unless defined $tag;
+        decode_error('malformed JSON string, (tag) must be a string') if ref $tag;
+
+        white();
+
+        if (!defined $ch or $ch ne ')') {
+            decode_error(') expected after tag');
+        }
+
+        next_chr();
+        white();
+
+        my $val = value();
+        return unless defined $val;
+        decode_error('malformed JSON string, tag value must be an array') unless ref $val eq 'ARRAY';
+
+        if (!eval { $tag->can('THAW') }) {
+             decode_error('cannot decode perl-object (package does not exist)') if $@;
+             decode_error('cannot decode perl-object (package does not have a THAW method)');
+        }
+        $tag->THAW('JSON', @$val);
+    }
 
     sub object {
         my $o = $_[0] || {}; # you can use this code to use another hash ref object.
@@ -1235,17 +1286,26 @@ BEGIN {
 
         if ( $cb_sk_object and @ks == 1 and exists $cb_sk_object->{ $ks[0] } and ref $cb_sk_object->{ $ks[0] } ) {
             my @val = $cb_sk_object->{ $ks[0] }->( $o->{$ks[0]} );
-            if (@val == 1) {
+            if (@val == 0) {
+                return $o;
+            }
+            elsif (@val == 1) {
                 return $val[0];
+            }
+            else {
+                Carp::croak("filter_json_single_key_object callbacks must not return more than one scalar");
             }
         }
 
         my @val = $cb_object->($o) if ($cb_object);
-        if (@val == 0 or @val > 1) {
+        if (@val == 0) {
             return $o;
         }
-        else {
+        elsif (@val == 1) {
             return $val[0];
+        }
+        else {
+            Carp::croak("filter_json_object callbacks must not return more than one scalar");
         }
     }
 
@@ -1428,6 +1488,8 @@ use constant INCR_M_BS   => 2; # inside backslash
 use constant INCR_M_JSON => 3; # outside anything, count nesting
 use constant INCR_M_C0   => 4;
 use constant INCR_M_C1   => 5;
+use constant INCR_M_TFN  => 6;
+use constant INCR_M_NUM  => 7;
 
 $JSON::backportPP::IncrParser::VERSION = '1.01';
 
@@ -1493,7 +1555,7 @@ sub incr_parse {
             return @ret;
         }
         else { # in scalar context
-            return $ret[0] ? $ret[0] : undef;
+            return defined $ret[0] ? $ret[0] : undef;
         }
     }
 }
@@ -1541,6 +1603,28 @@ INCR_PARSE:
                 $p++;
             }
             next;
+        } elsif ( $mode == INCR_M_TFN ) {
+            while ( $len > $p ) {
+                $s = substr( $text, $p++, 1 );
+                next if defined $s and $s =~ /[rueals]/;
+                last;
+            }
+            $p--;
+            $self->{incr_mode} = INCR_M_JSON;
+
+            last INCR_PARSE unless $self->{incr_nest};
+            redo INCR_PARSE;
+        } elsif ( $mode == INCR_M_NUM ) {
+            while ( $len > $p ) {
+                $s = substr( $text, $p++, 1 );
+                next if defined $s and $s =~ /[0-9eE.+\-]/;
+                last;
+            }
+            $p--;
+            $self->{incr_mode} = INCR_M_JSON;
+
+            last INCR_PARSE unless $self->{incr_nest};
+            redo INCR_PARSE;
         } elsif ( $mode == INCR_M_STR ) {
             while ( $len > $p ) {
                 $s = substr( $text, $p, 1 );
@@ -1573,6 +1657,12 @@ INCR_PARSE:
                         last INCR_PARSE;
                     }
                     next;
+                } elsif ( $s eq 't' or $s eq 'f' or $s eq 'n' ) {
+                    $self->{incr_mode} = INCR_M_TFN;
+                    redo INCR_PARSE;
+                } elsif ( $s =~ /^[0-9\-]$/ ) {
+                    $self->{incr_mode} = INCR_M_NUM;
+                    redo INCR_PARSE;
                 } elsif ( $s eq '"' ) {
                     $self->{incr_mode} = INCR_M_STR;
                     redo INCR_PARSE;
@@ -1659,7 +1749,7 @@ JSON::PP - JSON::XS compatible pure-Perl module.
 
 =head1 VERSION
 
-    2.97001
+    3.99_01
 
 =head1 DESCRIPTION
 

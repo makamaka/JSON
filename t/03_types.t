@@ -1,11 +1,12 @@
 # copied over from JSON::XS and modified to use JSON
+
 use strict;
 use Test::More;
-
-BEGIN { plan tests => 78 };
+BEGIN { plan tests => 76 + 2 };
 
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
+use utf8;
 use JSON;
 
 

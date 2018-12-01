@@ -6,11 +6,6 @@ BEGIN { $ENV{PERL_JSON_BACKEND} ||= 1; }
 
 local $^W;
 
-BEGIN {
-    use lib qw(t);
-    use _unicode_handling;
-}
-
 use utf8;
 use JSON;
 
@@ -28,7 +23,7 @@ eval { JSON->new->allow_nonref (1)->decode ('"\u1234\udc00"') }; ok $@ =~ /missi
 eval { JSON->new->allow_nonref->decode ('"\ud800"') }; ok $@ =~ /missing low /;
 eval { JSON->new->allow_nonref (1)->decode ('"\ud800\u1234"') }; ok $@ =~ /surrogate pair /;
 
-eval { JSON->new->decode ('null') }; ok $@ =~ /allow_nonref/;
+eval { JSON->new->allow_nonref (0)->decode ('null') }; ok $@ =~ /allow_nonref/;
 eval { JSON->new->allow_nonref (1)->decode ('+0') }; ok $@ =~ /malformed/;
 eval { JSON->new->allow_nonref->decode ('.2') }; ok $@ =~ /malformed/;
 eval { JSON->new->allow_nonref (1)->decode ('bare') }; ok $@ =~ /malformed/;

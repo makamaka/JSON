@@ -22,7 +22,8 @@ die "JSON-PP directory not found" unless -d $pp_root;
     $content =~ s/^( *)package (JSON::PP(?:::(?:Boolean|IncrParser))?);/$1package # hide from PAUSE\n$1  $2;/gm;
     $content =~ s/use JSON::PP::Boolean/use JSON::backportPP::Boolean/;
     $content =~ s/JSON::PP::Compat/JSON::backportPP::Compat/g;
-    $content =~ s/\$JSON::PP::([\w:]+)?VERSION/\$JSON::backportPP::$1VERSION/g;
+    $content =~ s/\$JSON::PP::([\w:]+)VERSION/\$JSON::backportPP::$1VERSION/g;
+    $content =~ s/\$JSON::PP::VERSION/\$JSON::backportPP::VERSION/g;
     $content =~ s/\@JSON::PP::ISA/\@JSON::backportPP::ISA/g;
     $root->child('lib/JSON/backportPP.pm')->spew($content);
 }

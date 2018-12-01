@@ -58,6 +58,8 @@ for my $pp_test ($pp_root->child('t')->children) {
         $content =~ s/#SKIP_ALL_UNLESS_PP (\S+)/BEGIN { plan skip_all => "requires \$JSON::BackendModule $1 or newer" if JSON->backend->is_pp and eval \$JSON::BackendModule->VERSION < $1 }/g;
         $content =~ s/#SKIP_ALL_IF_XS/BEGIN { plan skip_all => "not for \$JSON::BackendModule" if \$JSON::BackendModule eq 'JSON::XS' }/g;
 
+        $content =~ s/\{\s*#SKIP_UNLESS_XS4_COMPAT (\S+)/SKIP: { skip "requires JSON::XS 4 compat backend", $1 if (\$JSON::BackendModulePP and eval \$JSON::BackendModulePP->VERSION < 3) or (\$JSON::BackendModule eq 'Cpanel::JSON::XS') or (\$JSON::BackendModule eq 'JSON::XS' and \$JSON::BackendModule->VERSION < 4);/g;
+
         if ($content !~ /\$ENV{PERL_JSON_BACKEND}/) {
             $content =~ s/use JSON;/BEGIN { \$ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }\n\nuse JSON;/;
         }
@@ -67,6 +69,22 @@ for my $pp_test ($pp_root->child('t')->children) {
         }
 
         # special cases
+        if ($basename eq '19_incr.t') {
+            $content =~ s/(splitter \+JSON\->new)\s+/$1->allow_nonref (1)/g;
+            $content =~ s/encode_json ([^,]+?),/encode_json($1),/g;
+        }
+        if ($basename eq '52_object.t') {
+            my $plan = '';
+            if ($content =~ s|BEGIN \{ (plan tests => \d+) };\n||s) {
+                $plan = $1;
+            }
+            my $skip = <<'SKIP';
+my $backend_version = JSON->backend->VERSION; $backend_version =~ s/_//;
+
+plan skip_all => "allow_tags is not supported" if $backend_version < 3;
+SKIP
+            $content =~ s|(use JSON;\n)|$1\n$skip\n$plan;\n|s;
+        }
         if ($basename eq '104_sortby.t') {
             $content =~ s/JSON::hoge/JSON::PP::hoge/g;
             $content =~ s/\$JSON::(a|b)\b/\$JSON::PP::$1/g;

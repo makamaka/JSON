@@ -32,7 +32,10 @@ my @Properties = qw/
     allow_blessed convert_blessed shrink max_depth max_size allow_unknown
 /;
 
-my @XSOnlyMethods = qw/allow_tags/; # Currently nothing
+my @XSOnlyMethods = qw//; # Currently nothing
+
+my @PublicMethodsSince4_0 = qw/allow_tags/;
+my @PropertiesSince4_0 = qw/allow_tags/;
 
 my @PPOnlyMethods = qw/
     indent_length sort_by
@@ -343,11 +346,17 @@ sub init {
     push @JSON::ISA, $class;
     $JSON::Backend = $class;
     $JSON::BackendModule = $module;
-    ${"$class\::VERSION"} = $module->VERSION;
+    my $version = ${"$class\::VERSION"} = $module->VERSION;
+    $version =~ s/_//;
+    if ($version < 3.99) {
+        push @XSOnlyMethods, 'allow_tags';
+    } else {
+        push @Properties, 'allow_tags';
+    }
 
     for my $method (@XSOnlyMethods) {
         *{"JSON::$method"} = sub {
-            Carp::carp("$method is not supported in $module.");
+            Carp::carp("$method is not supported by $module $version.");
             $_[0];
         };
     }
@@ -399,7 +408,7 @@ sub init {
 
     for my $method (@PPOnlyMethods) {
         *{"JSON::$method"} = sub {
-            Carp::carp("$method is not supported in $module.");
+            Carp::carp("$method is not supported by $module.");
             $_[0];
         };
     }

@@ -196,6 +196,27 @@ sub max_size {
 
 sub get_max_size { $_[0]->{max_size}; }
 
+sub boolean_values {
+    my $self = shift;
+    if (@_) {
+        my ($false, $true) = @_;
+        $self->{false} = $false;
+        $self->{true} = $true;
+        return ($false, $true);
+    } else {
+        delete $self->{false};
+        delete $self->{true};
+        return;
+    }
+}
+
+sub get_boolean_values {
+    my $self = shift;
+    if (exists $self->{true} and exists $self->{false}) {
+        return @$self{qw/false true/};
+    }
+    return;
+}
 
 sub filter_json_object {
     if (defined $_[1] and ref $_[1] eq 'CODE') {
@@ -675,6 +696,9 @@ BEGIN {
     my $allow_barekey;  # bareKey
     my $allow_tags;
 
+    my $alt_true;
+    my $alt_false;
+
     sub _detect_utf_encoding {
         my $text = shift;
         my @octets = unpack('C4', $text);
@@ -702,6 +726,8 @@ BEGIN {
 
         ($utf8, $relaxed, $loose, $allow_bignum, $allow_barekey, $singlequote, $allow_tags)
             = @{$props}[P_UTF8, P_RELAXED, P_LOOSE .. P_ALLOW_SINGLEQUOTE, P_ALLOW_TAGS];
+
+        ($alt_true, $alt_false) = @$self{qw/true false/};
 
         if ( $utf8 ) {
             $encoding = _detect_utf_encoding($text);
@@ -1091,7 +1117,7 @@ BEGIN {
         if($word eq 'true'){
             $at += 3;
             next_chr;
-            return $JSON::PP::true;
+            return defined $alt_true ? $alt_true : $JSON::PP::true;
         }
         elsif($word eq 'null'){
             $at += 3;
@@ -1103,7 +1129,7 @@ BEGIN {
             if(substr($text,$at,1) eq 'e'){
                 $at++;
                 next_chr;
-                return $JSON::PP::false;
+                return defined $alt_false ? $alt_false : $JSON::PP::false;
             }
         }
 

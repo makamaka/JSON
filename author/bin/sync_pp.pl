@@ -59,6 +59,7 @@ for my $pp_test ($pp_root->child('t')->children) {
         $content =~ s/#SKIP_ALL_IF_XS/BEGIN { plan skip_all => "not for \$JSON::BackendModule" if \$JSON::BackendModule eq 'JSON::XS' }/g;
 
         $content =~ s/\{\s*#SKIP_UNLESS_XS4_COMPAT (\S+)/SKIP: { skip "requires JSON::XS 4 compat backend", $1 if (\$JSON::BackendModulePP and eval \$JSON::BackendModulePP->VERSION < 3) or (\$JSON::BackendModule eq 'Cpanel::JSON::XS') or (\$JSON::BackendModule eq 'JSON::XS' and \$JSON::BackendModule->VERSION < 4);/g;
+        $content =~ s/#SKIP_ALL_UNLESS_XS4_COMPAT/BEGIN { plan skip_all => "requires JSON::XS 4 compat backend" if (\$JSON::BackendModulePP and eval \$JSON::BackendModulePP->VERSION < 3) or (\$JSON::BackendModule eq 'Cpanel::JSON::XS') or (\$JSON::BackendModule eq 'JSON::XS' and \$JSON::BackendModule->VERSION < 4); }/g;
 
         if ($content !~ /\$ENV{PERL_JSON_BACKEND}/) {
             $content =~ s/use JSON;/BEGIN { \$ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }\n\nuse JSON;/;
@@ -91,6 +92,9 @@ SKIP
         }
         if ($basename eq 'gh_28_json_test_suite.t') {
             $content =~ s/\$ENV{PERL_JSON_BACKEND} \|\|= "JSON::backportPP"/\$ENV{PERL_JSON_BACKEND} = "JSON::backportPP"/;
+        }
+        if ($basename eq '118_boolean_values.t') {
+            $content =~ s/JSON::Boolean/JSON::PP::Boolean/g;
         }
 
         $json_test->spew($content);

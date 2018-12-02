@@ -6,6 +6,7 @@
 \.bak$
 \.old$
 \.shipit$
+\.sh$
 blib/
 Makefile$
 MANIFEST\.SKIP

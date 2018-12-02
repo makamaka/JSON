@@ -17,6 +17,8 @@ t/00_pod.t
 t/01_utf8.t
 t/02_error.t
 t/03_types.t
+t/04_dwiw_encode.t
+t/05_dwiw_decode.t
 t/06_pc_pretty.t
 t/07_pc_esc.t
 t/08_pc_base.t
@@ -35,6 +37,7 @@ t/114_decode_prefix.t
 t/115_tie_ixhash.t
 t/116_incr_parse_fixed.t
 t/117_numbers.t
+t/118_boolean_values.t
 t/11_pc_expo.t
 t/12_blessed.t
 t/13_limit.t
@@ -44,11 +47,12 @@ t/16_tied.t
 t/17_relaxed.t
 t/18_json_checker.t
 t/19_incr.t
+t/20_faihu.t
 t/20_unknown.t
-t/21_evans_bugrep.t
+t/21_evans.t
 t/22_comment_at_eof.t
+t/52_object.t
 t/99_binary.t
-t/_unicode_handling.pm
 t/e00_func.t
 t/e01_property.t
 t/e02_bool.t

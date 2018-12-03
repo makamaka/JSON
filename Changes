@@ -1,5 +1,15 @@
 Revision history for Perl extension JSON.
 
+3.99_01 2018-12-03
+    - BACKWARD INCOMPATIBILITY:
+      As JSON::XS 4.0 changed its policy and enabled allow_nonref
+      by default, JSON::PP, and thus JSON, also enabled allow_nonref
+      by default
+
+    - updated backportPP with JSON::PP 3.99_01
+    - allow PERL_JSON_PP_USE_B environmental variable to restore
+      old number detection behavior for compatibility
+
 2.97001 2017-12-21
     - updated backportPP with JSON::PP 2.97001
 

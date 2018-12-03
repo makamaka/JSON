@@ -1,6 +1,7 @@
 use Test::More;
 use strict;
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
+BEGIN { $ENV{PERL_JSON_PP_USE_B} = 0 }
 use JSON;
 
 BEGIN { plan skip_all => "requires $JSON::BackendModule 2.90 or newer" if JSON->backend->is_pp and eval $JSON::BackendModule->VERSION < 2.90 }

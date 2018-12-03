@@ -3,6 +3,8 @@ use Test::More;
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 use JSON;
 
+BEGIN { plan skip_all => "requires Perl 5.008 or later" if $] < 5.008 }
+
 BEGIN { plan skip_all => "requires JSON::XS 4 compat backend" if ($JSON::BackendModulePP and eval $JSON::BackendModulePP->VERSION < 3) or ($JSON::BackendModule eq 'Cpanel::JSON::XS') or ($JSON::BackendModule eq 'JSON::XS' and $JSON::BackendModule->VERSION < 4); }
 
 package #

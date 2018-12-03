@@ -58,6 +58,7 @@ WriteMakefile(
         'META_MERGE' => {
             resources => {
                 repository  =>      'https://github.com/makamaka/JSON',
+                bugtracker  =>      'https://github.com/makamaka/JSON/issues',
             },
             recommends => {
                 'JSON::XS' => JSON->require_xs_version,

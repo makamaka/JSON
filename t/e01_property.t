@@ -2,36 +2,35 @@
 use Test::More;
 use strict;
 
-BEGIN { plan tests => 90 };
-
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
-
-BEGIN {
-    use lib qw(t);
-    use _unicode_handling;
-}
 
 use JSON;
 
 my @simples = 
-    qw/utf8 indent canonical space_before space_after allow_nonref shrink allow_blessed
+    qw/ascii latin1 utf8 indent canonical space_before space_after allow_nonref shrink allow_blessed
         convert_blessed relaxed
      /;
 
-if ($JSON::can_handle_UTF16_and_utf8) {
-    unshift @simples, 'ascii';
-    unshift @simples, 'latin1';
-}
-
-SKIP: {
-    skip "UNICODE handling is disabale.", 14 unless $JSON::can_handle_UTF16_and_utf8;
-}
-
 my $json = new JSON;
+
+# JSON::XS/JSON::PP 4.0 allow nonref by default
+my $allow_nonref_by_default = $json->allow_nonref;
+
+my $has_allow_tags = 0;
+if ($json->can('allow_tags') and !ref $json->allow_tags) {
+    push @simples, 'allow_tags';
+    $has_allow_tags = 1;
+}
+
+plan tests => 90 + $has_allow_tags * 7;
 
 for my $name (@simples) {
     my $method = 'get_' . $name;
-    ok(! $json->$method(), $method . ' default');
+    if ($name eq 'allow_nonref' and $allow_nonref_by_default) {
+        ok( $json->$method(), $method . ' default');
+    } else {
+        ok(! $json->$method(), $method . ' default');
+    }
     $json->$name();
     ok($json->$method(), $method . ' set true');
     $json->$name(0);
@@ -39,7 +38,6 @@ for my $name (@simples) {
     $json->$name();
     ok($json->$method(), $method . ' set true again');
 }
-
 
 ok($json->get_max_depth == 512, 'get_max_depth default');
 $json->max_depth(7);

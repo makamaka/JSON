@@ -5,15 +5,21 @@ perl:
 matrix:
   include:
     - perl: 5.8
+      env: JSON_XS_VERSION=4.00
+    - perl: 5.8
       env: JSON_XS_VERSION=3.02
     - perl: 5.8
       env: JSON_XS_VERSION=2.34
+    - perl: 5.8
+      env: JSON_PP_VERSION=2.97001
     - perl: 5.8
       env: JSON_PP_VERSION=2.27400
     - perl: 5.8
       env: JSON_PP_VERSION=2.27101
     - perl: 5.8
       env: CPANEL_JSON_XS_VERSION=3.0218
+    - perl: 5.8
+      env: CPANEL_JSON_XS_VERSION=4.08
 before_install:
   - test $JSON_PP_VERSION && cpanm -n JSON::XS@$JSON_XS_VERSION || true
   - test $JSON_XS_VERSION && cpanm -n JSON::XS@$JSON_XS_VERSION || true

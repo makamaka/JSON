@@ -5,7 +5,7 @@ BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
 use JSON;
 
-my $json = JSON->new->allow_nonref();
+my $json = JSON->new->allow_nonref(1);
 
 my @vs = $json->incr_parse('"a\"bc');
 
@@ -16,7 +16,7 @@ ok( not scalar(@vs) );
 is( $vs[0], "a\"bc" );
 
 
-$json = JSON->new;
+$json = JSON->new->allow_nonref(0);
 
 @vs = $json->incr_parse('"a\"bc');
 ok( not scalar(@vs) );

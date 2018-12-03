@@ -4,11 +4,10 @@
 use Test::More;
 use strict;
 BEGIN { plan tests => 6 };
-
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
 use JSON;
-
+use utf8;
 
 #########################
 my ($js,$obj);

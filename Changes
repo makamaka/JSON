@@ -1,5 +1,8 @@
 Revision history for Perl extension JSON.
 
+4.00 2018-12-07
+    - production release
+
 3.99_01 2018-12-03
     - BACKWARD INCOMPATIBILITY:
       As JSON::XS 4.0 changed its policy and enabled allow_nonref

@@ -1787,13 +1787,9 @@ a particular boolean class or not.
 Please report bugs on backend selection and additional features
 this module provides to RT or GitHub issues for this module:
 
-=over 4
+L<https://rt.cpan.org/Public/Dist/Display.html?Queue=JSON>
 
-=item https://rt.cpan.org/Public/Dist/Display.html?Queue=JSON
-
-=item https://github.com/makamaka/JSON/issues
-
-=back
+L<https://github.com/makamaka/JSON/issues>
 
 As for bugs on a specific behavior, please report to the author
 of the backend module you are using.

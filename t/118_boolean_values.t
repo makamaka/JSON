@@ -28,6 +28,8 @@ if (eval "require boolean; 1") {
 }
 if (eval "require JSON; 1") {
     push @tests, [JSON::true(), JSON::false(), 'JSON::PP::Boolean', 'JSON::PP::Boolean'];
+    push @tests, [JSON->boolean(11), JSON->boolean(undef), 'JSON::PP::Boolean', 'JSON::PP::Boolean'];
+    push @tests, [JSON::boolean(11), JSON::boolean(undef), 'JSON::PP::Boolean', 'JSON::PP::Boolean'];
 }
 if (eval "require Data::Bool; 1") {
     push @tests, [Data::Bool::true(), Data::Bool::false(), 'Data::Bool::Impl', 'Data::Bool::Impl'];

@@ -196,6 +196,11 @@ sub true  { $JSON::true  }
 
 sub false { $JSON::false }
 
+sub boolean {
+    # might be called as method or as function, so pop() to get the last arg instead of shift() to get the first
+    pop() ? $JSON::true : $JSON::false
+}
+
 sub null  { undef; }
 
 

@@ -9,7 +9,7 @@ BEGIN { @JSON::ISA = 'Exporter' }
 @JSON::EXPORT = qw(from_json to_json jsonToObj objToJson encode_json decode_json);
 
 BEGIN {
-    $JSON::VERSION = '4.00';
+    $JSON::VERSION = '4.01';
     $JSON::DEBUG   = 0 unless (defined $JSON::DEBUG);
     $JSON::DEBUG   = $ENV{ PERL_JSON_DEBUG } if exists $ENV{ PERL_JSON_DEBUG };
 }
@@ -478,7 +478,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
 
 =head1 VERSION
 
-    4.00
+    4.01
 
 =head1 DESCRIPTION
 
@@ -1258,6 +1258,13 @@ Returns a reference to a hash that holds all the common flag settings.
     $value = $json->property('utf8') # 1
 
 You can use this to get/set a value of a particular flag.
+
+=head2 boolean
+
+    $boolean_object = JSON->boolean($scalar)
+
+Returns $JSON::true if $scalar contains a true value, $JSON::false otherwise.
+You can use this as a full-qualified function (C<JSON::boolean($scalar)>).
 
 =head1 INCREMENTAL PARSING
 

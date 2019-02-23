@@ -1,5 +1,9 @@
 Revision history for Perl extension JSON.
 
+4.02 2019-02-23
+    - fixed a test that breaks if perl is compiled with -Dquadmath
+      (RT-128589)
+
 4.01 2019-01-21
     - added boolean function/method that takes a scalar value and
       returns a boolean value (David Cantrell)

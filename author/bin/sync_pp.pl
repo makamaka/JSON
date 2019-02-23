@@ -95,6 +95,7 @@ SKIP
         }
         if ($basename eq '118_boolean_values.t') {
             $content =~ s/JSON::Boolean/JSON::PP::Boolean/g;
+            $content =~ s/(push \@tests, \[JSON::true\(\), JSON::false\(\), 'JSON::PP::Boolean', 'JSON::PP::Boolean'\];\n)/$1    push \@tests, [JSON->boolean(11), JSON->boolean(undef), 'JSON::PP::Boolean', 'JSON::PP::Boolean'];\n    push \@tests, [JSON::boolean(11), JSON::boolean(undef), 'JSON::PP::Boolean', 'JSON::PP::Boolean'];\n/;
         }
 
         $json_test->spew($content);

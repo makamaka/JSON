@@ -943,7 +943,7 @@ This setting has currently no effect on tied hashes.
     
     $enabled = $json->get_allow_nonref
 
-Unlike other boolean options, this opotion is enabled by default beginning
+Unlike other boolean options, this option is enabled by default beginning
 with version C<4.0>.
 
 If C<$enable> is true (or missing), then the C<encode> method can convert a

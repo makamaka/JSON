@@ -1,6 +1,17 @@
 # copied over from JSON::XS and modified to use JSON
 
+package JSON::freeze;
+
+1;
+
+package JSON::tojson;
+
+1;
+
+package main;
+
 use strict;
+use warnings;
 use Test::More;
 BEGIN { $^W = 0 } # hate
 
@@ -52,8 +63,8 @@ sub JSON::freeze::THAW {
    777
 }
 
-my $obj = bless { k => 1 }, JSON::freeze::;
-my $enc = $json->encode ($obj);
+$obj = bless { k => 1 }, JSON::freeze::;
+$enc = $json->encode ($obj);
 ok ($enc eq '("JSON::freeze")[3,1,2]');
 
 my $dec = $json->decode ($enc);

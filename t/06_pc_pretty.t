@@ -2,6 +2,7 @@
 # copied over from JSON::XS and modified to use JSON
 
 use strict;
+use warnings;
 use Test::More;
 BEGIN { plan tests => 9 };
 
@@ -10,7 +11,7 @@ BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 use JSON;
 
 my ($js,$obj,$json);
-my $pc = new JSON;
+my $pc = JSON->new;
 
 $obj = {foo => "bar"};
 $js = $pc->encode($obj);

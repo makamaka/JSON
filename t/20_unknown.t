@@ -1,11 +1,10 @@
 use strict;
+use warnings;
 
 use Test::More;
 BEGIN { plan tests => 10 };
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
-
-use strict;
 use JSON;
 
 my $json = JSON->new;

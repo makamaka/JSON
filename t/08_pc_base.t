@@ -4,6 +4,7 @@ use Test::More;
 # copied over from JSON::XS and modified to use JSON
 
 use strict;
+use warnings;
 BEGIN { plan tests => 20 };
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
@@ -11,7 +12,7 @@ use JSON;
 
 my ($js,$obj);
 
-my $pc = new JSON;
+my $pc = JSON->new;
 
 $js  = q|{}|;
 

@@ -1,5 +1,6 @@
 use Test::More;
 use strict;
+use warnings;
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 BEGIN { $ENV{PERL_JSON_PP_USE_B} = 0 }
 use JSON;

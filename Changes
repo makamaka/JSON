@@ -1,7 +1,8 @@
 Revision history for Perl extension JSON.
 
-4.03 to be released
+4.03 2021-01-24
     - corrected one typo in POD (James E Keenan)
+    - updated backportPP with JSON::PP 4.06
 
 4.02 2019-02-23
     - fixed a test that breaks if perl is compiled with -Dquadmath

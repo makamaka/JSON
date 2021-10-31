@@ -1595,7 +1595,7 @@ argument being the object to serialise, and the second argument being the
 constant string C<JSON> to distinguish it from other serialisers.
 
 The C<FREEZE> method can return any number of values (i.e. zero or
-more). These values and the paclkage/classname of the object will then be
+more). These values and the package/classname of the object will then be
 encoded as a tagged JSON value in the following format:
 
    ("classname")[FREEZE return values...]

@@ -1,4 +1,3 @@
-.travis.yml
 Changes
 eg/bench_decode.pl
 eg/bench_encode.pl

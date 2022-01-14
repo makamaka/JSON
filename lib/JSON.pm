@@ -476,10 +476,6 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
  $pretty_printed = $json->pretty->encode( $perl_scalar ); # pretty-printing
 
-=head1 VERSION
-
-    4.02
-
 =head1 DESCRIPTION
 
 This module is a thin wrapper for L<JSON::XS>-compatible modules with a few

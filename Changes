@@ -1,5 +1,8 @@
 Revision history for Perl extension JSON.
 
+4.05 2022-01-14
+    - removed VERSION section in pod (GH#52, abraxxa++)
+
 4.04 2021-12-17
     - updated backportPP with JSON::PP 4.07
 

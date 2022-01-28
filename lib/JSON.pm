@@ -469,7 +469,7 @@ JSON - JSON (JavaScript Object Notation) encoder/decoder
  
  # OO-interface
  
- $json = JSON->new->allow_nonref;
+ $json = JSON->new->utf8->allow_nonref;
  
  $json_text   = $json->encode( $perl_scalar );
  $perl_scalar = $json->decode( $json_text );

@@ -10,17 +10,23 @@ BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 use utf8;
 use JSON;
 
+my $pilcrow_utf8 = (ord "^" == 0x5E) ? "\xc2\xb6"  # 8859-1
+                 : (ord "^" == 0x5F) ? "\x80\x65"  # CP 1024
+                 :                     "\x78\x64"; # assume CP 037
+is (JSON->new->allow_nonref (1)->utf8 (1)->encode ("¶"), "\"$pilcrow_utf8\"");
+is (JSON->new->allow_nonref (1)->encode ("¶"), "\"¶\"");
+is (JSON->new->allow_nonref (1)->ascii (1)->utf8 (1)->encode (chr 0x8000), '"\u8000"');
+is (JSON->new->allow_nonref (1)->ascii (1)->utf8 (1)->pretty (1)->encode (chr 0x10402), "\"\\ud801\\udc02\"\n");
 
-ok (JSON->new->allow_nonref (1)->utf8 (1)->encode ("ü") eq "\"\xc3\xbc\"");
-ok (JSON->new->allow_nonref (1)->encode ("ü") eq "\"ü\"");
-ok (JSON->new->allow_nonref (1)->ascii (1)->utf8 (1)->encode (chr 0x8000) eq '"\u8000"');
-ok (JSON->new->allow_nonref (1)->ascii (1)->utf8 (1)->pretty (1)->encode (chr 0x10402) eq "\"\\ud801\\udc02\"\n");
-
-eval { JSON->new->allow_nonref (1)->utf8 (1)->decode ('"ü"') };
+eval { JSON->new->allow_nonref (1)->utf8 (1)->decode ('"¶"') };
 ok $@ =~ /malformed UTF-8/;
 
-ok (JSON->new->allow_nonref (1)->decode ('"ü"') eq "ü");
-ok (JSON->new->allow_nonref (1)->decode ('"\u00fc"') eq "ü");
-ok (JSON->new->allow_nonref (1)->decode ('"\ud801\udc02' . "\x{10204}\"") eq "\x{10402}\x{10204}");
-ok (JSON->new->allow_nonref (1)->decode ('"\"\n\\\\\r\t\f\b"') eq "\"\012\\\015\011\014\010");
+is (JSON->new->allow_nonref (1)->decode ('"¶"'), "¶");
+is (JSON->new->allow_nonref (1)->decode ('"\u00b6"'), "¶");
+is (JSON->new->allow_nonref (1)->decode ('"\ud801\udc02' . "\x{10204}\""), "\x{10402}\x{10204}");
+
+my $controls = (ord "^" == 0x5E) ? "\012\\\015\011\014\010"
+             : (ord "^" == 0x5F) ? "\025\\\015\005\014\026"  # CP 1024
+             :                     "\045\\\015\005\014\026"; # assume CP 037
+is (JSON->new->allow_nonref (1)->decode ('"\"\n\\\\\r\t\f\b"'), "\"$controls");
 

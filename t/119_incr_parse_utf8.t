@@ -1,13 +1,16 @@
 use strict;
 use warnings;
-use Test::More tests => 24;
+use Test::More;
 
 use utf8;
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
 use JSON;
+plan skip_all => "not for older version of JSON::PP" if JSON->backend->isa('JSON::PP') && JSON->backend->VERSION < 4.07;
 use Encode;
 use charnames qw< :full >;
+
+plan tests => 24;
 
 use vars qw< @vs >;
 
@@ -66,8 +69,6 @@ is_deeply( $vs[2], { c => "3" } );
 ###  Without '->utf8'  ###
 ##########################
 
-SKIP: {
-skip "not for older version of JSON::PP", 6 if JSON->backend->isa('JSON::PP') && JSON->backend->VERSION < 4.07;
 @vs = eval { JSON->new->incr_parse( $JSON_TXT ) };
 
 ok( !$@ );
@@ -77,4 +78,3 @@ is_deeply( \@vs, [ { a => "1" }, { b => "\N{BULLET}" }, { c => "3" } ] );
 is_deeply( $vs[0], { a => "1" } );
 is_deeply( $vs[1], { b => "\N{BULLET}" } );
 is_deeply( $vs[2], { c => "3" } );
-}

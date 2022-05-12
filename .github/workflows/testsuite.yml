@@ -100,7 +100,7 @@ jobs:
       - name: perl -V
         run: perl -V
       - name: install backend
-        run: cpanm -n ${{ matrix.backend }}@${{ $matrix.backend-version }}
+        run: cpanm -n ${{ matrix.backend }}@${{ matrix.backend-version }}
       - name: Makefile.PL
         run: perl -I$(pwd) Makefile.PL
       - name: make test

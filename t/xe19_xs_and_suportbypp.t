@@ -13,7 +13,6 @@ SKIP: {
 
     my $json = JSON->new->allow_barekey;
 
-note explain test($json, q!{foo:"foo"}!);
     for (1..2) {
         is_deeply( test($json, q!{foo:"foo"}!   ), {foo=>'foo'} );
         JSON->new->allow_singlequote(0);

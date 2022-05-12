@@ -42,27 +42,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        perl-version:
-          [
-            "5.30",
-            "5.28",
-            "5.26",
-            "5.24",
-            "5.22",
-            "5.20",
-            "5.18",
-            "5.16",
-            "5.14",
-            "5.12",
-            "5.10",
-            "5.8",
-          ]
-        backend:
-          [
-            "JSON::XS",
-            "JSON::PP",
-            "Cpanel::JSON::XS",
-          ]
         include:
             - backend: JSON::XS
               backend-version: 4.00

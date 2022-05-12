@@ -66,6 +66,8 @@ is_deeply( $vs[2], { c => "3" } );
 ###  Without '->utf8'  ###
 ##########################
 
+SKIP: {
+skip "not for older version of JSON::PP", 6 if JSON->backend->isa('JSON::PP') && JSON->backend->VERSION < 4.07;
 @vs = eval { JSON->new->incr_parse( $JSON_TXT ) };
 
 ok( !$@ );
@@ -75,3 +77,4 @@ is_deeply( \@vs, [ { a => "1" }, { b => "\N{BULLET}" }, { c => "3" } ] );
 is_deeply( $vs[0], { a => "1" } );
 is_deeply( $vs[1], { b => "\N{BULLET}" } );
 is_deeply( $vs[2], { c => "3" } );
+}

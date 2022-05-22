@@ -15,7 +15,7 @@ use JSON::backportPP::Boolean;
 use Carp ();
 #use Devel::Peek;
 
-$JSON::backportPP::VERSION = '4.08';
+$JSON::backportPP::VERSION = '4.09';
 
 @JSON::PP::EXPORT = qw(encode_json decode_json from_json to_json);
 
@@ -47,7 +47,6 @@ use constant P_ALLOW_TAGS           => 19;
 
 use constant OLD_PERL => $] < 5.008 ? 1 : 0;
 use constant USE_B => $ENV{PERL_JSON_PP_USE_B} || 0;
-use constant CORE_BOOL => defined &builtin::is_bool;
 
 my $invalid_char_re;
 
@@ -219,30 +218,6 @@ sub boolean_values {
         delete $self->{true};
     }
     return $self;
-}
-
-sub core_bools {
-    my $self = shift;
-    my $core_bools = defined $_[0] ? $_[0] : 1;
-    if ($core_bools) {
-        $self->{true} = !!1;
-        $self->{false} = !!0;
-    }
-    else {
-        $self->{true} = $JSON::PP::true;
-        $self->{false} = $JSON::PP::false;
-    }
-    return $self;
-}
-
-sub get_core_bools {
-    return !!0
-        if !CORE_BOOL;
-
-    my $self = shift;
-    my ($true, $false) = @{$self}{qw(true false)};
-    BEGIN { CORE_BOOL and warnings->unimport(qw(experimental::builtin)) }
-    return builtin::is_bool($true) && builtin::is_bool($false) && $true && !$false;
 }
 
 sub get_boolean_values {
@@ -505,11 +480,7 @@ sub allow_bigint {
         my $type = ref($value);
 
         if (!$type) {
-            BEGIN { CORE_BOOL and warnings->unimport('experimental::builtin') }
-            if (CORE_BOOL && builtin::is_bool($value)) {
-                return $value ? 'true' : 'false';
-            }
-            elsif (_looks_like_number($value)) {
+            if (_looks_like_number($value)) {
                 return $value;
             }
             return $self->string_to_json($value);
@@ -1274,7 +1245,10 @@ BEGIN {
 
     # Compute how many bytes are in the longest legal official Unicode
     # character
-    my $max_unicode_length = chr 0x10FFFF;
+    my $max_unicode_length = do {
+      BEGIN { $] >= 5.006 and require warnings and warnings->unimport('utf8') }
+      chr 0x10FFFF;
+    };
     utf8::encode($max_unicode_length);
     $max_unicode_length = length $max_unicode_length;
 
@@ -1552,20 +1526,7 @@ BEGIN {
 $JSON::PP::true  = do { bless \(my $dummy = 1), "JSON::PP::Boolean" };
 $JSON::PP::false = do { bless \(my $dummy = 0), "JSON::PP::Boolean" };
 
-sub is_bool {
-  if (blessed $_[0]) {
-    return (
-      $_[0]->isa("JSON::PP::Boolean")
-      or $_[0]->isa("Types::Serialiser::BooleanBase")
-      or $_[0]->isa("JSON::XS::Boolean")
-    );
-  }
-  elsif (CORE_BOOL) {
-    BEGIN { CORE_BOOL and warnings->unimport('experimental::builtin') }
-    return builtin::is_bool($_[0]);
-  }
-  return !!0;
-}
+sub is_bool { blessed $_[0] and ( $_[0]->isa("JSON::PP::Boolean") or $_[0]->isa("Types::Serialiser::BooleanBase") or $_[0]->isa("JSON::XS::Boolean") ); }
 
 sub true  { $JSON::PP::true  }
 sub false { $JSON::PP::false }
@@ -1700,6 +1661,7 @@ INCR_PARSE:
             }
             next;
         } elsif ( $mode == INCR_M_TFN ) {
+            last INCR_PARSE if $p >= $len && $self->{incr_nest};
             while ( $len > $p ) {
                 $s = substr( $text, $p++, 1 );
                 next if defined $s and $s =~ /[rueals]/;
@@ -1711,6 +1673,7 @@ INCR_PARSE:
             last INCR_PARSE unless $self->{incr_nest};
             redo INCR_PARSE;
         } elsif ( $mode == INCR_M_NUM ) {
+            last INCR_PARSE if $p >= $len && $self->{incr_nest};
             while ( $len > $p ) {
                 $s = substr( $text, $p++, 1 );
                 next if defined $s and $s =~ /[0-9eE.+\-]/;

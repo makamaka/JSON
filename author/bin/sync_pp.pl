@@ -97,6 +97,17 @@ SKIP
             $content =~ s/JSON::Boolean/JSON::PP::Boolean/g;
             $content =~ s/(push \@tests, \[JSON::true\(\), JSON::false\(\), 'JSON::PP::Boolean', 'JSON::PP::Boolean'\];\n)/$1    push \@tests, [JSON->boolean(11), JSON->boolean(undef), 'JSON::PP::Boolean', 'JSON::PP::Boolean'];\n    push \@tests, [JSON::boolean(11), JSON::boolean(undef), 'JSON::PP::Boolean', 'JSON::PP::Boolean'];\n/;
         }
+        if ($basename eq '119_incr_parse_utf8.t') {
+            $content =~ s[(use JSON;)]
+                         [$1\nplan skip_all => "not for older version of JSON::PP" if JSON->backend->isa('JSON::PP') && JSON->backend->VERSION < 4.07;]s;
+        }
+        if ($basename eq '120_incr_parse_truncated.t') {
+            $content =~ s[(use JSON;)]
+                         [$1\nplan skip_all => "not for older version of JSON::PP" if JSON->backend->isa('JSON::PP') && JSON->backend->VERSION < 4.09;]s;
+        }
+        if ($basename eq 'core_bools.t') {
+            $content =~ s|JSON->CORE_BOOL|JSON->backend->can('CORE_BOOL') && JSON->backend->CORE_BOOL|g;
+        }
 
         $json_test->spew($content);
         print STDERR "copied $pp_test to $json_test\n";

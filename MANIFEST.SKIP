@@ -18,3 +18,4 @@ pod\.txt
 author/
 MYMETA\.*
 \.travis\.yml
+local/

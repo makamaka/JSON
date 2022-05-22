@@ -18,3 +18,4 @@ ex/*
 diff_*
 .shipit
 pod.txt
+local/

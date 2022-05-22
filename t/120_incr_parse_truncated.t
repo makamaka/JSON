@@ -85,7 +85,7 @@ run_test(']', sub {
 
 run_test('1', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok ($res, "truncated input='$input'");

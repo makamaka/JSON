@@ -52,6 +52,9 @@ WriteMakefile(
     'PREREQ_PM'     => {
               'Test::More'  => 0,
     },
+    "TEST_REQUIRES" => {
+              'Test::Pod'   => "1.00",
+    },
     ( $ExtUtils::MakeMaker::VERSION >= 6.3002 ? ('LICENSE' => 'perl', ) : () ),
 
     ( $ExtUtils::MakeMaker::VERSION >= 6.46 ? (

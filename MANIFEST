@@ -12,7 +12,6 @@ README
 t/00_backend_version.t
 t/00_load.t
 t/00_load_backport_pp.t
-t/00_pod.t
 t/01_utf8.t
 t/02_error.t
 t/03_types.t

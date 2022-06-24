@@ -19,3 +19,4 @@ author/
 MYMETA\.*
 \.travis\.yml
 local/
+xt/

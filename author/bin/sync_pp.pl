@@ -100,10 +100,13 @@ SKIP
         if ($basename eq '119_incr_parse_utf8.t') {
             $content =~ s[(use JSON;)]
                          [$1\nplan skip_all => "not for older version of JSON::PP" if JSON->backend->isa('JSON::PP') && JSON->backend->VERSION < 4.07;]s;
+            $content =~ s|use Test::More tests => 24;|use Test::More;|;
+            $content =~ s|(use charnames qw< :full >;)|$1\n\nplan tests => 24;|;
         }
         if ($basename eq '120_incr_parse_truncated.t') {
             $content =~ s[(use JSON;)]
                          [$1\nplan skip_all => "not for older version of JSON::PP" if JSON->backend->isa('JSON::PP') && JSON->backend->VERSION < 4.09;]s;
+            $content =~ s|my \$coder = JSON->new;|my \$coder = JSON->new->allow_nonref(1);|g;
         }
         if ($basename eq 'core_bools.t') {
             $content =~ s|JSON->CORE_BOOL|JSON->backend->can('CORE_BOOL') && JSON->backend->CORE_BOOL|g;

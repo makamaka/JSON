@@ -15,7 +15,7 @@ sub run_test {
 
 run_test('{"one": 1}', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok ($res, "curly braces okay -- '$input'");
@@ -25,7 +25,7 @@ run_test('{"one": 1}', sub {
 
 run_test('{"one": 1]', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "unbalanced curly braces -- '$input'");
@@ -35,7 +35,7 @@ run_test('{"one": 1]', sub {
 
 run_test('"', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -45,7 +45,7 @@ run_test('"', sub {
 
 run_test('{', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -55,7 +55,7 @@ run_test('{', sub {
 
 run_test('[', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -65,7 +65,7 @@ run_test('[', sub {
 
 run_test('}', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -75,7 +75,7 @@ run_test('}', sub {
 
 run_test(']', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -105,7 +105,7 @@ run_test('1', sub {
 
 run_test('"1', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -115,7 +115,7 @@ run_test('"1', sub {
 
 run_test('\\', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -125,7 +125,7 @@ run_test('\\', sub {
 
 run_test('{"one": "', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -135,7 +135,7 @@ run_test('{"one": "', sub {
 
 run_test('{"one": {', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -145,7 +145,7 @@ run_test('{"one": {', sub {
 
 run_test('{"one": [', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -155,7 +155,7 @@ run_test('{"one": [', sub {
 
 run_test('{"one": t', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -165,7 +165,7 @@ run_test('{"one": t', sub {
 
 run_test('{"one": \\', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -175,7 +175,7 @@ run_test('{"one": \\', sub {
 
 run_test('{"one": ', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -185,7 +185,7 @@ run_test('{"one": ', sub {
 
 run_test('{"one": 1', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");
@@ -195,7 +195,7 @@ run_test('{"one": 1', sub {
 
 run_test('{"one": {"two": 2', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated '$input'");
@@ -206,7 +206,7 @@ run_test('{"one": {"two": 2', sub {
 # Test Appending Closing '}' Curly Bracket
 run_test('{"one": 1', sub {
     my $input = shift;
-    my $coder = JSON->new;
+    my $coder = JSON->new->allow_nonref(1);
     my $res = eval { $coder->incr_parse($input) };
     my $e = $@; # test more clobbers $@, we need it twice
     ok (!$res, "truncated input='$input'");

@@ -27,6 +27,8 @@ jobs:
         run: perl -I$(pwd) Makefile.PL
       - name: make test
         run: make test
+      - name: prove xt
+        run: prove -b xt
 
   linux:
     name: "linux ${{ matrix.perl-version }}"

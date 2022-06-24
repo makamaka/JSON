@@ -7,12 +7,10 @@
 
 use strict;
 use warnings;
-use Test;
+use Test::More tests => 7;
 
 # main
 {
-    BEGIN { plan tests => 7 }
-
     BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
 use JSON;

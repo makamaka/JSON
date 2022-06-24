@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Test::More;
 
-BEGIN { plan tests => 6 };
+BEGIN { plan tests => 7 };
 
 BEGIN { $ENV{PERL_JSON_BACKEND} ||= "JSON::backportPP"; }
 
@@ -41,3 +41,6 @@ utf8::encode($utf8); # UTF-8 flagged off
 
 is($utf8, ($isASCII) ? "\xf0\x92\x90\x80" : "\xDE\x4A\x41\x41");
 
+eval { $json->decode(q|{"action":"foo" "method":"bar","tid":1}|) };
+my $error = $@;
+like $error => qr!""method":"bar","tid"..."!;

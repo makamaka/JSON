@@ -108,8 +108,12 @@ SKIP
                          [$1\nplan skip_all => "not for older version of JSON::PP" if JSON->backend->isa('JSON::PP') && JSON->backend->VERSION < 4.09;]s;
             $content =~ s|my \$coder = JSON->new;|my \$coder = JSON->new->allow_nonref(1);|g;
         }
+        if ($basename eq '03_types.t') {
+            $content =~ s|JSON\->can\("CORE_BOOL"\) && JSON::CORE_BOOL\(\)|JSON->backend->can("CORE_BOOL") && JSON->backend->CORE_BOOL|g;
+        }
         if ($basename eq 'core_bools.t') {
-            $content =~ s|JSON->CORE_BOOL|JSON->backend->can('CORE_BOOL') && JSON->backend->CORE_BOOL|g;
+            $content =~ s|JSON->can\('CORE_BOOL'\)|JSON->backend->can('CORE_BOOL')|g;
+            $content =~ s|JSON::CORE_BOOL|JSON->backend->CORE_BOOL|g;
         }
 
         $json_test->spew($content);

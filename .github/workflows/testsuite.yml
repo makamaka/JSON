@@ -45,6 +45,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+            - backend: JSON::backportPP
+              backend-version: 4.08
+              perl-version: 5.36
             - backend: JSON::XS
               backend-version: 4.00
               perl-version: 5.8

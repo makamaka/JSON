@@ -46,7 +46,6 @@ jobs:
       matrix:
         include:
             - backend: JSON::backportPP
-              backend-version: 4.08
               perl-version: 5.36
             - backend: JSON::XS
               backend-version: 4.00
@@ -84,6 +83,7 @@ jobs:
       - name: perl -V
         run: perl -V
       - name: install backend
+        if: ${{ matrix.backend-version }}
         run: cpanm -n ${{ matrix.backend }}@${{ matrix.backend-version }}
       - name: Makefile.PL
         run: perl -I$(pwd) Makefile.PL

@@ -1,5 +1,8 @@
 Revision history for Perl extension JSON.
 
+4.09 2022-08-01
+    - fix a test to pass under perl with core bool support
+
 4.08 2022-07-31
     - updated backportPP with JSON::PP 4.11
 

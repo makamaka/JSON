@@ -17,16 +17,18 @@ my $not_not_a_number_is_a_number = (
   ($json->backend->isa('JSON::PP') && ($JSON::PP::Boolean::VERSION || $JSON::backportPP::Boolean::VERSION))
 ) ? 1 : 0;
 
-is($json->encode([!1]),   '[""]');
+my $core_bool_support = JSON->backend->can("CORE_BOOL") && JSON->backend->CORE_BOOL ? 1 : 0;
+
+is($json->encode([!1]), $core_bool_support ? '[false]' : '[""]');
 if ($not_not_a_number_is_a_number) {
-is($json->encode([!!2]), '[1]');
+is($json->encode([!!2]), $core_bool_support ? '[true]' : '[1]');
 } else {
 is($json->encode([!!2]), '["1"]');
 }
 
-is($json->encode([ 'a' eq 'b'  ]), '[""]');
+is($json->encode([ 'a' eq 'b'  ]), $core_bool_support ? '[false]' : '[""]');
 if ($not_not_a_number_is_a_number) {
-is($json->encode([ 'a' eq 'a'  ]), '[1]');
+is($json->encode([ 'a' eq 'a'  ]), $core_bool_support ? '[true]' : '[1]');
 } else {
 is($json->encode([ 'a' eq 'a'  ]), '["1"]');
 }

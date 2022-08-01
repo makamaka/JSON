@@ -46,7 +46,34 @@ jobs:
       matrix:
         include:
             - backend: JSON::backportPP
-              perl-version: 5.36
+              perl-version: latest
+            - backend: JSON::XS
+              backend-version: 4.00
+              perl-version: latest
+            - backend: JSON::XS
+              backend-version: 3.02
+              perl-version: latest
+            - backend: JSON::XS
+              backend-version: 2.34
+              perl-version: latest
+            - backend: JSON::PP
+              backend-version: 2.97001
+              perl-version: latest
+            - backend: JSON::PP
+              backend-version: 2.27400
+              perl-version: latest
+            - backend: JSON::PP
+              backend-version: 2.27101
+              perl-version: latest
+            - backend: JSON::PP
+              backend-version: 2.27101
+              perl-version: latest
+            - backend: Cpanel::JSON::XS
+              backend-version: 4.08
+              perl-version: latest
+            - backend: Cpanel::JSON::XS
+              backend-version: 3.0218
+              perl-version: latest
             - backend: JSON::XS
               backend-version: 4.00
               perl-version: 5.8

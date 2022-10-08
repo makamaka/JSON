@@ -15,7 +15,7 @@ use JSON::backportPP::Boolean;
 use Carp ();
 #use Devel::Peek;
 
-$JSON::backportPP::VERSION = '4.11';
+$JSON::backportPP::VERSION = '4.12';
 
 @JSON::PP::EXPORT = qw(encode_json decode_json from_json to_json);
 

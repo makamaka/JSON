@@ -125,11 +125,11 @@ jobs:
         run: PERL_JSON_BACKEND=${{ matrix.backend }} make test
       - name: load JSON after backend
         if: ${{ matrix.backend == 'Cpanel::JSON::XS' || matrix.backend == 'JSON::XS' }}
-        run: cpanm -n Test::Warnings; perl -Ilib -we 'use Test::More; use Test::Warnings qw(:report_warnings); use ${{ matrix.backend }} (); use JSON (); done_testing'
+        run: cpanm -n Test::Warnings JSON::PP; perl -Ilib -we 'use Test::More; use Test::Warnings qw(:report_warnings); use ${{ matrix.backend }} (); use JSON (); done_testing'
       - name: load JSON before backend
         continue-on-error: true
         if: ${{ matrix.backend == 'Cpanel::JSON::XS' || matrix.backend == 'JSON::XS' }}
-        run: cpanm -n Test::Warnings; perl -Ilib -we 'use Test::More; use Test::Warnings qw(:report_warnings); use JSON (); use ${{ matrix.backend }} (); done_testing'
+        run: cpanm -n Test::Warnings JSON::PP; perl -Ilib -we 'use Test::More; use Test::Warnings qw(:report_warnings); use JSON (); use ${{ matrix.backend }} (); done_testing'
       - name: load JSON::backportPP after backend
         if: ${{ matrix.backend == 'Cpanel::JSON::XS' || matrix.backend == 'JSON::XS' }}
         run: cpanm -n Test::Warnings; perl -Ilib -we 'use Test::More; use Test::Warnings qw(:report_warnings); use ${{ matrix.backend }} (); use JSON::backportPP (); done_testing'

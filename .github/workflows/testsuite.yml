@@ -46,6 +46,7 @@ jobs:
       matrix:
         include:
             - backend: JSON::backportPP
+              backend-version: 0
               perl-version: latest
             - backend: JSON::XS
               backend-version: 4.00
@@ -65,8 +66,8 @@ jobs:
             - backend: JSON::PP
               backend-version: 2.27101
               perl-version: latest
-            - backend: JSON::PP
-              backend-version: 2.27101
+            - backend: Cpanel::JSON::XS
+              backend-version: 4.32
               perl-version: latest
             - backend: Cpanel::JSON::XS
               backend-version: 4.08
@@ -92,8 +93,11 @@ jobs:
             - backend: JSON::PP
               backend-version: 2.27101
               perl-version: 5.8
-            - backend: JSON::PP
-              backend-version: 2.27101
+            - backend: Cpanel::JSON::XS
+              backend-version: 0
+              perl-version: 5.8
+            - backend: Cpanel::JSON::XS
+              backend-version: 4.32
               perl-version: 5.8
             - backend: Cpanel::JSON::XS
               backend-version: 4.08
@@ -108,14 +112,32 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: perl -V
-        run: perl -V
+        run: perl -V; echo "${{ matrix.backend }}"; echo "${{ matrix.backend-version }}"
       - name: install backend
-        if: ${{ matrix.backend-version }}
+        if: ${{ matrix.backend-version != '0' && matrix.backend != 'JSON::backportPP' }}
         run: cpanm -n ${{ matrix.backend }}@${{ matrix.backend-version }}
+      - name: install backend2
+        if: ${{ matrix.backend-version == '0' && matrix.backend != 'JSON::backportPP' }}
+        run: cpanm -n ${{ matrix.backend }}
       - name: Makefile.PL
         run: perl -I$(pwd) Makefile.PL
       - name: make test
         run: PERL_JSON_BACKEND=${{ matrix.backend }} make test
+      - name: load JSON after backend
+        if: ${{ matrix.backend == 'Cpanel::JSON::XS' || matrix.backend == 'JSON::XS' }}
+        run: cpanm -n Test::Warnings; perl -Ilib -we 'use Test::More; use Test::Warnings qw(:report_warnings); use ${{ matrix.backend }} (); use JSON (); done_testing'
+      - name: load JSON before backend
+        continue-on-error: true
+        if: ${{ matrix.backend == 'Cpanel::JSON::XS' || matrix.backend == 'JSON::XS' }}
+        run: cpanm -n Test::Warnings; perl -Ilib -we 'use Test::More; use Test::Warnings qw(:report_warnings); use JSON (); use ${{ matrix.backend }} (); done_testing'
+      - name: load JSON::backportPP after backend
+        if: ${{ matrix.backend == 'Cpanel::JSON::XS' || matrix.backend == 'JSON::XS' }}
+        run: cpanm -n Test::Warnings; perl -Ilib -we 'use Test::More; use Test::Warnings qw(:report_warnings); use ${{ matrix.backend }} (); use JSON::backportPP (); done_testing'
+      - name: load JSON::backportPP before backend
+        continue-on-error: true
+        if: ${{ matrix.backend == 'Cpanel::JSON::XS' || matrix.backend == 'JSON::XS' }}
+        run: cpanm -n Test::Warnings; perl -Ilib -we 'use Test::More; use Test::Warnings qw(:report_warnings); use JSON::backportPP (); use ${{ matrix.backend }} (); done_testing'
+
 
   macOS:
     needs: [ubuntu]

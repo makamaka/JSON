@@ -23,8 +23,8 @@ die "JSON-PP directory not found" unless -d $pp_root;
     $content =~ s/use JSON::PP::Boolean/use JSON::backportPP::Boolean/;
     $content =~ s/JSON::PP::Compat/JSON::backportPP::Compat/g;
     $content =~ s/\$JSON::PP::([\w:]+)VERSION/\$JSON::backportPP::$1VERSION/g;
-    $content =~ s/\$JSON::PP::VERSION/\$JSON::backportPP::VERSION/g;
-    $content =~ s/\@JSON::PP::ISA/\@JSON::backportPP::ISA/g;
+    $content =~ s/our \$VERSION/\$JSON::backportPP::VERSION/g;
+    $content =~ s/our \@ISA/\@JSON::backportPP::ISA/g;
     $root->child('lib/JSON/backportPP.pm')->spew($content);
 }
 
@@ -45,6 +45,13 @@ for my $pp_test ($pp_root->child('t')->children) {
     if ($basename =~ /\.pm$/) {
         my $content = $pp_test->slurp;
         $content =~ s/JSON::PP::/JSON::/g;
+        $json_test->spew($content);
+        print STDERR "copied $pp_test to $json_test\n";
+        next;
+    }
+    if ($basename =~ /\.pl$/) {
+        my $content = $pp_test->slurp;
+        $content =~ s/JSON::PP(::|->|;)/JSON$1/g;
         $json_test->spew($content);
         print STDERR "copied $pp_test to $json_test\n";
         next;
@@ -114,6 +121,9 @@ SKIP
         if ($basename eq 'core_bools.t') {
             $content =~ s|JSON->can\('CORE_BOOL'\)|JSON->backend->can('CORE_BOOL')|g;
             $content =~ s|JSON::CORE_BOOL|JSON->backend->CORE_BOOL|g;
+        }
+        if ($basename =~ /^99_binary\d+/) {
+            $content =~ s|099_binary|99_binary|g;
         }
 
         $json_test->spew($content);

@@ -18,6 +18,8 @@ my $not_not_a_number_is_a_number = (
 ) ? 1 : 0;
 
 my $core_bool_support = JSON->backend->can("CORE_BOOL") && JSON->backend->CORE_BOOL ? 1 : 0;
+$core_bool_support = 1 if JSON->backend->isa('Cpanel::JSON::XS') && JSON->backend->VERSION >= 4.38;
+$core_bool_support = 0 unless defined &builtin::is_bool;
 
 is($json->encode([!1]), $core_bool_support ? '[false]' : '[""]');
 if ($not_not_a_number_is_a_number) {

@@ -50,7 +50,8 @@ WriteMakefile(
     'ABSTRACT_FROM' => 'lib/JSON.pm', # retrieve abstract from module
     'AUTHOR' => 'Makamaka Hannyaharamitu, E<lt>makamaka[at]cpan.orgE<gt>',
     'PREREQ_PM'     => {
-              'Test::More'  => 0,
+              'Test::More'  => 0.88,
+              'Scalar::Util' => '1.08'
     },
     ( $ExtUtils::MakeMaker::VERSION >= 6.3002 ? ('LICENSE' => 'perl', ) : () ),
 

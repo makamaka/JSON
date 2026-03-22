@@ -1,5 +1,8 @@
 Revision history for Perl extension JSON.
 
+4.11 2026-03-22
+    - updated backportPP with JSON::PP 4.18
+
 4.10 2022-10-09
     - updated backportPP with JSON::PP 4.12
 
